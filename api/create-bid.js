@@ -148,9 +148,14 @@ export default async function handler(req, res) {
     }
 
     // Step 1: Every.org 75% clean water donation URL
-    const everyOrgSlug = process.env.EVERYORG_FUNDRAISER_SLUG || 'clean-water-funded-by';
+    let slug = (process.env.EVERYORG_FUNDRAISER_SLUG || 'clean-water-funded-by').trim();
+    slug = slug.replace(/^https?:\/\/(www\.)?every\.org\//i, '');
+    slug = slug.replace(/^(water-org\/f\/)+/i, '');
+    slug = slug.replace(/^water-org\//i, '');
+    slug = slug.replace(/^\/+|\/+$/g, '') || 'clean-water-funded-by';
+
     const donationDollars = (donationCents / 100).toFixed(2);
-    const donationUrl = `https://www.every.org/water-org/f/${everyOrgSlug}`
+    const donationUrl = `https://www.every.org/water-org/f/${slug}`
       + `?amount=${encodeURIComponent(donationDollars)}`
       + `&partnerDonationId=${encodeURIComponent(entryId)}`
       + `&method=card`
