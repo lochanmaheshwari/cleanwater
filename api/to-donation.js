@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   }
   const amount = (donationCents / 100).toFixed(2);
 
-  const url = `https://www.every.org/lifestraw-safe-water-fund/f/clean-water-funded-by`
+  const url = `https://www.every.org/water-org/f/clean-water-funded-by`
     + `?amount=${encodeURIComponent(amount)}`
     + `&partnerDonationId=${encodeURIComponent(e.id)}`
     + `&webhook_token=${encodeURIComponent(process.env.EVERYORG_WEBHOOK_TOKEN || '')}`
