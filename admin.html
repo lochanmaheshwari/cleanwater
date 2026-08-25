@@ -22,7 +22,7 @@
 import {getSupabase} from './js/supabase.js';
 document.getElementById('login').addEventListener('click', async()=>{
   const pw=document.getElementById('pw').value;
-  const res=await fetch('/api/admin-list',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw})});
+  const res=await fetch('/api/admin',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw, action:'list'})});
   const j=await res.json().catch(()=>({}));
   if(!res.ok){ alert(j.error||'auth failed'); return; }
   document.getElementById('auth').style.display='none';
@@ -37,7 +37,7 @@ document.getElementById('login').addEventListener('click', async()=>{
   `).join('');
   list.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click', async()=>{
     const id=b.dataset.approve;
-    const r=await fetch('/api/admin-approve',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw, entryId:id})});
+    const r=await fetch('/api/admin',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw, action:'approve', entryId:id})});
     const jr=await r.json().catch(()=>({}));
     if(!r.ok) alert(jr.error||'failed'); else { b.textContent='approved'; b.disabled=true; }
   }));
