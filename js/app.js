@@ -60,7 +60,26 @@ const MOCK = [
 function $(s) { return document.querySelector(s); }
 function $all(s) { return [...document.querySelectorAll(s)]; }
 
+let paypalClientId = 'sb';
+async function loadPayPalSDK() {
+  try {
+    const res = await fetch('/api/paypal-config');
+    const data = await res.json();
+    if (data && data.clientId) paypalClientId = data.clientId;
+  } catch (e) {
+    console.warn('could not fetch paypal config', e);
+  }
+
+  if (!document.getElementById('paypal-sdk-script')) {
+    const script = document.createElement('script');
+    script.id = 'paypal-sdk-script';
+    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(paypalClientId)}&currency=USD&enable-funding=venmo,card`;
+    document.head.appendChild(script);
+  }
+}
+
 async function init() {
+  loadPayPalSDK();
   // Theme toggle
   const applyTheme = (t) => {
     document.body.classList.toggle('dark', t === 'dark');
