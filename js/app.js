@@ -9,7 +9,7 @@ let stats = { visitor_count: 1333572, launched_at: new Date().toISOString() };
 let currentTab = 'all'; // all | today
 let currentCategory = 'all';
 let visibleCount = 50;
-let bidAmount = 17005;
+let bidAmount = 5;
 
 // Mock data if Supabase is empty
 const MOCK = [
@@ -78,7 +78,7 @@ async function init() {
   });
 
   // Stepper wiring
-  const rawBidVal = parseInt($('#bidValue')?.textContent?.replace(/[^0-9]/g, '') || '17005', 10);
+  const rawBidVal = parseInt($('#bidValue')?.textContent?.replace(/[^0-9]/g, '') || '5', 10);
   bidAmount = rawBidVal;
 
   $('#decBtn')?.addEventListener('click', () => adjustBid(-1));
@@ -105,7 +105,7 @@ async function init() {
 
     window.__setBidFromTop = (topCents) => {
       const topDollars = Math.round((topCents || 0) / 100);
-      const prefill = topCents ? topDollars + 5 : 17005;
+      const prefill = topCents ? topDollars + 5 : 5;
       bidAmount = Math.min(999999, Math.max(5, prefill));
       updateHeadline();
     };
@@ -162,7 +162,7 @@ async function init() {
     if (e.key === 'Escape') closeOutbidModal();
   });
 
-  // Modal Pay button
+  // Fallback pay button
   document.getElementById('outbidModalPay')?.addEventListener('click', async () => {
     await handleOutbidModalPay();
   });
@@ -317,7 +317,7 @@ async function loadData() {
 
   if (loading) loading.style.display = 'none';
 
-  const topCents = (allEntries[0]?.total_bid_cents) || 1700000;
+  const topCents = (allEntries[0]?.total_bid_cents) || 0;
   if (window.__setBidFromTop) window.__setBidFromTop(topCents);
 
   renderBoard();
@@ -467,7 +467,7 @@ function handleHeroOutbid() {
     if (hint) {
       hint.textContent = isExisting
         ? 'Already on the leaderboard — existing icon and description will be kept if left blank.'
-        : 'Fill in your icon and one sentence, then proceed to direct PayPal checkout.';
+        : 'Complete your icon and sentence, then pay securely via PayPal or Credit Card.';
     }
 
     const err = document.getElementById('outbidModalError');
@@ -477,11 +477,116 @@ function handleHeroOutbid() {
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
+    // Render PayPal Buttons inside modal
+    renderPayPalButtons(fee > 0 ? fee : 1);
+
     setTimeout(() => document.getElementById('descriptionInput')?.focus(), 50);
   }
 }
 
-// When user submits the modal: send to /api/create-bid and redirect to payment
+// Render official PayPal Smart Buttons (PayPal + Credit Card) in the modal
+function renderPayPalButtons(feeDollars) {
+  const container = document.getElementById('paypalButtonContainer');
+  const fallbackBtn = document.getElementById('outbidModalPay');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (typeof window.paypal !== 'undefined' && window.paypal.Buttons) {
+    if (fallbackBtn) fallbackBtn.style.display = 'none';
+    try {
+      window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'pill',
+          label: 'pay'
+        },
+        createOrder: async (data, actions) => {
+          const pending = window.__pendingOutbid;
+          const desc = document.getElementById('descriptionInput')?.value?.trim() || '';
+          const logoPath = window.__formApi?.getLogoPath() || null;
+          const isExisting = window.__formApi?.isExisting() || pending?.isExisting;
+
+          if (!isExisting && !desc) {
+            showModalFormError('Please add one sentence describing what your product does.');
+            throw new Error('Description required');
+          }
+
+          // Create entry in Supabase first
+          let entryId = pending?.entryId;
+          try {
+            const r = await fetch('/api/create-bid', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                destination: pending.dest,
+                bidDollars: pending.bid,
+                category: pending.cat,
+                description: desc.slice(0, 100),
+                logoPath
+              })
+            });
+            const j = await r.json();
+            if (j.entryId) {
+              pending.entryId = j.entryId;
+              entryId = j.entryId;
+            }
+          } catch (e) {
+            console.warn('create-bid pre-save', e);
+          }
+
+          return actions.order.create({
+            purchase_units: [{
+              custom_id: entryId || 'temp',
+              description: `savewater.tech listing: ${pending?.dest || 'listing'}`,
+              amount: {
+                currency_code: 'USD',
+                value: feeDollars.toFixed(2)
+              }
+            }]
+          });
+        },
+        onApprove: async (data, actions) => {
+          const details = await actions.order.capture();
+          const pending = window.__pendingOutbid;
+          const entryId = pending?.entryId || data.orderID;
+
+          // Call payment-done webhook to immediately activate listing in database
+          try {
+            await fetch('/api/payment-done', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                entryId: pending?.entryId,
+                orderId: data.orderID,
+                paymentId: details.id || data.orderID,
+                amount_cents: Math.round(pending.bid * 100)
+              })
+            });
+          } catch (e) {
+            console.warn('payment confirmation', e);
+          }
+
+          // Redirect to success page or clean water confirmation
+          window.location.href = `/done.html?id=${encodeURIComponent(pending?.entryId || '')}`;
+        },
+        onError: (err) => {
+          console.error('PayPal error', err);
+          showModalFormError('Payment was not completed. Please try again or use direct checkout.');
+          if (fallbackBtn) fallbackBtn.style.display = 'block';
+        }
+      }).render('#paypalButtonContainer');
+    } catch (e) {
+      console.warn('paypal render failed, showing fallback', e);
+      if (fallbackBtn) fallbackBtn.style.display = 'block';
+    }
+  } else {
+    // Fallback if PayPal SDK is not loaded
+    if (fallbackBtn) fallbackBtn.style.display = 'block';
+  }
+}
+
+// Fallback direct payment handler
 async function handleOutbidModalPay() {
   const err = document.getElementById('outbidModalError');
   if (err) err.style.display = 'none';

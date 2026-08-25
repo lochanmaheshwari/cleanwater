@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<!-- PayPal JS SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD&enable-funding=venmo,card"></script>
 </head>
 <body>
 <div id="waterLevel" class="water-level"><div class="water-wave"></div></div>
@@ -151,7 +153,12 @@
     </div>
 
     <div id="outbidModalHint" style="margin-top:10px;font-size:12.5px;color:var(--muted)"></div>
-    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:16px;padding:14px;font-size:16px">Continue to Payment →</button>
+    
+    <!-- PayPal Live Smart Buttons (PayPal + Credit Card) -->
+    <div id="paypalButtonContainer" style="margin-top:16px;min-height:45px"></div>
+    
+    <!-- Fallback Direct Pay Button -->
+    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:10px;padding:13px;font-size:15px;display:none">Continue to Payment →</button>
     <div id="outbidModalError" class="error" style="display:none;margin-top:10px"></div>
   </div>
 </div>
