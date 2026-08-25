@@ -35,7 +35,12 @@ const routes = {
 export default async function handler(req, res) {
   try {
     const url = new URL(req.url, 'http://localhost');
-    let route = (req.query?.route || url.searchParams.get('route') || '').toString();
+    req.query = req.query || {};
+    for (const [k, v] of url.searchParams.entries()) {
+      if (req.query[k] === undefined) req.query[k] = v;
+    }
+
+    let route = (req.query.route || url.searchParams.get('route') || '').toString();
 
     if (!route) {
       const parts = url.pathname.replace(/^\/api\/?/, '').split('/');
