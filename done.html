@@ -24,18 +24,21 @@
   <canvas id="ogCanvas" width="1200" height="630" style="display:none"></canvas>
 </main>
 <script type="module">
+import { getLogoUrl, esc } from './js/utils.js';
+
 const id=new URLSearchParams(location.search).get('id');
 async function load(){
   if(!id) return;
   const r=await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
   const j=await r.json().catch(()=>({}));
   const entry=j.entry || j;
-  const amount = entry.donation_cents ? (entry.donation_cents/100).toFixed(0) : (entry.bid_cents? Math.round(entry.bid_cents*0.75/100):'--');
+  const amount = entry.donated_cents 
+    ? (entry.donated_cents/100).toFixed(0) 
+    : (entry.total_bid_cents ? Math.round(entry.total_bid_cents * 0.75 / 100).toFixed(0) : '7.50');
   document.getElementById('amount').textContent='$'+amount;
   if(entry.logo_path){
     const logo=document.getElementById('logoWrap');
-    // logos are public only when live — use supabase public URL
-    const url=`https://ecvumloyecjefvryjgaf.supabase.co/storage/v1/object/public/logos/${entry.logo_path}`;
+    const url=getLogoUrl(entry.logo_path);
     logo.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
   }
   // rank: fetch leaderboard

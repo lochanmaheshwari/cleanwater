@@ -78,3 +78,9 @@ export function initials(name){
 export function esc(s){
   const d=document.createElement('div'); d.textContent=s; return d.innerHTML;
 }
+
+export function getLogoUrl(path){
+  if(!path) return '';
+  if(path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
+  return `https://ecvumloyecjefvryjgaf.supabase.co/storage/v1/object/public/logos/${path.replace(/^\/+/,'')}`;
+}

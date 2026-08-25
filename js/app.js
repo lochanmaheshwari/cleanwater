@@ -1,6 +1,6 @@
 import { CONFIG } from './config.js';
 import { getSupabase } from './supabase.js';
-import { normalizeDestination, formatMoney, formatMoney2, timeAgo, hoursSince, initials, esc } from './utils.js';
+import { normalizeDestination, formatMoney, formatMoney2, timeAgo, hoursSince, initials, esc, getLogoUrl } from './utils.js';
 
 let supabase = null;
 let allEntries = [];
@@ -382,7 +382,7 @@ function renderBoard() {
     const domain = isHandle ? e.destination : (() => {
       try { return new URL(e.destination).hostname.replace(/^www\./, ''); } catch { return e.destination; }
     })();
-    const logo = e.logo_path ? `<img src="${esc(e.logo_path)}" alt="${esc(e.display_name)}">` : esc(initials(e.display_name || domain));
+    const logo = e.logo_path ? `<img src="${esc(getLogoUrl(e.logo_path))}" alt="${esc(e.display_name)}">` : esc(initials(e.display_name || domain));
 
     board.innerHTML += `
       <div class="card">

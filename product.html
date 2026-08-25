@@ -18,7 +18,7 @@
 </main>
 <script type="module">
 import {getSupabase} from './js/supabase.js';
-import {formatMoney,formatMoney2,timeAgo,esc} from './js/utils.js';
+import {formatMoney,formatMoney2,timeAgo,esc,getLogoUrl} from './js/utils.js';
 async function load(){
   const slug=new URLSearchParams(location.search).get('slug');
   const state=document.getElementById('state');
@@ -40,7 +40,7 @@ async function load(){
     try{ await sb.from('clicks').insert({entry_id:e.id}); }catch{}
     card.innerHTML=`
       <div class="card" style="padding:28px;flex-direction:column;align-items:flex-start">
-        <div style="width:120px;height:120px;border-radius:16px;background:var(--accent-xxlo);display:grid;place-items:center;font-weight:800;color:var(--accent);font-size:28px">${e.logo_path?`<img src="${esc(e.logo_path)}" style="width:100%;height:100%;object-fit:cover;border-radius:16px">`:esc((e.display_name||'?').slice(0,2).toUpperCase())}</div>
+        <div style="width:120px;height:120px;border-radius:16px;background:var(--accent-xxlo);display:grid;place-items:center;font-weight:800;color:var(--accent);font-size:28px">${e.logo_path?`<img src="${esc(getLogoUrl(e.logo_path))}" style="width:100%;height:100%;object-fit:cover;border-radius:16px">`:esc((e.display_name||'?').slice(0,2).toUpperCase())}</div>
         <h1 style="margin:14px 0 6px;font-size:28px;font-weight:800">${esc(e.display_name||e.destination)}</h1>
         <p style="color:var(--muted)">${esc(e.description||'')}</p>
         <p><a href="${e.destination.startsWith('@')?'https://x.com/'+e.destination.slice(1):esc(e.destination)}" target="_blank" rel="sponsored noopener">${esc(e.destination)}</a> · ${esc(e.category||'')}</p>

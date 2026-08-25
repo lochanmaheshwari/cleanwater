@@ -145,7 +145,7 @@
 </main>
 
 <script type="module">
-import { esc } from './js/utils.js';
+import { esc, getLogoUrl } from './js/utils.js';
 
 const id = new URLSearchParams(location.search).get('id') || new URLSearchParams(location.search).get('entryId');
 const loading = document.getElementById('loading');
@@ -312,7 +312,7 @@ async function load() {
     document.getElementById('itemDesc').textContent = entryData.description || entryData.category || '';
 
     if (entryData.logo_path) {
-      document.getElementById('itemLogo').innerHTML = `<img src="${esc(entryData.logo_path)}" alt="logo">`;
+      document.getElementById('itemLogo').innerHTML = `<img src="${esc(getLogoUrl(entryData.logo_path))}" alt="logo">`;
     } else {
       document.getElementById('itemLogo').textContent = (entryData.display_name || entryData.destination || '≋').slice(0, 2).toUpperCase();
     }
