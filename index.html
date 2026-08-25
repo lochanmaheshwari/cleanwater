@@ -35,28 +35,30 @@
 
   <form id="submitForm" style="max-width:720px;margin:22px auto 0;text-align:left">
     <div class="input-row" id="inputRow" style="margin:0">
-      <label class="pill-input" aria-label="url or handle" style="flex:1">
+      <label class="pill-input" aria-label="website name" style="flex:1">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
-        <input id="destinationInput" name="destination" placeholder="Your product URL or @handle" autocomplete="off" maxlength="120" required>
+        <input id="destinationInput" name="destination" placeholder="Your website — e.g. example.com or @handle" autocomplete="off" maxlength="120" required>
       </label>
-      <select id="categorySelect" class="pill-select" aria-label="category" required><option value="">category</option><option>AI Agents & Infrastructure</option><option>SEO & AI Visibility</option><option>Marketing & Advertising</option><option>Crypto, Web3 & Investing</option><option>Developer Tools</option><option>Business, Finance & Legal</option><option>Security, Privacy & Compliance</option><option>Health, Fitness & Wellness</option><option>Social Media & Creator Tools</option><option>Leaderboards & Attention Markets</option><option>Hiring, Jobs & Careers</option><option>Education & Learning</option><option>Agencies, Studios & Services</option><option>Ecommerce & Retail</option><option>Domains & Web Assets</option><option>Games & Entertainment</option><option>People & Profiles</option><option>Productivity & Personal Tools</option><option>Design & Creative</option><option>Writing & Content</option><option>Directories, Launch & Discovery</option><option>Other</option><option>AI Media Generation</option><option>Audio, Voice & Podcasting</option><option>Sales & Lead Generation</option><option>Travel, Local & Lifestyle</option><option>Real Estate & Property</option><option>Media & News</option></select>
+      <input type="hidden" id="categorySelect" value="Other">
     </div>
     <div id="existingHint" style="display:none;margin:8px 0 0;font-size:13px;color:var(--accent);font-weight:600"></div>
 
-    <div id="logoField" style="margin:14px 0 0">
-      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Logo <span style="color:var(--muted);font-weight:400">— square, max 5MB</span></label>
-      <div id="logoDrop" style="border:1.5px dashed var(--border);border-radius:16px;padding:16px;text-align:center;background:#fff;cursor:pointer">
-        <div id="logoPreview" style="width:96px;height:96px;margin:0 auto 8px;border-radius:12px;background:var(--accent-xxlo);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px">drag & drop or click to pick</div>
-        <div style="font-size:13px;color:var(--muted)">png, jpg, webp, svg — resized to 400×400</div>
-        <input id="logoInput" type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none">
+    <div id="detailsStep" style="display:none">
+      <div id="logoField" style="margin:14px 0 0">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Icon <span style="color:var(--muted);font-weight:400">— square logo, max 5MB</span></label>
+        <div id="logoDrop" style="border:1.5px dashed var(--border);border-radius:16px;padding:16px;text-align:center;background:#fff;cursor:pointer">
+          <div id="logoPreview" style="width:96px;height:96px;margin:0 auto 8px;border-radius:12px;background:var(--accent-xxlo);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px">drag & drop or click to pick</div>
+          <div style="font-size:13px;color:var(--muted)">png, jpg, webp, svg — resized to 400×400</div>
+          <input id="logoInput" type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none">
+        </div>
+        <div id="logoError" class="error" style="display:none;margin-top:8px"></div>
       </div>
-      <div id="logoError" class="error" style="display:none;margin-top:8px"></div>
-    </div>
 
-    <div style="margin:14px 0 0">
-      <label for="descriptionInput" style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Description <span style="color:var(--muted);font-weight:400">— max 200 chars</span></label>
-      <textarea id="descriptionInput" maxlength="200" rows="2" placeholder="What does it do? One or two sentences." style="width:100%;border:1px solid var(--border);border-radius:16px;padding:12px 14px;font-size:14px;resize:vertical;min-height:64px"></textarea>
-      <div style="text-align:right;font-size:12px;color:var(--muted);margin-top:4px"><span id="descCount">0</span>/200</div>
+      <div style="margin:14px 0 0">
+        <label for="descriptionInput" style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">One sentence <span style="color:var(--muted);font-weight:400">— what does it do? max 100 chars</span></label>
+        <textarea id="descriptionInput" maxlength="100" rows="2" placeholder="One sentence describing what your product does." style="width:100%;border:1px solid var(--border);border-radius:16px;padding:12px 14px;font-size:14px;resize:vertical;min-height:64px"></textarea>
+        <div style="text-align:right;font-size:12px;color:var(--muted);margin-top:4px"><span id="descCount">0</span>/100</div>
+      </div>
     </div>
 
     <div style="margin:18px 0 0;background:var(--accent-xxlo);border:1px solid #D6EAF3;border-radius:16px;padding:14px 16px">
@@ -66,10 +68,10 @@
       <div id="positionHint" style="margin-top:8px;font-size:12px;color:var(--accent);font-weight:600">$5 takes #1 · minimum $5</div>
     </div>
 
-    <button id="outbidBtn" type="submit" class="btn-accent" style="width:100%;margin-top:14px;justify-content:center">Outbid — pay 25% via PayPal</button>
+    <button id="outbidBtn" type="submit" class="btn-accent" style="width:100%;margin-top:14px;justify-content:center">Outbid — continue</button>
     <div id="formError" class="error" style="display:none;margin-top:10px"></div>
   </form>
-  <div class="hint">Already on the list? Enter the same URL or @handle and up your bid. Logo and description then optional.</div>
+  <div class="hint" id="formHint">Enter your website, hit Outbid — then add your icon and one-line description and hit Outbid again to pay.</div>
 
   <div style="text-align:center"><div id="donationCounter" class="donation-counter">— donated to clean water since launch · verify on Every.org →</div></div>
   <p style="text-align:center;color:var(--muted);font-size:13px;margin:8px 0 0">75% goes to water. 25% keeps this running. Both numbers are public.</p>

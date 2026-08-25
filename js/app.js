@@ -88,9 +88,9 @@ async function init(){
     });
   }
 
-  // category dropdown — keep static fallback already in HTML, just ensure value
+  // category now hidden (defaults to Other) — keep backward compat if select exists
   const sel=$('#categorySelect');
-  if(sel && sel.options.length<=1){
+  if(sel && sel.tagName==='SELECT' && sel.options.length<=1){
     sel.innerHTML='<option value="">category</option>'+CONFIG.CATEGORIES.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
   }
   // cat chips
@@ -439,23 +439,47 @@ async function handleSubmit(){
   $('#modalOverlay').dataset.category=cat;
 }
 
+let detailsRevealed=false;
 async function handleSubmitNew(){
   const formErr=$('#formError');
   if(formErr) formErr.style.display='none';
   const raw=$('#destinationInput')?.value?.trim();
-  const cat=$('#categorySelect')?.value;
+  // category hidden now defaults to Other
+  const catEl=$('#categorySelect');
+  const cat=(catEl?.value || catEl?.textContent || 'Other').trim() || 'Other';
   const desc=$('#descriptionInput')?.value?.trim()||'';
   const logoPath=window.__formApi?.getLogoPath()||null;
-  if(!raw){ showFormError('Enter your product URL or @handle'); return; }
-  if(!cat){ showFormError('Choose a category'); return; }
+  if(!raw){ showFormError('Enter your website — e.g. example.com or @handle'); return; }
   let dest;
   try{ dest=normalizeDestination(raw); }catch(e){ showFormError(e.message); return; }
   if(!Number.isInteger(bidAmount) || bidAmount<5 || bidAmount>999999){ showFormError('$5–$999,999 whole dollars only'); return; }
-  if(desc.length>200){ showFormError('description max 200 chars'); return; }
+  if(desc.length>100){ showFormError('one sentence max 100 chars'); return; }
   const isExisting=window.__formApi?.isExisting();
+  // Step 1: reveal icon + one-sentence fields on first Outbid click
+  if(!detailsRevealed){
+    const top = filtered()[0];
+    if(top){
+      const maxBid=Math.round((top.total_bid_cents||0)/100);
+      if(bidAmount>maxBid && bidAmount < maxBid+5){
+        showFormError(`taking #1 costs at least $${maxBid+5}`); return;
+      }
+    }
+    detailsRevealed=true;
+    const step=document.getElementById('detailsStep');
+    if(step) step.style.display='block';
+    const btn=document.getElementById('outbidBtn');
+    if(btn) btn.textContent='Outbid — pay via PayPal';
+    const hint=document.getElementById('formHint');
+    if(hint) hint.textContent = isExisting ? 'Already on the board — icon and sentence optional. Hit Outbid again to pay.' : 'Add your icon and one sentence, then hit Outbid again to go directly to payment.';
+    // focus for accessibility
+    if(!isExisting) document.getElementById('descriptionInput')?.focus();
+    // scroll to details
+    step?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
   if(!isExisting){
-    if(!desc) { showFormError('description required'); return; }
-    if(!logoPath){ showFormError('logo required — pick a file'); return; }
+    if(!desc) { showFormError('Add one sentence — what does it do? (max 100 chars)'); return; }
+    if(!logoPath){ showFormError('Add your icon — pick a logo file'); return; }
   } else {
     if(desc) { /* ok */ }
   }
@@ -501,8 +525,6 @@ function showFormError(msg){
   }
   target.style.display='block'; target.textContent=msg;
 }
-function showInlineError(msg){ showFormError(msg); }
-
 function showInlineError(msg){
   let el=$('#inlineError');
   if(!el){

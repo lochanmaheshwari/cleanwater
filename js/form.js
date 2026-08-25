@@ -10,7 +10,7 @@ export function initForm(getBidAmount, getTopBidCents){
   // description counter
   const desc=$('#descriptionInput'), cnt=$('#descCount');
   if(desc && cnt){
-    desc.addEventListener('input',()=>{ cnt.textContent=String(desc.value.length); desc.style.borderColor = desc.value.length>200 ? '#ef4444' : '' });
+    desc.addEventListener('input',()=>{ cnt.textContent=String(desc.value.length); desc.style.borderColor = desc.value.length>100 ? '#ef4444' : '' });
   }
   // logo
   const drop=$('#logoDrop'), input=$('#logoInput'), preview=$('#logoPreview'), err=$('#logoError');
