@@ -26,40 +26,65 @@
 <script type="module">
 import { getLogoUrl, esc } from './js/utils.js';
 
-const id=new URLSearchParams(location.search).get('id');
-async function load(){
-  if(!id) return;
-  const r=await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
-  const j=await r.json().catch(()=>({}));
-  const entry=j.entry || j;
-  const amount = entry.donated_cents 
-    ? (entry.donated_cents/100).toFixed(0) 
-    : (entry.total_bid_cents ? Math.round(entry.total_bid_cents * 0.75 / 100).toFixed(0) : '7.50');
-  document.getElementById('amount').textContent='$'+amount;
-  if(entry.logo_path){
-    const logo=document.getElementById('logoWrap');
-    const url=getLogoUrl(entry.logo_path);
-    logo.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+const id = new URLSearchParams(location.search).get('id');
+async function load() {
+  if (!id) return;
+  try {
+    const r = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
+    const j = await r.json().catch(() => ({}));
+    const entry = j.entry || j;
+    if (!entry) return;
+
+    const amount = entry.donated_cents 
+      ? (entry.donated_cents / 100).toFixed(0) 
+      : (entry.total_bid_cents ? Math.round(entry.total_bid_cents * 0.75 / 100).toFixed(0) : '7.50');
+    
+    const amtEl = document.getElementById('amount');
+    if (amtEl) amtEl.textContent = '$' + amount;
+
+    if (entry.logo_path) {
+      const logo = document.getElementById('logoWrap');
+      const url = getLogoUrl(entry.logo_path);
+      if (logo) logo.innerHTML = `<img src="${esc(url)}" alt="logo" style="width:100%;height:100%;object-fit:cover">`;
+    }
+
+    const rankEl = document.getElementById('rank');
+    if (rankEl) {
+      rankEl.textContent = entry.status === 'live' ? `You're live — ${entry.category || ''}` : `Status: ${entry.status}`;
+    }
+
+    // Share image canvas generator
+    try {
+      const btn = document.getElementById('shareBtn');
+      const canvas = document.getElementById('ogCanvas');
+      if (btn && canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FBFDFE';
+        ctx.fillRect(0, 0, 1200, 630);
+        ctx.fillStyle = '#1B7FA8';
+        ctx.font = '700 64px Outfit';
+        ctx.fillText('cleanwater.lol', 60, 100);
+        ctx.fillStyle = '#10171C';
+        ctx.font = '800 72px Outfit';
+        ctx.fillText(`$${amount} to clean water`, 60, 300);
+        ctx.fillStyle = '#7A8A93';
+        ctx.font = '500 32px Outfit';
+        ctx.fillText(entry.display_name || entry.destination || '', 60, 360);
+        canvas.toBlob(blob => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          btn.href = url;
+          btn.download = 'cleanwater-share.png';
+          btn.textContent = 'Download share image';
+          btn.onclick = () => { window.open(url, '_blank'); return false; };
+        });
+      }
+    } catch (canvasErr) {
+      console.warn('canvas share generation error', canvasErr);
+    }
+  } catch (err) {
+    console.error('done.html load error', err);
   }
-  // rank: fetch leaderboard
-  try{
-    const lb=await fetch(`https://ecvumloyecjefvryjgaf.supabase.co/rest/v1/entries?select=id,total_bid_cents,first_bid_at&status=eq.live&order=total_bid_cents.desc&order=first_bid_at.asc`,{headers:{apikey: document.querySelector('link')?'':''}}).then(r=>r.json()).catch(()=>null);
-  }catch{}
-  document.getElementById('rank').textContent = entry.status==='live' ? `You're live — ${entry.category||''}` : `Status: ${entry.status}`;
-  // share: generate OG via canvas
-  const btn=document.getElementById('shareBtn');
-  const canvas=document.getElementById('ogCanvas');
-  const ctx=canvas.getContext('2d');
-  ctx.fillStyle='#FBFDFE'; ctx.fillRect(0,0,1200,630);
-  ctx.fillStyle='#1B7FA8'; ctx.font='700 64px Outfit'; ctx.fillText('cleanwater.lol', 60, 100);
-  ctx.fillStyle='#10171C'; ctx.font='800 72px Outfit'; ctx.fillText(`$${amount} to clean water`, 60, 300);
-  ctx.fillStyle='#7A8A93'; ctx.font='500 32px Outfit'; ctx.fillText(entry.display_name||entry.destination||'', 60, 360);
-  canvas.toBlob(blob=>{
-    const url=URL.createObjectURL(blob);
-    btn.href=url; btn.download='cleanwater-share.png';
-    btn.textContent='Download share image';
-    btn.onclick=()=>{ window.open(url,'_blank'); return false; };
-  });
 }
 load();
 </script>
