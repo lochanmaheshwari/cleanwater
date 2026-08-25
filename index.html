@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>cleanwater.lol — AI drinks. We pay it back.</title>
+<title>savewater.tech — AI drinks. We pay it back.</title>
 <meta name="description" content="A pay-to-rank leaderboard for AI products. 75% of every bid goes straight to clean water.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,73 +13,94 @@
 <div id="waterLevel" class="water-level"><div class="water-wave"></div></div>
 
 <header class="topbar">
-  <a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a>
-  <div class="toggle" role="tablist" aria-label="board toggle">
-    <button class="active" data-tab="all">All-time</button>
-    <button data-tab="today">Today</button>
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+    <div class="toggle" role="tablist" aria-label="board toggle">
+      <button class="active" data-tab="all"><span style="margin-right:2px">🏆</span> All-time</button>
+      <button data-tab="today">Today</button>
+    </div>
   </div>
   <nav class="nav">
     <a href="index.html" class="active">Leaderboard</a>
     <a href="category.html">Categories</a>
     <a href="donations.html">Donations</a>
     <a href="about.html">About</a>
-    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">◐</button>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
   </nav>
 </header>
 
-<div class="live-wrap"><div class="live-pill"><span class="dot"></span> <span id="onlineCount">— online · — visitors since launch</span></div></div>
+<div class="live-wrap">
+  <div class="live-pill">
+    <span class="dot"></span>
+    <span id="onlineCount">234 online · 1,333,572 visitors since launch · <a href="donations.html" style="color:inherit">see stats→</a></span>
+  </div>
+</div>
 
 <section class="hero">
-  <h1 class="headline"><span id="headlineClaim">Claim #1 for</span> <span class="stepper"><button id="decBtn" aria-label="decrease">−</button><span class="val" id="bidValue">$5</span><button id="incBtn" aria-label="increase">+</button></span></h1>
+  <h1 class="headline">
+    <span id="headlineClaim">Claim #1 for</span>
+    <span class="stepper">
+      <button id="decBtn" aria-label="decrease">−</button>
+      <span class="val" id="bidValue">$5</span>
+      <button id="incBtn" aria-label="increase">+</button>
+    </span>
+  </h1>
   <p class="subline">AI runs on water. <strong>75% of every bid goes straight to clean water</strong> — you donate it yourself, we never touch it. New spots start at $5. Paying less than the #1 price still puts you on the board at whatever place that bid can take.</p>
 
-  <form id="submitForm" style="max-width:720px;margin:22px auto 0;text-align:left">
-    <div class="input-row" id="inputRow" style="margin:0">
-      <label class="pill-input" aria-label="url or handle" style="flex:1">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+  <form id="submitForm" class="hero-form">
+    <div class="input-row" id="inputRow">
+      <label class="pill-input" aria-label="url or handle">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
         <input id="destinationInput" name="destination" placeholder="Your product URL or @handle" autocomplete="off" maxlength="120" required>
       </label>
-      <select id="categorySelect" class="pill-select" aria-label="category" required><option value="">Choose a category</option><option>AI Agents & Infrastructure</option><option>SEO & AI Visibility</option><option>Marketing & Advertising</option><option>Crypto, Web3 & Investing</option><option>Developer Tools</option><option>Business, Finance & Legal</option><option>Security, Privacy & Compliance</option><option>Health, Fitness & Wellness</option><option>Social Media & Creator Tools</option><option>Leaderboards & Attention Markets</option><option>Hiring, Jobs & Careers</option><option>Education & Learning</option><option>Agencies, Studios & Services</option><option>Ecommerce & Retail</option><option>Domains & Web Assets</option><option>Games & Entertainment</option><option>People & Profiles</option><option>Productivity & Personal Tools</option><option>Design & Creative</option><option>Writing & Content</option><option>Directories, Launch & Discovery</option><option>Other</option><option>AI Media Generation</option><option>Audio, Voice & Podcasting</option><option>Sales & Lead Generation</option><option>Travel, Local & Lifestyle</option><option>Real Estate & Property</option><option>Media & News</option></select>
+      <div class="select-wrap">
+        <select id="categorySelect" class="pill-select" aria-label="category" required>
+          <option value="">Choose a category</option>
+          <option value="AI Agents & Infrastructure">AI Agents & Infrastructure</option>
+          <option value="SEO & AI Visibility">SEO & AI Visibility</option>
+          <option value="Marketing & Advertising">Marketing & Advertising</option>
+          <option value="Crypto, Web3 & Investing">Crypto, Web3 & Investing</option>
+          <option value="Developer Tools">Developer Tools</option>
+          <option value="Business, Finance & Legal">Business, Finance & Legal</option>
+          <option value="Security, Privacy & Compliance">Security, Privacy & Compliance</option>
+          <option value="Health, Fitness & Wellness">Health, Fitness & Wellness</option>
+          <option value="Social Media & Creator Tools">Social Media & Creator Tools</option>
+          <option value="Leaderboards & Attention Markets">Leaderboards & Attention Markets</option>
+          <option value="Hiring, Jobs & Careers">Hiring, Jobs & Careers</option>
+          <option value="Education & Learning">Education & Learning</option>
+          <option value="Agencies, Studios & Services">Agencies, Studios & Services</option>
+          <option value="Ecommerce & Retail">Ecommerce & Retail</option>
+          <option value="Domains & Web Assets">Domains & Web Assets</option>
+          <option value="Games & Entertainment">Games & Entertainment</option>
+          <option value="People & Profiles">People & Profiles</option>
+          <option value="Productivity & Personal Tools">Productivity & Personal Tools</option>
+          <option value="Design & Creative">Design & Creative</option>
+          <option value="Writing & Content">Writing & Content</option>
+          <option value="Directories, Launch & Discovery">Directories, Launch & Discovery</option>
+          <option value="AI Media Generation">AI Media Generation</option>
+          <option value="Audio, Voice & Podcasting">Audio, Voice & Podcasting</option>
+          <option value="Sales & Lead Generation">Sales & Lead Generation</option>
+          <option value="Travel, Local & Lifestyle">Travel, Local & Lifestyle</option>
+          <option value="Real Estate & Property">Real Estate & Property</option>
+          <option value="Media & News">Media & News</option>
+          <option value="Other">Other</option>
+        </select>
+        <span class="select-chevron">⌄</span>
+      </div>
+      <button id="outbidBtn" type="submit" class="btn-outbid">Outbid</button>
     </div>
     <div id="existingHint" style="display:none;margin:8px 0 0;font-size:13px;color:var(--accent);font-weight:600"></div>
-
-    <div id="detailsStep" style="display:none">
-      <div id="logoField" style="margin:14px 0 0">
-        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Icon <span style="color:var(--muted);font-weight:400">— square logo, max 5MB</span></label>
-        <div id="logoDrop" style="border:1.5px dashed var(--border);border-radius:16px;padding:16px;text-align:center;background:#fff;cursor:pointer">
-          <div id="logoPreview" style="width:96px;height:96px;margin:0 auto 8px;border-radius:12px;background:var(--accent-xxlo);display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px">drag & drop or click to pick</div>
-          <div style="font-size:13px;color:var(--muted)">png, jpg, webp, svg — resized to 400×400</div>
-          <input id="logoInput" type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none">
-        </div>
-        <div id="logoError" class="error" style="display:none;margin-top:8px"></div>
-      </div>
-
-      <div style="margin:14px 0 0">
-        <label for="descriptionInput" style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">One sentence <span style="color:var(--muted);font-weight:400">— what does it do? max 100 chars</span></label>
-        <textarea id="descriptionInput" maxlength="100" rows="2" placeholder="One sentence describing what your product does." style="width:100%;border:1px solid var(--border);border-radius:16px;padding:12px 14px;font-size:14px;resize:vertical;min-height:64px"></textarea>
-        <div style="text-align:right;font-size:12px;color:var(--muted);margin-top:4px"><span id="descCount">0</span>/100</div>
-      </div>
-    </div>
-
-    <div style="margin:18px 0 0;background:var(--accent-xxlo);border:1px solid #D6EAF3;border-radius:16px;padding:14px 16px">
-      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600"><span>Your bid</span><span id="splitBid">$5</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>To clean water (75%)</span><span id="splitDonation">$3</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Listing fee (25%)</span><span id="splitPlatform">$2</span></div>
-      <div id="positionHint" style="margin-top:8px;font-size:12px;color:var(--accent);font-weight:600">$5 takes #1 · minimum $5</div>
-    </div>
-
-    <button id="outbidBtn" type="submit" class="btn-accent" style="width:100%;margin-top:14px;justify-content:center">Outbid</button>
     <div id="formError" class="error" style="display:none;margin-top:10px"></div>
   </form>
-  <div class="hint" id="formHint">Already on the list? Enter the same URL or @handle and up your bid. After Outbid you’ll add your icon and one sentence, then Outbid again to pay.</div>
-
-  <div style="text-align:center"><div id="donationCounter" class="donation-counter">— donated to clean water since launch · verify on Every.org →</div></div>
-  <p style="text-align:center;color:var(--muted);font-size:13px;margin:8px 0 0">75% goes to water. 25% keeps this running. Both numbers are public.</p>
+  <div class="hint" id="formHint">Already on the list? Enter the same URL or @handle and up your bid.</div>
 </section>
 
-<div id="catRowWrap" style="max-width:1080px;margin:18px auto 0;padding:0 20px;position:relative">
-<div id="catRow" class="cat-row" style="margin:0;padding:0"></div>
-<div id="catDropdown" style="display:none;position:absolute;top:48px;left:20px;right:20px;background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 40px rgba(16,23,28,.12);padding:14px;z-index:10"></div>
+<div class="cat-row-container" id="catRowWrap">
+  <div id="catRow" class="cat-row"></div>
+  <div id="catDropdown"></div>
 </div>
 
 <div id="loadingState" class="loading">loading leaderboard…</div>
@@ -91,51 +112,53 @@
   <button id="showMoreBtn" class="show-more" style="display:none">Show more</button>
 </div>
 
-<section class="activity" id="activitySection">
-  <h3>latest activity</h3>
-  <div id="activityFeed"></div>
-</section>
-
 <footer>
-  <div>© cleanwater.lol · <a href="rules.html">Rules</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></div>
-  <div><a href="https://www.every.org/lifestraw-safe-water-fund/f/clean-water-funded-by" target="_blank" rel="noopener">Every.org fundraiser →</a></div>
+  <div>© savewater.tech · <a href="rules.html">Rules</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></div>
+  <div><a href="https://www.every.org/lifestraw-safe-water-fund/f/clean-water-funded-by" target="_blank" rel="noopener">75% goes directly to Clean Water via Every.org →</a></div>
 </footer>
 
-<!-- claim modal -->
-<div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
+<!-- Outbid Details Modal — Appears on top after clicking Outbid -->
+<div id="outbidModal" class="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h2>claim your rank</h2>
-      <button id="claimModalClose" class="icon-btn" aria-label="close">×</button>
+    <div class="modal-header">
+      <h2>Complete your listing</h2>
+      <button id="outbidModalClose" class="icon-btn" aria-label="close" style="border:0;font-size:20px;font-weight:700">×</button>
     </div>
-    <p class="muted" id="modalDestLine"><span id="modalDest"></span> · <span id="modalAmount"></span></p>
-    <div class="steps">
-      <div class="step active">Step 1 — donate <span id="modalDonated"></span> to water</div>
-      <div class="step">Step 2 — pay <span id="modalKept"></span> to claim</div>
+    <div class="modal-summary-pill" id="outbidModalLine">
+      <span id="outbidModalDest"></span> · <span id="outbidModalCat"></span> · <span id="outbidModalBid"></span>
     </div>
-    <div class="progress"><div id="modalProgress" class="progress-bar" style="width:50%"></div></div>
-    <p class="muted" id="modalHint">Made directly to the LifeStraw Safe Water Fund. You'll get a receipt from them. Not refundable.</p>
-    <div class="checkout-line"><span>donation (75%)</span><span id="modalDonated2"></span></div>
-    <div class="checkout-line"><span>site (25%)</span><span id="modalKept2"></span></div>
-    <div class="checkout-line total"><span>total</span><span id="modalTotal"></span></div>
-    <button id="modalAction" class="btn-accent" style="width:100%;margin-top:14px">donate to water →</button>
-    <p class="muted" style="margin-top:10px">A listing appears only when both are confirmed. If donation confirms without payment, you are approved within 30 minutes.</p>
+
+    <div id="logoField" style="margin-top:14px">
+      <label style="font-size:13.5px;font-weight:600;display:block;margin-bottom:6px">Icon <span style="color:var(--muted);font-weight:400">— square logo, max 5MB</span></label>
+      <div id="logoDrop" class="logo-drop-box">
+        <div id="logoPreview" style="width:72px;height:72px;margin:0 auto 8px;border-radius:14px;background:var(--ink);display:grid;place-items:center;overflow:hidden;color:#FFF;font-size:22px;font-weight:700">≋</div>
+        <div style="font-size:13px;color:var(--muted)">Click or drag & drop to upload (png, jpg, webp, svg)</div>
+        <input id="logoInput" type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none">
+      </div>
+      <div id="logoError" class="error" style="display:none;margin-top:8px"></div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label for="descriptionInput" style="font-size:13.5px;font-weight:600;display:block;margin-bottom:6px">One sentence <span style="color:var(--muted);font-weight:400">— what does it do? max 100 chars</span></label>
+      <textarea id="descriptionInput" maxlength="100" rows="2" placeholder="One sentence describing what your product does." style="width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:14px;resize:none;min-height:64px;outline:none;font-family:inherit"></textarea>
+      <div style="text-align:right;font-size:12px;color:var(--muted);margin-top:4px"><span id="descCount">0</span>/100</div>
+    </div>
+
+    <div class="price-breakdown-box">
+      <div class="breakdown-row highlight"><span>Your bid</span><span id="modalBreakdownBid">$5</span></div>
+      <div class="breakdown-row"><span>To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
+      <div class="breakdown-row"><span>Listing fee (25%)</span><span id="modalBreakdownFee">$1</span></div>
+    </div>
+
+    <div id="outbidModalHint" style="margin-top:10px;font-size:12.5px;color:var(--muted)"></div>
+    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:16px;padding:14px;font-size:16px">Continue to Payment →</button>
+    <div id="outbidModalError" class="error" style="display:none;margin-top:10px"></div>
   </div>
 </div>
 
 <script type="importmap">
 {"imports":{"@supabase/supabase-js":"https://esm.sh/@supabase/supabase-js@2.43.4"}}
 </script>
-<script type="module">
-import './js/app.js';
- // sync duplicated ids in modal
- const o=new MutationObserver(()=>{
-   const d=document.getElementById('modalDonated')?.textContent;
-   const k=document.getElementById('modalKept')?.textContent;
-   if(d) { const a=document.getElementById('modalDonated2'); if(a) a.textContent=d; }
-   if(k) { const b=document.getElementById('modalKept2'); if(b) b.textContent=k; }
- });
- o.observe(document.getElementById('modalOverlay'),{childList:true, subtree:true, characterData:true});
-</script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
