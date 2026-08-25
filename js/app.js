@@ -382,15 +382,16 @@ function renderBoard() {
     const domain = isHandle ? e.destination : (() => {
       try { return new URL(e.destination).hostname.replace(/^www\./, ''); } catch { return e.destination; }
     })();
+    const targetUrl = isHandle ? ('https://x.com/' + e.destination.slice(1)) : e.destination;
     const logo = e.logo_path ? `<img src="${esc(getLogoUrl(e.logo_path))}" alt="${esc(e.display_name)}">` : esc(initials(e.display_name || domain));
 
     board.innerHTML += `
-      <div class="card">
+      <div class="card board-card-clickable" data-url="${esc(targetUrl)}">
         <div class="rank-badge">#${rank}</div>
-        <a href="product.html?slug=${esc(e.slug || e.id)}" class="logo-wrap" aria-label="${esc(e.display_name)}">${logo}</a>
+        <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="logo-wrap" aria-label="${esc(e.display_name)}">${logo}</a>
         <div class="card-content">
           <div class="card-top-row">
-            <a href="${isHandle ? 'https://x.com/' + e.destination.slice(1) : esc(e.destination)}" target="_blank" rel="sponsored noopener" class="card-title">${esc(e.display_name || domain)}</a>
+            <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="card-title">${esc(e.display_name || domain)} <span class="external-arrow">↗</span></a>
             <div class="card-bid">${formatMoney(e.total_bid_cents)}</div>
           </div>
           <div class="card-blurb">${esc(e.description || '')}</div>
@@ -399,11 +400,20 @@ function renderBoard() {
             <span class="meta-item meta-domain">${esc(domain)}</span>
             ${e.category ? `<span class="meta-item meta-category">${catIcon(e.category)} ${esc(e.category)}</span>` : ''}
             <span class="meta-item clicks-item"><span class="click-dot"></span> ${e.click_count || 0} clicks</span>
-            <a class="meta-item see-details" href="product.html?slug=${esc(e.slug || e.id)}">see details</a>
+            <a class="meta-item see-details" href="product.html?slug=${esc(e.slug || e.id)}" onclick="event.stopPropagation()">stats</a>
           </div>
         </div>
       </div>
     `;
+  });
+
+  // Attach card click listener to open website directly
+  board.querySelectorAll('.board-card-clickable').forEach(card => {
+    card.addEventListener('click', (ev) => {
+      if (ev.target.closest('a')) return;
+      const url = card.dataset.url;
+      if (url) window.open(url, '_blank', 'noopener,sponsored');
+    });
   });
 
   const more = $('#showMoreBtn');
