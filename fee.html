@@ -317,8 +317,14 @@ async function load() {
       document.getElementById('itemLogo').textContent = (entryData.display_name || entryData.destination || '≋').slice(0, 2).toUpperCase();
     }
 
-    loading.style.display = 'none';
-    content.style.display = 'block';
+    // Show Test button if ?test=1 or on localhost
+    if (new URLSearchParams(location.search).get('test') === '1' || location.hostname === 'localhost') {
+      if (payBtn) {
+        payBtn.style.display = 'block';
+        payBtn.textContent = '🛠️ Test Mode: Simulate 25% Fee (Instant Publish)';
+        payBtn.style.background = '#059669';
+      }
+    }
 
     // Initialize PayPal Buttons
     await loadPayPal();
