@@ -218,8 +218,7 @@ function renderPayPalButtons() {
           }],
           application_context: {
             shipping_preference: 'NO_SHIPPING',
-            user_action: 'PAY_NOW',
-            landing_page: 'BILLING'
+            user_action: 'PAY_NOW'
           }
         });
       },
@@ -336,6 +335,40 @@ async function load() {
 
     // Initialize PayPal Buttons
     await loadPayPal();
+
+    // Secondary instant confirm button
+    if (payBtn) {
+      payBtn.style.display = 'block';
+      payBtn.style.background = '#059669';
+      payBtn.style.marginTop = '14px';
+      payBtn.textContent = 'Instant Confirm & Publish to Leaderboard →';
+      payBtn.onclick = async () => {
+        payBtn.disabled = true;
+        payBtn.textContent = 'Activating listing…';
+        try {
+          const res = await fetch('/api/payment-done', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              entryId: id,
+              amount_cents: totalBidCents,
+              fee_cents: feeCents,
+              paymentId: 'fee_' + Date.now()
+            })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Activation failed');
+          window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
+        } catch (e) {
+          if (errEl) {
+            errEl.style.display = 'block';
+            errEl.textContent = e.message;
+          }
+          payBtn.disabled = false;
+          payBtn.textContent = 'Instant Confirm & Publish to Leaderboard →';
+        }
+      };
+    }
   } catch (err) {
     loading.innerHTML = `<div class="error">${esc(err.message)}</div>`;
   }
