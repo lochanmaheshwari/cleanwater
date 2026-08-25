@@ -147,50 +147,22 @@ export default async function handler(req, res) {
       } catch {}
     }
 
-    // create PayPal order
-    let approveLink = null;
-    try {
-      const order = await paypal('/v2/checkout/orders', {
-        intent: 'CAPTURE',
-        purchase_units: [{
-          reference_id: entryId,
-          custom_id: entryId,
-          amount: { currency_code: 'USD', value: (platformCents / 100).toFixed(2) },
-          description: 'Leaderboard listing'
-        }],
-        application_context: {
-          return_url: `${SITE}/api/to-donation?id=${entryId}&donation=${donationCents}`,
-          cancel_url: `${SITE}/?cancelled=1`,
-          shipping_preference: 'NO_SHIPPING',
-          user_action: 'PAY_NOW',
-          brand_name: 'savewater.tech'
-        }
-      });
-      const link = order.links?.find(l => l.rel === 'approve')?.href;
-      approveLink = link;
+    // Step 1: Every.org 75% clean water donation URL
+    const everyOrgSlug = process.env.EVERYORG_FUNDRAISER_SLUG || 'clean-water-funded-by';
+    const donationDollars = (donationCents / 100).toFixed(2);
+    const donationUrl = `https://www.every.org/water-org/f/${everyOrgSlug}`
+      + `?amount=${encodeURIComponent(donationDollars)}`
+      + `&partnerDonationId=${encodeURIComponent(entryId)}`
+      + `&method=card`
+      + `&success_url=${encodeURIComponent(`${SITE}/fee.html?id=${encodeURIComponent(entryId)}`)}`;
 
-      // save order id to payment_id or paypal_order_id
-      try {
-        await sb.from('entries').update({ payment_id: order.id }).eq('id', entryId);
-        await sb.from('entries').update({ paypal_order_id: order.id }).eq('id', entryId);
-      } catch {}
-
-      return res.status(200).json({ entryId, approveLink, orderId: order.id, platformCents, donationCents });
-    } catch (payErr) {
-      console.error('paypal order failed', payErr);
-      if (!process.env.PAYPAL_CLIENT_ID) {
-        // mock: direct to Every.org donation if PayPal creds not set
-        return res.status(200).json({
-          entryId,
-          approveLink: `${SITE}/api/to-donation?id=${entryId}&donation=${donationCents}`,
-          mock: true,
-          platformCents,
-          donationCents,
-          warning: 'PayPal credentials not set in environment — mock redirect'
-        });
-      }
-      return res.status(500).json({ error: 'PayPal order failed: ' + payErr.message });
-    }
+    return res.status(200).json({
+      entryId,
+      donationUrl,
+      donationCents,
+      platformCents,
+      bidCents
+    });
   } catch (e) {
     console.error(e);
     return res.status(400).json({ error: e.message });

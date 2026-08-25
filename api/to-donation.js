@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     + `&partnerDonationId=${encodeURIComponent(e.id)}`
     + `&webhook_token=${encodeURIComponent(process.env.EVERYORG_WEBHOOK_TOKEN || '')}`
     + `&method=card`
-    + `&success_url=${encodeURIComponent(`${SITE}/done.html?id=${encodeURIComponent(e.id)}`)}`;
+    + `&success_url=${encodeURIComponent(`${SITE}/fee.html?id=${encodeURIComponent(e.id)}`)}`;
 
   return res.redirect(302, url);
 }

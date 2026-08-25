@@ -73,7 +73,7 @@ async function loadPayPalSDK() {
   if (!document.getElementById('paypal-sdk-script')) {
     const script = document.createElement('script');
     script.id = 'paypal-sdk-script';
-    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(paypalClientId)}&currency=USD&enable-funding=venmo,card`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(paypalClientId)}&currency=USD&components=buttons&enable-funding=card,venmo`;
     document.head.appendChild(script);
   }
 }
@@ -486,8 +486,11 @@ function handleHeroOutbid() {
     if (hint) {
       hint.textContent = isExisting
         ? 'Already on the leaderboard — existing icon and description will be kept if left blank.'
-        : 'Complete your icon and sentence, then pay securely via PayPal or Credit Card.';
+        : 'Step 1: Donate 75% to clean water via Every.org. Step 2: Pay 25% listing fee to publish to the leaderboard.';
     }
+
+    const btnAmt = document.getElementById('btnDonationAmt');
+    if (btnAmt) btnAmt.textContent = '$' + donation.toLocaleString();
 
     const err = document.getElementById('outbidModalError');
     if (err) err.style.display = 'none';
@@ -496,116 +499,11 @@ function handleHeroOutbid() {
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
-    // Render PayPal Buttons inside modal
-    renderPayPalButtons(fee > 0 ? fee : 1);
-
     setTimeout(() => document.getElementById('descriptionInput')?.focus(), 50);
   }
 }
 
-// Render official PayPal Smart Buttons (PayPal + Credit Card) in the modal
-function renderPayPalButtons(feeDollars) {
-  const container = document.getElementById('paypalButtonContainer');
-  const fallbackBtn = document.getElementById('outbidModalPay');
-  if (!container) return;
-  container.innerHTML = '';
-
-  if (typeof window.paypal !== 'undefined' && window.paypal.Buttons) {
-    if (fallbackBtn) fallbackBtn.style.display = 'none';
-    try {
-      window.paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color: 'gold',
-          shape: 'pill',
-          label: 'pay'
-        },
-        createOrder: async (data, actions) => {
-          const pending = window.__pendingOutbid;
-          const desc = document.getElementById('descriptionInput')?.value?.trim() || '';
-          const logoPath = window.__formApi?.getLogoPath() || null;
-          const isExisting = window.__formApi?.isExisting() || pending?.isExisting;
-
-          if (!isExisting && !desc) {
-            showModalFormError('Please add one sentence describing what your product does.');
-            throw new Error('Description required');
-          }
-
-          // Create entry in Supabase first
-          let entryId = pending?.entryId;
-          try {
-            const r = await fetch('/api/create-bid', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                destination: pending.dest,
-                bidDollars: pending.bid,
-                category: pending.cat,
-                description: desc.slice(0, 100),
-                logoPath
-              })
-            });
-            const j = await r.json();
-            if (j.entryId) {
-              pending.entryId = j.entryId;
-              entryId = j.entryId;
-            }
-          } catch (e) {
-            console.warn('create-bid pre-save', e);
-          }
-
-          return actions.order.create({
-            purchase_units: [{
-              custom_id: entryId || 'temp',
-              description: `savewater.tech listing: ${pending?.dest || 'listing'}`,
-              amount: {
-                currency_code: 'USD',
-                value: feeDollars.toFixed(2)
-              }
-            }]
-          });
-        },
-        onApprove: async (data, actions) => {
-          const details = await actions.order.capture();
-          const pending = window.__pendingOutbid;
-          const entryId = pending?.entryId || data.orderID;
-
-          // Call payment-done webhook to immediately activate listing in database
-          try {
-            await fetch('/api/payment-done', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                entryId: pending?.entryId,
-                orderId: data.orderID,
-                paymentId: details.id || data.orderID,
-                amount_cents: Math.round(pending.bid * 100)
-              })
-            });
-          } catch (e) {
-            console.warn('payment confirmation', e);
-          }
-
-          // Redirect to success page or clean water confirmation
-          window.location.href = `/done.html?id=${encodeURIComponent(pending?.entryId || '')}`;
-        },
-        onError: (err) => {
-          console.error('PayPal error', err);
-          showModalFormError('Payment was not completed. Please try again or use direct checkout.');
-          if (fallbackBtn) fallbackBtn.style.display = 'block';
-        }
-      }).render('#paypalButtonContainer');
-    } catch (e) {
-      console.warn('paypal render failed, showing fallback', e);
-      if (fallbackBtn) fallbackBtn.style.display = 'block';
-    }
-  } else {
-    // Fallback if PayPal SDK is not loaded
-    if (fallbackBtn) fallbackBtn.style.display = 'block';
-  }
-}
-
-// Fallback direct payment handler
+// Step 1: Redirect to Every.org 75% clean water donation
 async function handleOutbidModalPay() {
   const err = document.getElementById('outbidModalError');
   if (err) err.style.display = 'none';
@@ -638,9 +536,9 @@ async function handleOutbidModalPay() {
 
   const cleanDesc = desc.replace(/<[^>]*>/g, '').slice(0, 100);
   const btn = document.getElementById('outbidModalPay');
-  const orig = btn ? btn.textContent : '';
+  const orig = btn ? btn.innerHTML : '';
   if (btn) {
-    btn.textContent = 'Redirecting to payment…';
+    btn.textContent = 'Redirecting to Every.org…';
     btn.disabled = true;
   }
 
@@ -657,17 +555,19 @@ async function handleOutbidModalPay() {
       })
     });
     const j = await r.json();
-    if (!r.ok) throw new Error(j.error || 'Failed to create bid');
+    if (!r.ok) throw new Error(j.error || 'Failed to initialize donation');
 
-    if (j.approveLink) {
+    if (j.donationUrl) {
+      window.location.href = j.donationUrl;
+    } else if (j.approveLink) {
       window.location.href = j.approveLink;
     } else {
-      showModalFormError('No payment link returned.');
-      if (btn) { btn.textContent = orig; btn.disabled = false; }
+      showModalFormError('No donation link returned.');
+      if (btn) { btn.innerHTML = orig; btn.disabled = false; }
     }
   } catch (e) {
     showModalFormError(e.message);
-    if (btn) { btn.textContent = orig; btn.disabled = false; }
+    if (btn) { btn.innerHTML = orig; btn.disabled = false; }
   }
 }
 

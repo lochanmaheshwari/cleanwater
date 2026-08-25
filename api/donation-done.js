@@ -28,33 +28,34 @@ export default async function handler(req,res){
       return res.status(200).json({ok:true, note:'underpaid flagged'});
     }
 
-    // idempotent guard: only if currently paid
-    const { data: updated, error } = await sb.from('entries').update({
-      everyorg_charge_id: charge || partnerId+':'+Date.now(),
+    // Record donation confirmation
+    const updateObj = {
+      everyorg_charge_id: charge || partnerId + ':' + Date.now(),
       donated_at: new Date().toISOString(),
-      logo_status:'live',
-      status:'live',
-      // update totals: add bid to total and donation to donated
-      total_bid_cents: (entry.total_bid_cents||0) + (entry.bid_cents||0),
-      donated_cents: (entry.donated_cents||0) + (entry.donation_cents||0)
-    }).eq('id', partnerId).eq('status','paid').select('id');
+      donation_confirmed: true,
+      donated_cents: (entry.donated_cents || 0) + (entry.donation_cents || Math.round((entry.bid_cents || 500) * 0.75))
+    };
 
-    if(error) console.warn('update live error', error);
-    if(!updated || updated.length===0){
-      // if not paid, don't go live (spec guard)
-      console.warn('not in paid state, not going live', entry.status);
-      return res.status(200).json({ok:true, note:'not paid'});
+    if (entry.payment_confirmed || entry.status === 'paid') {
+      updateObj.status = 'live';
+      updateObj.logo_status = 'live';
+      updateObj.total_bid_cents = (entry.total_bid_cents || 0) + (entry.bid_cents || 500);
+    } else {
+      updateObj.status = 'awaiting_fee';
     }
 
-    // create bids row for accounting (idempotent via charge id unique)
-    try{
+    const { data: updated, error } = await sb.from('entries').update(updateObj).eq('id', partnerId).select('id');
+    if (error) console.warn('update entry error', error);
+
+    // create bids row for accounting
+    try {
       await sb.from('bids').insert({
         entry_id: partnerId,
-        amount_cents: entry.bid_cents,
-        donated_cents: entry.donation_cents,
+        amount_cents: entry.bid_cents || 500,
+        donated_cents: entry.donation_cents || Math.round((entry.bid_cents || 500) * 0.75),
         everyorg_donation_id: charge || partnerId
       });
-    }catch(e){
+    } catch (e) {
       console.warn('bids insert', e.message);
     }
 

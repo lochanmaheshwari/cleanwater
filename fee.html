@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay Listing Fee — savewater.tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.step-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.step-done {
+  background: #E6F8F0;
+  color: #059669;
+  border: 1px solid rgba(5,150,105,0.2);
+}
+.step-current {
+  background: var(--accent-lo);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.fee-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto;
+}
+.highlight-notice {
+  background: var(--accent-xxlo);
+  border: 1px solid var(--accent-lo);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 18px 0;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.45;
+  text-align: left;
+}
+.product-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  text-align: left;
+}
+.product-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--accent-xxlo);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 18px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.product-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-icon">≋</span> savewater.tech</a>
+  <nav class="nav">
+    <a href="index.html">Leaderboard</a>
+    <a href="donations.html">Donations</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main style="max-width:600px;margin:40px auto;padding:0 20px">
+  <div class="step-tracker">
+    <div class="step-pill step-done">✓ Step 1: 75% Donated to Water</div>
+    <span style="color:var(--muted)">→</span>
+    <div class="step-pill step-current">Step 2: 25% Listing Fee</div>
+  </div>
+
+  <div class="fee-card">
+    <div id="loading" class="loading">Loading listing details…</div>
+
+    <div id="content" style="display:none">
+      <div style="font-size:36px;margin-bottom:8px">🎉</div>
+      <h1 style="font-size:26px;font-weight:800;margin:0 0 6px">Almost there! Pay the listing fee</h1>
+      <p style="color:var(--muted);font-size:14.5px;margin:0">
+        Your 75% donation to Clean Water via Every.org is confirmed.
+      </p>
+
+      <div class="product-preview">
+        <div id="itemLogo" class="product-icon">≋</div>
+        <div style="flex:1;min-width:0">
+          <div id="itemTitle" style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+          <div id="itemDesc" style="font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        </div>
+      </div>
+
+      <div class="highlight-notice">
+        <strong>⚡ Important:</strong> Pay this <strong>25% listing fee (<span id="feeAmountText">$1</span>)</strong> to publish your product and go <strong>LIVE</strong> on the leaderboard.
+      </div>
+
+      <div class="price-breakdown-box" style="margin:16px 0">
+        <div class="breakdown-row"><span>Total Bid</span><span id="totalBid">$5</span></div>
+        <div class="breakdown-row" style="color:#059669"><span>75% to Clean Water (Every.org)</span><span id="donatedAmt">✓ $4 Paid</span></div>
+        <div class="breakdown-row highlight"><span>25% Listing Fee Due</span><span id="feeDue">$1</span></div>
+      </div>
+
+      <!-- Live Payment Button for 25% Fee -->
+      <button id="payFeeBtn" class="btn-outbid" style="width:100%;padding:14px;font-size:16px;margin-top:10px">
+        Pay <span id="btnFeeText">$1</span> & Publish to Leaderboard →
+      </button>
+
+      <div id="feeError" class="error" style="display:none;margin-top:10px"></div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { esc } from './js/utils.js';
+
+const id = new URLSearchParams(location.search).get('id') || new URLSearchParams(location.search).get('entryId');
+const loading = document.getElementById('loading');
+const content = document.getElementById('content');
+const payBtn = document.getElementById('payFeeBtn');
+const errEl = document.getElementById('feeError');
+
+let entryData = null;
+let feeCents = 100;
+let totalBidCents = 500;
+
+async function load() {
+  if (!id) {
+    loading.innerHTML = '<div class="error">Missing listing ID. <a href="index.html">Return to leaderboard</a></div>';
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
+    const j = await res.json();
+    if (!res.ok || !j.entry) throw new Error(j.error || 'Entry not found');
+
+    entryData = j.entry;
+
+    if (entryData.status === 'live') {
+      location.href = `/done.html?id=${encodeURIComponent(id)}`;
+      return;
+    }
+
+    totalBidCents = entryData.bid_cents || entryData.total_bid_cents || 500;
+    const donCents = entryData.donation_cents || Math.round(totalBidCents * 0.75);
+    feeCents = totalBidCents - donCents;
+    if (feeCents <= 0) feeCents = Math.max(100, Math.round(totalBidCents * 0.25));
+
+    document.getElementById('totalBid').textContent = '$' + (totalBidCents / 100).toFixed(0);
+    document.getElementById('donatedAmt').textContent = '✓ $' + (donCents / 100).toFixed(0) + ' Paid';
+    document.getElementById('feeDue').textContent = '$' + (feeCents / 100).toFixed(0);
+    document.getElementById('feeAmountText').textContent = '$' + (feeCents / 100).toFixed(0);
+    document.getElementById('btnFeeText').textContent = '$' + (feeCents / 100).toFixed(0);
+
+    document.getElementById('itemTitle').textContent = entryData.display_name || entryData.destination;
+    document.getElementById('itemDesc').textContent = entryData.description || entryData.category || '';
+
+    if (entryData.logo_path) {
+      document.getElementById('itemLogo').innerHTML = `<img src="${esc(entryData.logo_path)}" alt="logo">`;
+    } else {
+      document.getElementById('itemLogo').textContent = (entryData.display_name || entryData.destination || '≋').slice(0, 2).toUpperCase();
+    }
+
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  } catch (err) {
+    loading.innerHTML = `<div class="error">${esc(err.message)}</div>`;
+  }
+}
+
+payBtn.addEventListener('click', async () => {
+  payBtn.disabled = true;
+  payBtn.textContent = 'Activating listing…';
+  if (errEl) errEl.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/payment-done', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        entryId: id,
+        amount_cents: totalBidCents,
+        fee_cents: feeCents,
+        paymentId: 'fee_' + Date.now()
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to complete listing fee payment');
+
+    // Successfully published!
+    window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
+  } catch (e) {
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.textContent = e.message;
+    }
+    payBtn.disabled = false;
+    payBtn.textContent = `Pay $${(feeCents / 100).toFixed(0)} & Publish to Leaderboard →`;
+  }
+});
+
+load();
+</script>
+</body>
+</html>

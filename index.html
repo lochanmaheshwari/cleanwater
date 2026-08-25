@@ -145,18 +145,21 @@
     </div>
 
     <div class="price-breakdown-box">
-      <div class="breakdown-row highlight"><span>Your bid</span><span id="modalBreakdownBid">$5</span></div>
-      <div class="breakdown-row"><span>To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
-      <div class="breakdown-row"><span>Listing fee (25%)</span><span id="modalBreakdownFee">$1</span></div>
+      <div class="breakdown-row highlight"><span>Total bid</span><span id="modalBreakdownBid">$5</span></div>
+      <div class="breakdown-row" style="color:#059669"><span>Step 1: To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
+      <div class="breakdown-row"><span>Step 2: Listing fee (25%)</span><span id="modalBreakdownFee">$1</span></div>
     </div>
 
     <div id="outbidModalHint" style="margin-top:10px;font-size:12.5px;color:var(--muted)"></div>
     
-    <!-- PayPal Live Smart Buttons (PayPal + Credit Card) -->
-    <div id="paypalButtonContainer" style="margin-top:16px;min-height:45px"></div>
+    <!-- Step 1 Every.org Button -->
+    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:14px;padding:14px;font-size:15.5px">
+      Continue to Step 1: Donate <span id="btnDonationAmt">$4</span> via Every.org →
+    </button>
+    <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px">
+      ⚡ 1-Click Apple Pay, Google Pay & Card (No login required)
+    </div>
     
-    <!-- Fallback Direct Pay Button -->
-    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:10px;padding:13px;font-size:15px;display:none">Continue to Payment →</button>
     <div id="outbidModalError" class="error" style="display:none;margin-top:10px"></div>
   </div>
 </div>
