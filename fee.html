@@ -276,10 +276,8 @@ async function load() {
   try {
     const res = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
     const j = await res.json().catch(() => ({}));
-    if (!res.ok || !j.entry) throw new Error(j.error || 'Entry not found');
-    entryData = j.entry || {};
+    entryData = (j && j.entry) ? j.entry : {};
 
-    // Don't auto-redirect: always show fee.html with listing details and PayPal payment buttons
     const urlParams = new URLSearchParams(location.search);
     const paramAmount = parseFloat(urlParams.get('amount') || urlParams.get('donation') || '0');
 
@@ -289,9 +287,9 @@ async function load() {
       } else {
         totalBidCents = Math.round((paramAmount / 0.75) * 100);
       }
-    } else if (entryData?.bid_cents) {
+    } else if (entryData && entryData.bid_cents) {
       totalBidCents = entryData.bid_cents;
-    } else if (entryData?.total_bid_cents > 0) {
+    } else if (entryData && entryData.total_bid_cents > 0) {
       totalBidCents = entryData.total_bid_cents;
     } else {
       totalBidCents = 1000;

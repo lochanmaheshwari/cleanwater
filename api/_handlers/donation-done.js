@@ -14,32 +14,28 @@ export default async function handler(req,res){
 
     if(!partnerId) return res.status(200).json({ok:true, note:'no partnerDonationId'});
 
-    const sb=createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const { data: entry } = await sb.from('entries').select('id, donation_cents, status, total_bid_cents, bid_cents, donated_cents').eq('id', partnerId).single();
-    if(!entry) {
-      console.warn('no entry for partnerId', partnerId);
-      return res.status(200).json({ok:true, note:'no entry'});
+    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: entry, error: entryErr } = await sb.from('entries').select('*').eq('id', partnerId).maybeSingle();
+    if (!entry) {
+      console.warn('no entry for partnerId', partnerId, entryErr);
+      return res.status(200).json({ ok: true, note: 'no entry' });
     }
 
-    const paid = amtStr ? Math.round(parseFloat(amtStr)*100) : null;
-    if(paid !== null && paid < entry.donation_cents){
-      await sb.from('entries').update({ status:'needs_review' }).eq('id', partnerId);
-      console.warn('paid less than required', paid, entry.donation_cents);
-      return res.status(200).json({ok:true, note:'underpaid flagged'});
-    }
+    const paid = amtStr ? Math.round(parseFloat(amtStr) * 100) : null;
+    const requiredDonation = entry.donated_cents || Math.round((entry.total_bid_cents || 1000) * 0.75);
 
     // Record donation confirmation
     const updateObj = {
       everyorg_charge_id: charge || partnerId + ':' + Date.now(),
       donated_at: new Date().toISOString(),
       donation_confirmed: true,
-      donated_cents: (entry.donated_cents || 0) + (entry.donation_cents || Math.round((entry.bid_cents || 500) * 0.75))
+      donated_cents: (entry.donated_cents || 0) + (paid || requiredDonation)
     };
 
     if (entry.payment_confirmed || entry.status === 'paid') {
       updateObj.status = 'live';
       updateObj.logo_status = 'live';
-      updateObj.total_bid_cents = (entry.total_bid_cents || 0) + (entry.bid_cents || 500);
+      updateObj.total_bid_cents = (entry.total_bid_cents || 0) + Math.round((paid || requiredDonation) / 0.75);
     } else {
       updateObj.status = 'awaiting_fee';
     }
@@ -51,8 +47,8 @@ export default async function handler(req,res){
     try {
       await sb.from('bids').insert({
         entry_id: partnerId,
-        amount_cents: entry.bid_cents || 500,
-        donated_cents: entry.donation_cents || Math.round((entry.bid_cents || 500) * 0.75),
+        amount_cents: Math.round((paid || requiredDonation) / 0.75),
+        donated_cents: paid || requiredDonation,
         everyorg_donation_id: charge || partnerId
       });
     } catch (e) {
