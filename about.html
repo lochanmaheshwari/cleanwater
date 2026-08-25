@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About — cleanwater.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a>
+  <nav class="nav"><a href="index.html">Leaderboard</a><a href="category.html">Categories</a><a href="donations.html">Donations</a><a href="about.html" class="active">About</a><button id="darkToggle" class="icon-btn">◐</button></nav>
+</header>
+<main style="max-width:680px;margin:36px auto;padding:0 20px">
+  <h1 style="font-size:42px;font-weight:800;letter-spacing:-.03em;margin:0">AI drinks. We pay it back.</h1>
+  <div style="margin-top:18px;line-height:1.7;color:var(--ink)">
+    <p>Every pay-to-rank board keeps the money. This one keeps a quarter — and never even holds the rest.</p>
+    <p>Data centres run on water. Cooling the infrastructure behind every model consumes it, and the industry is growing faster than anyone planned for.</p>
+    <p>When you claim a spot here, you donate 75% directly to the LifeStraw Safe Water Fund. It goes from you to them. We never see it. The other 25% pays for the servers and keeps things like this getting built.</p>
+    <p>One in four people on earth — 2.1 billion — still lack safely managed drinking water. This is a small way for an industry that runs on water to send some back.</p>
+    <p>Every bid here is public. Every donation is on Every.org. Check the maths. <a href="donations.html">See the arithmetic →</a></p>
+    <p style="color:var(--muted);font-size:13px;margin-top:24px">We are not affiliated with, endorsed by, or a partner of LifeStraw. Donations are made by bidders directly to the LifeStraw Safe Water Fund via Every.org; receipts come from Every.org/LifeStraw.</p>
+  </div>
+</main>
+<footer><div>© cleanwater.lol</div><div><a href="index.html">← back</a></div></footer>
+<script>const applyTheme=t=>{document.body.classList.toggle('dark',t==='dark');const b=document.getElementById('darkToggle');if(b)b.textContent=t==='dark'?'☀':'◐';localStorage.setItem('cww-theme',t);};const s=localStorage.getItem('cww-theme');const d=window.matchMedia('(prefers-color-scheme: dark)').matches;applyTheme(s||(d?'dark':'light'));document.getElementById('darkToggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');});</script>
+</body>
+</html>

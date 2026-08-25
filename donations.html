@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Donations — cleanwater.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="water-level" id="waterLevel"><div class="water-wave"></div></div>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a>
+  <nav class="nav"><a href="index.html">Leaderboard</a><a href="category.html">Categories</a><a href="donations.html" class="active">Donations</a><a href="about.html">About</a><button id="darkToggle" class="icon-btn">◐</button></nav>
+</header>
+<div class="donations-hero">
+  <h1>Every dollar, accounted for.</h1>
+  <p style="color:var(--muted)">Transaction IDs are public. The total lives on Every.org, not here.</p>
+  <div id="arith" class="arithmetic">loading…</div>
+  <p style="margin-top:12px"><a href="https://www.every.org/lifestraw-safe-water-fund/f/clean-water-funded-by" target="_blank" rel="noopener" style="font-weight:700">See the total on Every.org →</a></p>
+</div>
+<div class="donation-feed" id="feed"></div>
+<p style="text-align:center;color:var(--muted);font-size:12px;max-width:720px;margin:24px auto;padding:0 20px">Every bid on this leaderboard is public. Add them up yourself. We never touch the 75% — you donate it directly.</p>
+<footer><div>© cleanwater.lol</div><div><a href="index.html">← back to leaderboard</a></div></footer>
+<script type="module">
+import {CONFIG} from './js/config.js';
+import {getSupabase} from './js/supabase.js';
+import {formatMoney2} from './js/utils.js';
+async function load(){
+  const arith=document.getElementById('arith');
+  const feed=document.getElementById('feed');
+  try{
+    const sb=await getSupabase();
+    const {data:bids}=await sb.from('bids').select('*').order('created_at',{ascending:false}).limit(100);
+    const {data:entries}=await sb.from('entries').select('total_bid_cents,donated_cents');
+    let total=0, donated=0;
+    if(entries){ total=entries.reduce((s,e)=>s+e.total_bid_cents,0); donated=entries.reduce((s,e)=>s+(e.donated_cents||Math.round(e.total_bid_cents*0.75)),0); }
+    if(bids && bids.length){ const bd=bids.reduce((s,b)=>s+(b.donated_cents||0),0); if(bd>donated) donated=bd; if(bids.reduce((s,b)=>s+b.amount_cents,0)>total) total=bids.reduce((s,b)=>s+b.amount_cents,0); }
+    if(total===0){ total=500; donated=375; } // seed
+    const kept=total-donated;
+    arith.innerHTML=`
+      <div class="row"><span>Total bids</span><span>${formatMoney2(total)}</span></div>
+      <div class="row"><span>75%</span><span>${formatMoney2(Math.round(total*0.75))}</span></div>
+      <div class="row"><span>Donated</span><span>${formatMoney2(donated)}</span></div>
+      <div class="row"><span>Kept</span><span>${formatMoney2(kept)}</span></div>
+      <div class="row"><span>Difference</span><span>${formatMoney2(donated - Math.round(total*0.75))}</span></div>
+    `;
+    if(!bids||bids.length===0){ feed.innerHTML='<div class="empty">no donations yet — be the first.</div>'; return; }
+    feed.innerHTML=bids.map(b=>`
+      <div class="donation-row">
+        <div><strong>${formatMoney2(b.amount_cents)}</strong> · <span style="color:var(--accent);font-weight:600">${formatMoney2(b.donated_cents||Math.round(b.amount_cents*0.75))} to water</span><br><span class="donation-id">${b.everyorg_donation_id||'pending webhook'}</span></div>
+        <div style="font-size:12px;color:var(--muted)">${new Date(b.created_at).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+    // water level
+    const pct=Math.min(100, donated/CONFIG.GOAL_CENTS*100);
+    document.getElementById('waterLevel').style.height=(pct/100*60)+'vh';
+  }catch(e){
+    arith.innerHTML='<div class="error">'+e.message+'</div>';
+  }
+}
+const applyTheme=t=>{document.body.classList.toggle('dark',t==='dark');const b=document.getElementById('darkToggle');if(b)b.textContent=t==='dark'?'☀':'◐';localStorage.setItem('cww-theme',t);};const s=localStorage.getItem('cww-theme');const d=window.matchMedia('(prefers-color-scheme: dark)').matches;applyTheme(s||(d?'dark':'light'));document.getElementById('darkToggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');});
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Categories — cleanwater.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a>
+  <nav class="nav"><a href="index.html">Leaderboard</a><a href="category.html" class="active">Categories</a><a href="donations.html">Donations</a></nav>
+</header>
+<main style="max-width:1080px;margin:28px auto;padding:0 20px">
+  <h1 style="font-size:32px;font-weight:800">categories</h1>
+  <div id="chips" class="cat-row" style="padding:0"></div>
+  <div id="board" class="board" style="padding:0"></div>
+  <div id="loading" class="loading">loading…</div>
+</main>
+<script type="module">
+import {CONFIG} from './js/config.js';
+import {getSupabase} from './js/supabase.js';
+import {formatMoney,formatMoney2,esc,timeAgo} from './js/utils.js';
+let cat = new URLSearchParams(location.search).get('slug') || 'all';
+function renderChips(){
+  const el=document.getElementById('chips');
+  el.innerHTML=['all',...CONFIG.CATEGORIES].map(c=>`<button class="cat-chip ${c===cat?'active':''}" data-c="${esc(c)}">${esc(c==='all'?'All':c)}</button>`).join('');
+  el.querySelectorAll('[data-c]').forEach(b=>b.addEventListener('click',()=>{cat=b.dataset.c; history.replaceState(null,'','?slug='+encodeURIComponent(cat)); renderChips(); load();}));
+}
+async function load(){
+  const board=document.getElementById('board');
+  const loading=document.getElementById('loading');
+  loading.style.display='block'; board.innerHTML='';
+  try{
+    const sb=await getSupabase();
+    let q=sb.from('entries').select('*').eq('status','live').order('total_bid_cents',{ascending:false});
+    if(cat!=='all') q=q.eq('category',cat);
+    const {data,error}=await q;
+    if(error) throw error;
+    loading.style.display='none';
+    if(!data||!data.length){ board.innerHTML='<div class="empty">no listings in this category yet.</div>'; return; }
+    board.innerHTML=data.map((e,i)=>`
+      <div class="card card-4-10">
+        <div class="rank-badge">#${i+1}</div>
+        <div class="logo-wrap" style="width:72px;height:72px">${esc((e.display_name||'?').slice(0,2).toUpperCase())}</div>
+        <div class="card-body"><div class="card-title">${esc(e.display_name)}</div><div class="card-blurb">${esc(e.description||'')}</div><div class="card-meta">${esc(timeAgo(e.last_bid_at))} · ${esc(e.destination)}</div></div>
+        <div class="card-right"><div class="bid">${formatMoney(e.total_bid_cents)}</div><div class="donated">${formatMoney2(e.donated_cents||Math.round(e.total_bid_cents*0.75))} to water</div></div>
+      </div>
+    `).join('');
+  }catch(e){ loading.style.display='none'; board.innerHTML='<div class="error">'+esc(e.message)+'</div>'; }
+}
+renderChips(); load();
+</script>
+</body>
+</html>

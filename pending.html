@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confirming — cleanwater.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar"><a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a></header>
+<main style="max-width:520px;margin:60px auto;padding:0 20px;text-align:center">
+  <div style="width:48px;height:48px;margin:0 auto;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite"></div>
+  <h1 style="font-size:28px;font-weight:800;margin:16px 0 8px">Confirming your payment…</h1>
+  <p id="hint" style="color:var(--muted)">This usually takes a few seconds. You'll be redirected to the donation.</p>
+  <p id="status" style="font-family:monospace;font-size:12px;color:var(--muted);margin-top:12px"></p>
+</main>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<script>
+const id=new URLSearchParams(location.search).get('id');
+let tries=0;
+async function poll(){
+  tries++;
+  document.getElementById('status').textContent=`checking ${tries}…`;
+  try{
+    const r=await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
+    const j=await r.json();
+    if(j.status==='paid' || j.status==='live'){
+      location.href=`/api/to-donation?id=${encodeURIComponent(id)}`;
+      return;
+    }
+    if(j.status==='voided' || j.status==='refund_failed'){
+      location.href=`index.html?error=voided`;
+      return;
+    }
+  }catch(e){}
+  if(tries<60) setTimeout(poll,2000);
+  else document.getElementById('hint').textContent='Still pending — please refresh or contact support.';
+}
+if(id) poll();
+else document.getElementById('hint').textContent='Missing id.';
+</script>
+</body>
+</html>

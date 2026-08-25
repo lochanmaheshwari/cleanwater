@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — cleanwater.lol</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar"><a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a></header>
+<main style="max-width:860px;margin:32px auto;padding:0 20px">
+<h1 style="font-weight:800">admin</h1>
+<div id="auth">
+  <p style="color:var(--muted)">Enter admin password to view pending donations without payment.</p>
+  <div style="display:flex;gap:8px"><input id="pw" type="password" placeholder="admin password" class="pill-input" style="flex:1"><button id="login" class="btn-accent">unlock</button></div>
+</div>
+<div id="content" style="display:none">
+  <h3>confirmed donations with no matching payment (approve after 30 min)</h3>
+  <div id="list" class="loading">loading…</div>
+</div>
+</main>
+<script type="module">
+import {getSupabase} from './js/supabase.js';
+document.getElementById('login').addEventListener('click', async()=>{
+  const pw=document.getElementById('pw').value;
+  const res=await fetch('/api/admin-list',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw})});
+  const j=await res.json().catch(()=>({}));
+  if(!res.ok){ alert(j.error||'auth failed'); return; }
+  document.getElementById('auth').style.display='none';
+  document.getElementById('content').style.display='block';
+  const list=document.getElementById('list');
+  if(!j.entries||!j.entries.length){ list.innerHTML='<div class="empty">nothing pending</div>'; return; }
+  list.innerHTML=j.entries.map(e=>`
+    <div class="card" style="padding:16px;justify-content:space-between">
+      <div><strong>${e.display_name||e.destination}</strong><br><span style="font-size:12px;color:var(--muted)">${e.destination} · $${(e.total_bid_cents/100).toFixed(2)} · donation ${e.everyorg_donation_id||'yes'}</span></div>
+      <button class="btn-accent" data-approve="${e.id}">approve</button>
+    </div>
+  `).join('');
+  list.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click', async()=>{
+    const id=b.dataset.approve;
+    const r=await fetch('/api/admin-approve',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw, entryId:id})});
+    const jr=await r.json().catch(()=>({}));
+    if(!r.ok) alert(jr.error||'failed'); else { b.textContent='approved'; b.disabled=true; }
+  }));
+});
+</script>
+</body>
+</html>

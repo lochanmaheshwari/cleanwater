@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product — cleanwater.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="logo" href="index.html"><span class="logo-mark">≋</span> cleanwater.lol</a>
+  <nav class="nav"><a href="index.html">Leaderboard</a><a href="donations.html">Donations</a><a href="about.html">About</a></nav>
+</header>
+<main style="max-width:720px;margin:32px auto;padding:0 20px">
+  <div id="state" class="loading">loading…</div>
+  <div id="card"></div>
+</main>
+<script type="module">
+import {getSupabase} from './js/supabase.js';
+import {formatMoney,formatMoney2,timeAgo,esc} from './js/utils.js';
+async function load(){
+  const slug=new URLSearchParams(location.search).get('slug');
+  const state=document.getElementById('state');
+  const card=document.getElementById('card');
+  if(!slug){ state.textContent='missing slug'; return; }
+  try{
+    const sb=await getSupabase();
+    const {data,error}=await sb.from('entries').select('*').eq('slug',slug).maybeSingle();
+    if(error) throw error;
+    let e=data;
+    if(!e){
+      // try by id
+      const r2=await sb.from('entries').select('*').eq('id',slug).maybeSingle();
+      e=r2.data;
+    }
+    if(!e){ state.innerHTML='<div class="empty">not found</div>'; return; }
+    state.style.display='none';
+    // increment click
+    try{ await sb.from('clicks').insert({entry_id:e.id}); }catch{}
+    card.innerHTML=`
+      <div class="card" style="padding:28px;flex-direction:column;align-items:flex-start">
+        <div style="width:120px;height:120px;border-radius:16px;background:var(--accent-xxlo);display:grid;place-items:center;font-weight:800;color:var(--accent);font-size:28px">${e.logo_path?`<img src="${esc(e.logo_path)}" style="width:100%;height:100%;object-fit:cover;border-radius:16px">`:esc((e.display_name||'?').slice(0,2).toUpperCase())}</div>
+        <h1 style="margin:14px 0 6px;font-size:28px;font-weight:800">${esc(e.display_name||e.destination)}</h1>
+        <p style="color:var(--muted)">${esc(e.description||'')}</p>
+        <p><a href="${e.destination.startsWith('@')?'https://x.com/'+e.destination.slice(1):esc(e.destination)}" target="_blank" rel="sponsored noopener">${esc(e.destination)}</a> · ${esc(e.category||'')}</p>
+        <div class="bid" style="font-size:28px">${formatMoney(e.total_bid_cents)}</div>
+        <div class="donated">${formatMoney2(e.donated_cents||Math.round(e.total_bid_cents*0.75))} to water</div>
+        <p style="font-size:13px;color:var(--muted)">${e.click_count||0} clicks · ${esc(timeAgo(e.last_bid_at))}</p>
+        <button class="btn-accent" onclick="location.href='/?claim=${encodeURIComponent(e.destination)}'">boost this listing</button>
+      </div>
+    `;
+  }catch(err){ state.innerHTML='<div class="error">'+esc(err.message)+'</div>'; }
+}
+load();
+</script>
+</body>
+</html>
