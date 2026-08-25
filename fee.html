@@ -256,7 +256,7 @@ function renderPayPalButtons() {
         console.error('PayPal checkout error', err);
         if (errEl) {
           errEl.style.display = 'block';
-          errEl.textContent = 'Payment could not be completed via PayPal. Please try again.';
+          errEl.textContent = 'PayPal could not process payment. ' + (err?.message || 'Please ensure your PayPal client details are active.');
         }
         if (payBtn) payBtn.style.display = 'block';
       }
