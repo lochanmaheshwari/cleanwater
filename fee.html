@@ -225,15 +225,30 @@ function renderPayPalButtons() {
       },
       onApprove: async (data, actions) => {
         if (errEl) errEl.style.display = 'none';
+        if (loading) {
+          loading.style.display = 'block';
+          loading.textContent = 'Payment received! Activating listing on the leaderboard…';
+        }
+        if (content) content.style.display = 'none';
+
         let captureId = data.orderID;
-        if (actions && actions.order) {
-          try {
+        try {
+          if (actions && actions.order) {
             const details = await actions.order.capture();
             captureId = details.id || data.orderID;
+          }
+        } catch (capErr) {
+          console.warn('client capture error, attempting server capture', capErr);
+          try {
+            await fetch('/api/create-fee-order', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'capture', orderId: data.orderID, entryId: id })
+            });
           } catch {}
         }
 
-        // Call payment-done to set live status
+        // Call payment-done to set live status in database
         try {
           await fetch('/api/payment-done', {
             method: 'POST',
@@ -254,9 +269,11 @@ function renderPayPalButtons() {
       },
       onError: (err) => {
         console.error('PayPal checkout error', err);
+        if (loading) loading.style.display = 'none';
+        if (content) content.style.display = 'block';
         if (errEl) {
           errEl.style.display = 'block';
-          errEl.textContent = 'PayPal could not process payment. ' + (err?.message || 'Please ensure your PayPal client details are active.');
+          errEl.textContent = 'PayPal Error: ' + (err?.message || 'Payment could not be processed.');
         }
         if (payBtn) payBtn.style.display = 'block';
       }

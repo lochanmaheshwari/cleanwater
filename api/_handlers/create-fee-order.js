@@ -31,7 +31,18 @@ async function getPaypalToken() {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
   try {
-    const { entryId, feeDollars } = req.body || {};
+    const { entryId, feeDollars, action, orderId } = req.body || {};
+
+    if (action === 'capture' && orderId) {
+      const tok = await getPaypalToken();
+      const capRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders/${orderId}/capture`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' }
+      });
+      const capData = await capRes.json();
+      return res.status(200).json(capData);
+    }
+
     if (!entryId) return res.status(400).json({ error: 'missing entryId' });
 
     const fee = Math.max(1, parseFloat(feeDollars) || 2.50);
