@@ -167,21 +167,34 @@ async function load() {
 
     entryData = j.entry;
 
-    if (entryData.status === 'live') {
-      location.href = `/done.html?id=${encodeURIComponent(id)}`;
-      return;
+    const urlParams = new URLSearchParams(location.search);
+    const paramAmount = parseFloat(urlParams.get('amount') || urlParams.get('donation') || '0');
+
+    if (paramAmount > 0) {
+      if (paramAmount > 100) {
+        // passed in cents
+        totalBidCents = Math.round((paramAmount / 0.75));
+      } else {
+        // passed in dollars
+        totalBidCents = Math.round((paramAmount / 0.75) * 100);
+      }
+    } else if (entryData.bid_cents) {
+      totalBidCents = entryData.bid_cents;
+    } else if (entryData.total_bid_cents > 0) {
+      totalBidCents = entryData.total_bid_cents;
+    } else {
+      totalBidCents = 1000;
     }
 
-    totalBidCents = entryData.bid_cents || entryData.total_bid_cents || 500;
-    const donCents = entryData.donation_cents || Math.round(totalBidCents * 0.75);
+    const donCents = Math.round(totalBidCents * 0.75);
     feeCents = totalBidCents - donCents;
-    if (feeCents <= 0) feeCents = Math.max(100, Math.round(totalBidCents * 0.25));
+    if (feeCents <= 0) feeCents = 250;
 
     document.getElementById('totalBid').textContent = '$' + (totalBidCents / 100).toFixed(0);
-    document.getElementById('donatedAmt').textContent = '✓ $' + (donCents / 100).toFixed(0) + ' Paid';
-    document.getElementById('feeDue').textContent = '$' + (feeCents / 100).toFixed(0);
-    document.getElementById('feeAmountText').textContent = '$' + (feeCents / 100).toFixed(0);
-    document.getElementById('btnFeeText').textContent = '$' + (feeCents / 100).toFixed(0);
+    document.getElementById('donatedAmt').textContent = '✓ $' + (donCents / 100).toFixed(2).replace(/\.00$/, '') + ' Paid';
+    document.getElementById('feeDue').textContent = '$' + (feeCents / 100).toFixed(2).replace(/\.00$/, '');
+    document.getElementById('feeAmountText').textContent = '$' + (feeCents / 100).toFixed(2).replace(/\.00$/, '');
+    document.getElementById('btnFeeText').textContent = '$' + (feeCents / 100).toFixed(2).replace(/\.00$/, '');
 
     document.getElementById('itemTitle').textContent = entryData.display_name || entryData.destination;
     document.getElementById('itemDesc').textContent = entryData.description || entryData.category || '';
