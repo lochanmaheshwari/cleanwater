@@ -21,7 +21,7 @@
 <script type="module">
 import {CONFIG} from './js/config.js';
 import {getSupabase} from './js/supabase.js';
-import {formatMoney,formatMoney2,esc,timeAgo} from './js/utils.js';
+import {formatMoney,formatMoney2,esc,timeAgo,getLogoUrl} from './js/utils.js';
 let cat = new URLSearchParams(location.search).get('slug') || 'all';
 function renderChips(){
   const el=document.getElementById('chips');
@@ -43,7 +43,7 @@ async function load(){
     board.innerHTML=data.map((e,i)=>`
       <div class="card card-4-10">
         <div class="rank-badge">#${i+1}</div>
-        <div class="logo-wrap" style="width:72px;height:72px">${esc((e.display_name||'?').slice(0,2).toUpperCase())}</div>
+        <div class="logo-wrap" style="width:72px;height:72px">${e.logo_path ? `<img src="${esc(getLogoUrl(e.logo_path))}" alt="${esc(e.display_name)}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">` : esc((e.display_name||'?').slice(0,2).toUpperCase())}</div>
         <div class="card-body"><div class="card-title">${esc(e.display_name)}</div><div class="card-blurb">${esc(e.description||'')}</div><div class="card-meta">${esc(timeAgo(e.last_bid_at))} · ${esc(e.destination)}</div></div>
         <div class="card-right"><div class="bid">${formatMoney(e.total_bid_cents)}</div><div class="donated">${formatMoney2(e.donated_cents||Math.round(e.total_bid_cents*0.75))} to water</div></div>
       </div>
