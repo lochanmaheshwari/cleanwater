@@ -29,12 +29,23 @@ export default async function handler(req, res) {
   }
   const amount = (donationCents / 100).toFixed(2);
 
-  const url = `https://www.every.org/water-org/f/clean-water-funded-by`
+  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  const proto = req.headers['x-forwarded-proto'] || 'https';
+  const siteUrl = host ? `${proto}://${host}` : SITE;
+
+  let slug = (process.env.EVERYORG_FUNDRAISER_SLUG || 'clean-water-funded-by').trim();
+  slug = slug.replace(/^https?:\/\/(www\.)?every\.org\//i, '');
+  slug = slug.replace(/^(water-org\/f\/)+/i, '');
+  slug = slug.replace(/^water-org\//i, '');
+  slug = slug.replace(/^\/+|\/+$/g, '') || 'clean-water-funded-by';
+
+  const url = `https://www.every.org/water-org/f/${slug}`
     + `?amount=${encodeURIComponent(amount)}`
     + `&partnerDonationId=${encodeURIComponent(e.id)}`
     + `&webhook_token=${encodeURIComponent(process.env.EVERYORG_WEBHOOK_TOKEN || '')}`
     + `&method=card`
-    + `&success_url=${encodeURIComponent(`${SITE}/fee.html?id=${encodeURIComponent(e.id)}`)}`;
+    + `&success_url=${encodeURIComponent(`${siteUrl}/fee.html?id=${encodeURIComponent(e.id)}`)}`
+    + `#/donate/card/confirm`;
 
   return res.redirect(302, url);
 }

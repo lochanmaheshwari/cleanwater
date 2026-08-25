@@ -154,12 +154,17 @@ export default async function handler(req, res) {
     slug = slug.replace(/^water-org\//i, '');
     slug = slug.replace(/^\/+|\/+$/g, '') || 'clean-water-funded-by';
 
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const proto = req.headers['x-forwarded-proto'] || 'https';
+    const siteUrl = host ? `${proto}://${host}` : SITE;
+
     const donationDollars = (donationCents / 100).toFixed(2);
     const donationUrl = `https://www.every.org/water-org/f/${slug}`
       + `?amount=${encodeURIComponent(donationDollars)}`
       + `&partnerDonationId=${encodeURIComponent(entryId)}`
       + `&method=card`
-      + `&success_url=${encodeURIComponent(`${SITE}/fee.html?id=${encodeURIComponent(entryId)}`)}`;
+      + `&success_url=${encodeURIComponent(`${siteUrl}/fee.html?id=${encodeURIComponent(entryId)}`)}`
+      + `#/donate/card/confirm`;
 
     return res.status(200).json({
       entryId,
