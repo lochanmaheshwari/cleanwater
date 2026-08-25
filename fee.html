@@ -274,13 +274,7 @@ async function load() {
     const j = await res.json();
     if (!res.ok || !j.entry) throw new Error(j.error || 'Entry not found');
 
-    entryData = j.entry;
-
-    if (entryData.status === 'live' && entryData.payment_confirmed) {
-      location.href = `/done.html?id=${encodeURIComponent(id)}`;
-      return;
-    }
-
+    // Don't auto-redirect: always show fee.html with listing details and PayPal payment buttons
     const urlParams = new URLSearchParams(location.search);
     const paramAmount = parseFloat(urlParams.get('amount') || urlParams.get('donation') || '0');
 
@@ -326,37 +320,6 @@ async function load() {
     loading.innerHTML = `<div class="error">${esc(err.message)}</div>`;
   }
 }
-
-payBtn.addEventListener('click', async () => {
-  payBtn.disabled = true;
-  payBtn.textContent = 'Activating listing…';
-  if (errEl) errEl.style.display = 'none';
-
-  try {
-    const res = await fetch('/api/payment-done', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        entryId: id,
-        amount_cents: totalBidCents,
-        fee_cents: feeCents,
-        paymentId: 'fee_' + Date.now()
-      })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to complete listing fee payment');
-
-    window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
-  } catch (e) {
-    if (errEl) {
-      errEl.style.display = 'block';
-      errEl.textContent = e.message;
-    }
-    payBtn.disabled = false;
-    payBtn.textContent = `Pay $${(feeCents / 100).toFixed(2).replace(/\.00$/, '')} & Publish to Leaderboard →`;
-  }
-});
 
 load();
 </script>
