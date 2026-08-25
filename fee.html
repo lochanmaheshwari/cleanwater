@@ -134,11 +134,6 @@
       <!-- Live PayPal & Card Smart Checkout for 25% Listing Fee -->
       <div id="paypalFeeContainer" style="margin-top:18px;min-height:50px"></div>
 
-      <!-- Fallback / Instant Activation Button -->
-      <button id="payFeeBtn" class="btn-outbid" style="width:100%;padding:14px;font-size:16px;margin-top:10px;display:none">
-        Pay <span id="btnFeeText">$2.50</span> & Publish to Leaderboard →
-      </button>
-
       <div id="feeError" class="error" style="display:none;margin-top:10px"></div>
     </div>
   </div>
@@ -150,7 +145,6 @@ import { esc, getLogoUrl } from './js/utils.js';
 const id = new URLSearchParams(location.search).get('id') || new URLSearchParams(location.search).get('entryId');
 const loading = document.getElementById('loading');
 const content = document.getElementById('content');
-const payBtn = document.getElementById('payFeeBtn');
 const errEl = document.getElementById('feeError');
 
 let entryData = null;
@@ -335,40 +329,6 @@ async function load() {
 
     // Initialize PayPal Buttons
     await loadPayPal();
-
-    // Secondary instant confirm button
-    if (payBtn) {
-      payBtn.style.display = 'block';
-      payBtn.style.background = '#059669';
-      payBtn.style.marginTop = '14px';
-      payBtn.textContent = 'Instant Confirm & Publish to Leaderboard →';
-      payBtn.onclick = async () => {
-        payBtn.disabled = true;
-        payBtn.textContent = 'Activating listing…';
-        try {
-          const res = await fetch('/api/payment-done', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              entryId: id,
-              amount_cents: totalBidCents,
-              fee_cents: feeCents,
-              paymentId: 'fee_' + Date.now()
-            })
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Activation failed');
-          window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
-        } catch (e) {
-          if (errEl) {
-            errEl.style.display = 'block';
-            errEl.textContent = e.message;
-          }
-          payBtn.disabled = false;
-          payBtn.textContent = 'Instant Confirm & Publish to Leaderboard →';
-        }
-      };
-    }
   } catch (err) {
     loading.innerHTML = `<div class="error">${esc(err.message)}</div>`;
   }
