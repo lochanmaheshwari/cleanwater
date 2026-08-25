@@ -444,19 +444,20 @@ async function handleSubmitNew(){
   const formErr=$('#formError');
   if(formErr) formErr.style.display='none';
   const raw=$('#destinationInput')?.value?.trim();
-  // category hidden now defaults to Other
   const catEl=$('#categorySelect');
-  const cat=(catEl?.value || catEl?.textContent || 'Other').trim() || 'Other';
+  const catRaw=(catEl?.value || '').trim();
+  const cat=catRaw || 'Other';
   const desc=$('#descriptionInput')?.value?.trim()||'';
   const logoPath=window.__formApi?.getLogoPath()||null;
-  if(!raw){ showFormError('Enter your website — e.g. example.com or @handle'); return; }
+  if(!raw){ showFormError('Enter your product URL or @handle'); return; }
   let dest;
   try{ dest=normalizeDestination(raw); }catch(e){ showFormError(e.message); return; }
   if(!Number.isInteger(bidAmount) || bidAmount<5 || bidAmount>999999){ showFormError('$5–$999,999 whole dollars only'); return; }
   if(desc.length>100){ showFormError('one sentence max 100 chars'); return; }
   const isExisting=window.__formApi?.isExisting();
-  // Step 1: reveal icon + one-sentence fields on first Outbid click
+  // Step 1: validate URL + category + bid, then reveal icon + one-sentence on first Outbid click (keep exact outbid.lol look)
   if(!detailsRevealed){
+    if(!catRaw){ showFormError('Choose a category'); return; }
     const top = filtered()[0];
     if(top){
       const maxBid=Math.round((top.total_bid_cents||0)/100);
