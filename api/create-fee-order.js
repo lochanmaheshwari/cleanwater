@@ -69,6 +69,14 @@ export default async function handler(req, res) {
               cancel_url: `${SITE}/fee.html?id=${entryId}&cancelled=1`
             }
           }
+        },
+        application_context: {
+          brand_name: 'cleanwater.lol',
+          shipping_preference: 'NO_SHIPPING',
+          user_action: 'PAY_NOW',
+          landing_page: 'GUEST_CHECKOUT',
+          return_url: `${SITE}/done.html?id=${entryId}`,
+          cancel_url: `${SITE}/fee.html?id=${entryId}&cancelled=1`
         }
       })
     });

@@ -196,8 +196,7 @@ function renderPayPalButtons() {
         shape: 'pill',
         label: 'pay'
       },
-      createOrder: async () => {
-        // Try server-side create-fee-order
+      createOrder: async (data, actions) => {
         try {
           const r = await fetch('/api/create-fee-order', {
             method: 'POST',
@@ -205,18 +204,23 @@ function renderPayPalButtons() {
             body: JSON.stringify({ entryId: id, feeDollars })
           });
           const j = await r.json();
-          if (j.id) return j.id;
+          if (j.id || j.orderId) return (j.id || j.orderId);
         } catch (e) {
-          console.warn('server order create fallback', e);
+          console.warn('create-fee-order api fallback', e);
         }
 
-        // Client-side fallback order
-        return window.paypal.Buttons.driver('actions').order.create({
+        // Standard actions.order.create
+        return actions.order.create({
           purchase_units: [{
             custom_id: id,
             description: `Listing fee (25%)`,
             amount: { currency_code: 'USD', value: feeDollars.toFixed(2) }
-          }]
+          }],
+          application_context: {
+            shipping_preference: 'NO_SHIPPING',
+            user_action: 'PAY_NOW',
+            landing_page: 'GUEST_CHECKOUT'
+          }
         });
       },
       onApprove: async (data, actions) => {
