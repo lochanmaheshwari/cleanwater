@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-
 <link rel="icon" href="img/logo-icon-64.png" type="image/png">
 <script>
   (function(){
@@ -19,75 +18,104 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Pay Listing Fee — savewater.tech</title>
+<title>Step 2: Complete Listing Fee — savewater.tech</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 
 <style>
+.fee-wrapper {
+  max-width: 580px;
+  margin: 32px auto 60px;
+  padding: 0 20px;
+}
+
 .step-tracker {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
+
 .step-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
 }
+
 .step-done {
-  background: #E6F8F0;
-  color: #059669;
-  border: 1px solid rgba(5,150,105,0.2);
+  background: rgba(16, 185, 129, 0.12);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.28);
 }
+
 .step-current {
-  background: var(--accent-light);
-  color: var(--accent);
-  border: 1px solid var(--accent);
+  background: linear-gradient(135deg, rgba(56,189,248,0.18) 0%, rgba(2,132,199,0.12) 100%);
+  color: #38BDF8;
+  border: 1px solid rgba(56,189,248,0.45);
+  box-shadow: 0 0 16px rgba(56,189,248,0.15);
 }
+
 .fee-card {
-  background: var(--card-bg, #ffffff);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 32px 28px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-  text-align: center;
-  max-width: 540px;
-  margin: 0 auto;
+  background: var(--card-bg, #0b1329);
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-radius: 28px;
+  padding: 36px 30px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
 }
-.highlight-notice {
-  background: var(--accent-xxlo);
-  border: 1px solid var(--accent-lo);
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin: 18px 0;
-  font-size: 14px;
-  color: var(--ink);
-  line-height: 1.45;
-  text-align: left;
+
+.fee-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #38BDF8 50%, transparent 100%);
 }
+
+.hero-congrats-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.1) 100%);
+  border: 1px solid rgba(16,185,129,0.35);
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  margin: 0 auto 16px;
+  box-shadow: 0 8px 24px rgba(16,185,129,0.15);
+}
+
 .product-preview {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: var(--bg-subtle, #F8FBFC);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin: 16px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border, rgba(255,255,255,0.07));
+  border-radius: 18px;
+  padding: 14px 18px;
+  margin: 20px 0;
   text-align: left;
 }
+
 .product-icon {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
-  background: var(--ink);
+  border-radius: 14px;
+  background: #0F172A;
   color: #FFFFFF;
   display: grid;
   place-items: center;
@@ -95,13 +123,70 @@
   font-size: 18px;
   flex-shrink: 0;
   overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
 }
+
 .product-icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
+.payment-tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.payment-tab-btn.active {
+  background: rgba(255,255,255,0.09);
+  color: var(--text-high);
+  border-color: rgba(125,211,252,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+.btn-upi-pay {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(125,211,252,0.35);
+  background: #FFFFFF;
+  color: #0F172A;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.btn-upi-pay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(56,189,248,0.25);
+  background: #F8FAFC;
+}
+
+.btn-upi-pay:active {
+  transform: translateY(0);
+}
 </style>
+
 <script
   defer
   data-website-id="dfid_2JrT0k7V5jfOILDkr0dj6"
@@ -110,6 +195,8 @@
 </script>
 </head>
 <body>
+<div class="water-level" id="waterLevel"><div class="water-wave"></div></div>
+
 <header class="topbar">
   <div class="topbar-left">
     <a class="logo" href="index.html">
@@ -126,68 +213,89 @@
   </nav>
 </header>
 
-
-
-<main style="max-width:600px;margin:40px auto;padding:0 20px">
+<main class="fee-wrapper">
   <div class="step-tracker">
-    <div class="step-pill step-done">✓ Step 1: 75% Donated to Water</div>
-    <span style="color:var(--muted)">→</span>
-    <div class="step-pill step-current">Step 2: 25% Listing Fee</div>
+    <div class="step-pill step-done">
+      <span>✓</span> Step 1: 75% Donated to Water
+    </div>
+    <span style="opacity:0.3;font-weight:700">→</span>
+    <div class="step-pill step-current">
+      <span>⚡</span> Step 2: 25% Listing Fee
+    </div>
   </div>
 
-  <div class="fee-card">
-    <div id="loading" class="loading">Loading listing details…</div>
+  <div class="fee-card" id="feeCard">
+    <div id="loading" class="loading" style="padding:40px 0">Loading verified donation…</div>
 
     <div id="content" style="display:none">
-      <div style="font-size:36px;margin-bottom:8px">🎉</div>
-      <h1 style="font-size:26px;font-weight:800;margin:0 0 6px">Almost there! Pay the listing fee</h1>
-      <p style="color:var(--muted);font-size:14.5px;margin:0">
-        Your 75% donation to Clean Water via Every.org is confirmed.
+      <div class="hero-congrats-icon">💧</div>
+      <h1 style="font-size:25px;font-weight:800;margin:0 0 6px;letter-spacing:-0.02em">Complete your listing</h1>
+      <p style="color:var(--muted);font-size:14.5px;margin:0;line-height:1.45">
+        Your 75% clean water donation is verified! Pay the remaining 25% listing fee to go <strong>LIVE</strong>.
       </p>
 
       <div class="product-preview">
         <div id="itemLogo" class="product-icon">≋</div>
         <div style="flex:1;min-width:0">
           <div id="itemTitle" style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-          <div id="itemDesc" style="font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+          <div id="itemDesc" style="font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px"></div>
         </div>
       </div>
 
-      <div class="highlight-notice">
-        <strong>⚡ Important:</strong> Pay this <strong>25% listing fee (<span id="feeAmountText">$1</span>)</strong> to publish your product and go <strong>LIVE</strong> on the leaderboard.
+      <div class="price-breakdown-box" style="margin:20px 0 24px">
+        <div class="breakdown-row highlight" style="font-size:15px">
+          <span>Total Bid Value</span>
+          <span id="totalBid" style="color:var(--accent)">$30</span>
+        </div>
+        <div class="breakdown-row" style="color:#10B981">
+          <span>Step 1: Clean Water (75%)</span>
+          <span id="donatedAmt" style="font-weight:700">✓ $22.50 Verified</span>
+        </div>
+        <div class="breakdown-row highlight" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px;margin-top:4px">
+          <span style="font-weight:700">Step 2: Listing Fee (25%) Due</span>
+          <span id="feeDue" style="font-size:17px;font-weight:800">$7.50</span>
+        </div>
       </div>
 
-      <div id="donationAdjustmentNotice" style="display:none;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:14px;padding:12px 14px;margin:14px 0;font-size:13px;line-height:1.45;text-align:left">
-        <div style="font-weight:700;color:var(--accent);margin-bottom:4px">ℹ️ Donation Amount Adjusted</div>
-        <div id="donationAdjustmentText"></div>
+      <!-- Payment Method Tabs -->
+      <div style="display:flex;gap:10px;margin-bottom:20px;background:rgba(0,0,0,0.15);padding:4px;border-radius:18px;border:1px solid rgba(255,255,255,0.05)">
+        <button id="tabCards" type="button" class="payment-tab-btn active">
+          <span>💳</span> Cards / PayPal
+        </button>
+        <button id="tabUpi" type="button" class="payment-tab-btn">
+          <span style="width:16px;height:16px;border-radius:4px;background:linear-gradient(135deg,#00BAF2,#5A2CA0);color:#fff;display:inline-grid;place-items:center;font-size:9px;font-weight:800">₹</span> Pay via UPI (India)
+        </button>
       </div>
 
-      <div class="price-breakdown-box" style="margin:16px 0">
-        <div class="breakdown-row"><span>Total Bid</span><span id="totalBid">$10</span></div>
-        <div class="breakdown-row" style="color:#059669"><span>75% to Clean Water (Every.org)</span><span id="donatedAmt">✓ $7.50 Paid</span></div>
-        <div class="breakdown-row highlight"><span>25% Listing Fee Due</span><span id="feeDue">$2.50</span></div>
+      <!-- Option A: Cards & PayPal Smart Checkout -->
+      <div id="panelCards" style="display:block">
+        <div id="paypalFeeContainer" style="min-height:50px"></div>
+        <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px">
+          <span>⚡</span> 1-Click Apple Pay, Google Pay & Cards <span style="opacity:0.4">·</span> 🔒 256-Bit Encrypted
+        </div>
       </div>
 
-      <!-- Live PayPal & Card Smart Checkout for 25% Listing Fee -->
-      <div id="paypalFeeContainer" style="margin-top:20px;min-height:50px"></div>
+      <!-- Option B: UroPay UPI for India -->
+      <div id="panelUpi" style="display:none">
+        <button id="upiBtn" type="button" class="btn-upi-pay">
+          <span style="width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#00BAF2 0%,#5A2CA0 100%);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800">₹</span>
+          Pay <span id="upiAmountLabel">₹626</span> via UPI (GPay / PhonePe / Paytm) →
+        </button>
+        
+        <div id="upiStatus" style="display:none;margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);font-size:13px;color:var(--text-high);text-align:center;line-height:1.45"></div>
 
-      <!-- Uropay UPI Checkout -->
-      <button id="upiBtn" type="button" class="btn-outbid" style="width:100%;margin-top:12px;padding:14px;border:0;border-radius:999px;background:#059669;color:#fff;font-weight:700;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        Pay with UPI (India)
-      </button>
-
-      <div id="feeError" class="error" style="display:none;margin-top:14px;text-align:left;line-height:1.5"></div>
-
-      <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:16px">
-        🔒 Encrypted checkout. Cards accepted via PayPal, UPI via Uropay.
+        <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">
+          🇮🇳 Instant UPI intent + QR. Auto-confirms via UroPay companion webhook in seconds.
+        </div>
       </div>
+
+      <div id="feeError" class="error" style="display:none;margin-top:16px;text-align:left;line-height:1.5"></div>
     </div>
   </div>
 </main>
 
 <script type="module">
-import { esc, getLogoUrl } from './js/utils.js';
+import { esc, getLogoUrl, formatMoney, formatMoney2 } from './js/utils.js';
 import './js/theme.js';
 
 const id = new URLSearchParams(location.search).get('id') || new URLSearchParams(location.search).get('entryId');
@@ -199,6 +307,29 @@ let entryData = null;
 let feeCents = 250;
 let totalBidCents = 1000;
 let paypalClientId = 'sb';
+let pollTimer = null;
+
+// Tab switching
+const tabCards = document.getElementById('tabCards');
+const tabUpi = document.getElementById('tabUpi');
+const panelCards = document.getElementById('panelCards');
+const panelUpi = document.getElementById('panelUpi');
+
+if (tabCards && tabUpi) {
+  tabCards.addEventListener('click', () => {
+    tabCards.classList.add('active');
+    tabUpi.classList.remove('active');
+    panelCards.style.display = 'block';
+    panelUpi.style.display = 'none';
+  });
+
+  tabUpi.addEventListener('click', () => {
+    tabUpi.classList.add('active');
+    tabCards.classList.remove('active');
+    panelUpi.style.display = 'block';
+    panelCards.style.display = 'none';
+  });
+}
 
 async function loadPayPal() {
   try {
@@ -222,12 +353,8 @@ async function loadPayPal() {
 
 function renderPayPalButtons() {
   const container = document.getElementById('paypalFeeContainer');
-  if (!container || !window.paypal || !window.paypal.Buttons) {
-    return;
-  }
+  if (!container || !window.paypal || !window.paypal.Buttons) return;
   container.innerHTML = '';
-
-  const feeDollars = feeCents / 100;
 
   try {
     window.paypal.Buttons({
@@ -247,249 +374,160 @@ function renderPayPalButtons() {
           });
           const j = await r.json();
           if (!r.ok || (!j.id && !j.orderId)) {
-            throw new Error(j.error || 'Failed to create PayPal order on server');
+            throw new Error(j.error || 'Failed to create PayPal order');
           }
-          return (j.id || j.orderId);
-        } catch (e) {
-          console.error('create-fee-order failed', e);
+          return j.id || j.orderId;
+        } catch (err) {
           if (errEl) {
             errEl.style.display = 'block';
-            errEl.innerHTML = `<strong>PayPal Order Error:</strong> ${esc(e.message)}`;
+            errEl.textContent = err.message;
           }
-          throw e;
+          throw err;
         }
       },
       onApprove: async (data, actions) => {
         if (errEl) errEl.style.display = 'none';
-        if (loading) {
-          loading.style.display = 'block';
-          loading.textContent = 'Payment received! Activating listing on the leaderboard…';
-        }
-        if (content) content.style.display = 'none';
-
-        let captureId = data.orderID;
         try {
-          if (actions && actions.order) {
-            const details = await actions.order.capture();
-            captureId = details.id || data.orderID;
-          }
-        } catch (capErr) {
-          console.warn('client capture error, attempting server capture', capErr);
-          try {
-            await fetch('/api/create-fee-order', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'capture', orderId: data.orderID, entryId: id })
-            });
-          } catch {}
-        }
-
-        // Call payment-done to set live status in database
-        try {
-          await fetch('/api/payment-done', {
+          container.innerHTML = '<div style="padding:16px;text-align:center;font-weight:700;color:var(--accent)">Verifying donation & activating listing…</div>';
+          
+          const r = await fetch('/api/payment-done', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               entryId: id,
-              orderId: data.orderID,
-              paymentId: captureId
+              paymentId: data.orderID,
+              orderId: data.orderID
             })
           });
-        } catch (e) {
-          console.warn('payment confirmation error', e);
+          const j = await r.json();
+          if (!r.ok || j.error) {
+            throw new Error(j.error || 'Verification failed');
+          }
+          window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
+        } catch (err) {
+          console.error('onApprove error', err);
+          if (errEl) {
+            errEl.style.display = 'block';
+            errEl.textContent = 'Verification error: ' + err.message;
+          }
+          renderPayPalButtons();
         }
-
-        window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
       },
       onError: (err) => {
-        console.error('PayPal checkout error', err);
-        if (loading) loading.style.display = 'none';
-        if (content) content.style.display = 'block';
+        console.error('PayPal Error', err);
         if (errEl) {
           errEl.style.display = 'block';
-          errEl.innerHTML = `
-            <strong>PayPal Payment Error:</strong><br>
-            ${esc(err?.message || 'PayPal was unable to authorize this transaction.')}
-            <div style="font-size:12px;margin-top:6px;color:var(--muted)">
-              Tip: If using Debit/Credit Card, try logging into your PayPal account or ensure international transactions are enabled on your card.
-            </div>
-          `;
-        }
-      },
-      onCancel: () => {
-        if (errEl) {
-          errEl.style.display = 'block';
-          errEl.textContent = 'Payment cancelled. You can try again whenever you are ready.';
+          errEl.textContent = 'Payment could not be completed. Please try again or pay with UPI.';
         }
       }
     }).render('#paypalFeeContainer');
   } catch (e) {
-    console.warn('paypal render error', e);
-    if (errEl) {
-      errEl.style.display = 'block';
-      errEl.textContent = 'Could not load PayPal buttons: ' + e.message;
-    }
+    console.error('renderPayPalButtons error', e);
   }
 }
 
-async function load(retryCount = 0) {
-  const card = document.querySelector('.fee-card');
+async function load() {
   if (!id) {
-    if (loading) loading.style.display = 'none';
-    if (card) {
-      card.innerHTML = `
-        <div style="font-size:36px;margin-bottom:12px">🔍</div>
-        <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Missing Listing ID</h2>
-        <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Please submit a listing on the homepage first.</p>
-        <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
-      `;
-    }
+    loading.style.display = 'none';
+    const card = document.getElementById('feeCard');
+    card.innerHTML = `
+      <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+      <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Missing Listing Reference</h2>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">No product listing ID was provided in the URL.</p>
+      <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
+    `;
     return;
   }
 
-  // Auto-sync if redirected back from Every.org
-  const urlParams = new URLSearchParams(window.location.search);
-  const amountParam = urlParams.get('amount') || urlParams.get('donationAmount') || urlParams.get('netAmount');
-  const chargeIdParam = urlParams.get('chargeId') || urlParams.get('donationId');
-
-  if (amountParam || urlParams.get('success') || chargeIdParam || (document.referrer && document.referrer.includes('every.org'))) {
-    try {
-      await fetch('/api/donation-done', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          partnerDonationId: id,
-          amount: amountParam,
-          chargeId: chargeIdParam
-        })
-      });
-    } catch(e) {}
-  }
-
   try {
-    const res = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
-    const j = await res.json().catch(() => ({}));
-    entryData = (j && j.entry) ? j.entry : null;
+    const r = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
+    const j = await r.json();
+    if (!r.ok || !j.entry) throw new Error(j.error || 'Listing not found');
 
-    if (!entryData || !entryData.id) {
-      if (loading) loading.style.display = 'none';
-      if (card) {
-        card.innerHTML = `
-          <div style="font-size:36px;margin-bottom:12px">🔍</div>
-          <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Listing Not Found</h2>
-          <p style="color:var(--muted);font-size:14px;margin-bottom:20px">This listing ID <code>${esc(id)}</code> was not found in the database.</p>
-          <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Submit a Listing on Homepage</a>
-        `;
-      }
+    entryData = j.entry;
+    
+    // If already live, forward to done page
+    if (entryData.status === 'live' || (entryData.payment_confirmed && entryData.donation_confirmed)) {
+      window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
       return;
     }
 
-    // Check if Step 1 is verified
-    if (!entryData.donation_confirmed && !entryData.everyorg_donation_id) {
-      if (retryCount < 3) {
-        if (loading) {
-          loading.style.display = 'block';
-          loading.textContent = 'Verifying your donation with Every.org… please wait…';
-        }
-        setTimeout(() => load(retryCount + 1), 1500);
-        return;
+    const dest = entryData.destination || '';
+    const domain = dest.startsWith('@') ? dest : (() => {
+      try { return new URL(dest).hostname.replace(/^www\./, ''); } catch { return dest; }
+    })();
+
+    // Populate Product UI
+    const titleEl = document.getElementById('itemTitle');
+    if (titleEl) titleEl.textContent = entryData.display_name || domain;
+
+    const descEl = document.getElementById('itemDesc');
+    if (descEl) descEl.textContent = entryData.description || `${domain} · ${entryData.category || 'AI'}`;
+
+    const logoEl = document.getElementById('itemLogo');
+    if (logoEl) {
+      if (entryData.logo_path) {
+        logoEl.innerHTML = `<img src="${esc(getLogoUrl(entryData.logo_path, domain))}" alt="Logo">`;
+      } else {
+        logoEl.textContent = (entryData.display_name || domain).slice(0, 2).toUpperCase();
       }
-
-      if (loading) loading.style.display = 'none';
-      if (card) {
-        card.innerHTML = `
-          <div style="font-size:36px;margin-bottom:12px">💧</div>
-          <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Step 1 Required (75% Clean Water)</h2>
-          <p style="color:var(--muted);font-size:14px;margin-bottom:18px">
-            Your 75% charity donation on Every.org must be verified before paying the listing fee.
-          </p>
-          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-            <button class="btn-outbid" style="padding:10px 18px" id="verifyNowBtn">
-              🔄 I Already Paid on Every.org (Verify Now)
-            </button>
-            <a href="index.html" class="btn-accent" style="padding:10px 18px;text-decoration:none">
-              ← Return to Homepage
-            </a>
-          </div>
-        `;
-        document.getElementById('verifyNowBtn')?.addEventListener('click', async () => {
-          try {
-            await fetch('/api/donation-done', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ partnerDonationId: id })
-            });
-          } catch(e) {}
-          window.location.reload();
-        });
-      }
-      return;
     }
 
-    // Derive authoritative numbers strictly from the database
-    const donCents = entryData.donated_cents || Math.round((entryData.total_bid_cents || 500) * 0.75);
-    feeCents = Math.round(donCents * (25 / 75));
-    totalBidCents = donCents + feeCents;
+    // Amounts
+    const donCents = entryData.donated_cents || 375;
+    totalBidCents = Math.round(donCents / 0.75);
+    feeCents = totalBidCents - donCents;
 
-    const totalDollars = (totalBidCents / 100);
-    const donDollars = (donCents / 100);
-    const feeDollars = (feeCents / 100);
+    document.getElementById('totalBid').textContent = formatMoney(totalBidCents);
+    document.getElementById('donatedAmt').textContent = `✓ ${formatMoney2(donCents)} Verified`;
+    document.getElementById('feeDue').textContent = formatMoney2(feeCents);
 
-    document.getElementById('totalBid').textContent = '$' + (totalBidCents % 100 === 0 ? totalDollars.toFixed(0) : totalDollars.toFixed(2));
-    document.getElementById('donatedAmt').textContent = '✓ $' + (donCents % 100 === 0 ? donDollars.toFixed(0) : donDollars.toFixed(2)) + ' Paid';
-    document.getElementById('feeDue').textContent = '$' + feeDollars.toFixed(2);
-    document.getElementById('feeAmountText').textContent = '$' + feeDollars.toFixed(2);
-
-    // If user paid a different amount than initially requested, display a clear explanation
-    const noticeBox = document.getElementById('donationAdjustmentNotice');
-    const noticeText = document.getElementById('donationAdjustmentText');
-    const expectedDonCents = entryData.bid_cents ? Math.round(entryData.bid_cents * 0.75) : 0;
-
-    if (noticeBox && expectedDonCents > 0 && donCents < expectedDonDonation(expectedDonCents, donCents)) {
-      noticeBox.style.display = 'block';
-      noticeText.innerHTML = `You donated <strong>$${donDollars.toFixed(2)}</strong> on Every.org (instead of the initial $${(expectedDonCents / 100).toFixed(2)}). Because 75% of your bid is strictly reserved for Clean Water, your total leaderboard bid is now adjusted to <strong>$${totalDollars.toFixed(2)}</strong> with a 25% listing fee of <strong>$${feeDollars.toFixed(2)}</strong>.`;
-    } else if (noticeBox) {
-      noticeBox.style.display = 'none';
-    }
-
-    function expectedDonDonation(exp, act) {
-      return exp;
-    }
-
-    document.getElementById('itemTitle').textContent = entryData.display_name || entryData.destination;
-    document.getElementById('itemDesc').textContent = entryData.description || entryData.category || '';
-
-    if (entryData.logo_path) {
-      document.getElementById('itemLogo').innerHTML = `<img src="${esc(getLogoUrl(entryData.logo_path))}" alt="logo">`;
-    } else {
-      document.getElementById('itemLogo').textContent = (entryData.display_name || entryData.destination || '≋').slice(0, 2).toUpperCase();
-    }
+    // Calculate INR for UPI (~83.5 INR/USD)
+    const inrFee = Math.max(1, Math.round((feeCents / 100) * 83.5));
+    const upiLabel = document.getElementById('upiAmountLabel');
+    if (upiLabel) upiLabel.textContent = `₹${inrFee.toLocaleString('en-IN')}`;
 
     loading.style.display = 'none';
     content.style.display = 'block';
 
-    // Initialize PayPal Smart Buttons
+    // Auto-detect India to pre-select UPI tab
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (tz.includes('Kolkata') || tz.includes('Asia/Calcutta')) {
+        tabUpi.click();
+      }
+    } catch {}
+
+    // Initialize PayPal Buttons
     loadPayPal();
 
-    // Initialize UPI Button
+    // Initialize UroPay UPI Button
     const upiBtn = document.getElementById('upiBtn');
+    const upiStatus = document.getElementById('upiStatus');
     if (upiBtn) {
       upiBtn.addEventListener('click', async () => {
         if (errEl) errEl.style.display = 'none';
         const originalText = upiBtn.innerHTML;
-        upiBtn.innerHTML = 'Creating UPI Order...';
+        upiBtn.innerHTML = '<span class="loading-spinner"></span> Opening UPI Checkout…';
         upiBtn.disabled = true;
+
         try {
           const r = await fetch('/api/create-uropay-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ entryId: id, feeCents: feeCents })
+            body: JSON.stringify({ entryId: id, feeCents: feeCents, amountInr: inrFee })
           });
           const j = await r.json();
           if (!r.ok || !j.checkout_url) {
             throw new Error(j.error || 'Failed to create Uropay order');
           }
-          // Redirect to Uropay
+
+          if (upiStatus) {
+            upiStatus.style.display = 'block';
+            upiStatus.innerHTML = `Redirecting to UPI payment portal. Complete the ₹${inrFee.toLocaleString('en-IN')} payment to go live.`;
+          }
+
+          // Redirect to UroPay checkout
           window.location.href = j.checkout_url;
         } catch (e) {
           console.error('create-uropay-order failed', e);
@@ -503,8 +541,21 @@ async function load(retryCount = 0) {
       });
     }
 
+    // Live background polling in case user pays via separate tab or app
+    pollTimer = setInterval(async () => {
+      try {
+        const s = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`, { cache: 'no-store' });
+        const sj = await s.json();
+        if (sj.entry && (sj.entry.status === 'live' || sj.entry.payment_confirmed)) {
+          clearInterval(pollTimer);
+          window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
+        }
+      } catch {}
+    }, 2500);
+
   } catch (e) {
     if (loading) loading.style.display = 'none';
+    const card = document.getElementById('feeCard');
     if (card) {
       card.innerHTML = `
         <div style="font-size:36px;margin-bottom:12px">⚠️</div>
@@ -519,22 +570,20 @@ async function load(retryCount = 0) {
 load();
 </script>
 
-
-
 <nav class="mobile-bottom-bar" aria-label="Mobile Navigation">
-  <a href="index.html" class="mobile-tab-item ">
+  <a href="index.html" class="mobile-tab-item">
     <span class="mobile-tab-icon">🏆</span>
     <span>Leaderboard</span>
   </a>
-  <a href="donations.html" class="mobile-tab-item ">
+  <a href="donations.html" class="mobile-tab-item">
     <span class="mobile-tab-icon">💧</span>
     <span>Donations</span>
   </a>
-  <a href="water.html" class="mobile-tab-item ">
+  <a href="water.html" class="mobile-tab-item">
     <span class="mobile-tab-icon">🌊</span>
     <span>Water.org</span>
   </a>
-  <a href="about.html" class="mobile-tab-item ">
+  <a href="about.html" class="mobile-tab-item">
     <span class="mobile-tab-icon">ℹ️</span>
     <span>About</span>
   </a>

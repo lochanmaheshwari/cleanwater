@@ -609,32 +609,6 @@ function handleHeroOutbid() {
     modal.style.display = 'flex';
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
-    // UPI premium: update amount + auto-highlight for India, wire handlers once
-    try {
-      updateUpiVisibility(bidAmount);
-      // hide divider on non-IN if you want? Keep visible but highlight for IN
-      if (detectIndia()) {
-        const d = document.getElementById('upiDivider');
-        if (d) d.style.color = 'rgba(125,211,252,0.85)';
-      }
-      // reset UPI panel
-      const panel = document.getElementById('upiPanel');
-      if (panel) panel.style.display = 'none';
-      const qrBox = document.getElementById('upiQrImg');
-      if (qrBox) qrBox.innerHTML = '';
-      const status = document.getElementById('upiStatus');
-      if (status) { status.style.display='none'; status.textContent=''; }
-    } catch {}
-    // bind UPI button once
-    if (!window.__upiBound) {
-      window.__upiBound = true;
-      document.getElementById('outbidModalPayUpi')?.addEventListener('click', handleUpiPay);
-      document.getElementById('upiRefSubmit')?.addEventListener('click', handleUpiRefSubmit);
-      document.getElementById('outbidModalPay')?.addEventListener('click', () => {
-        // ensure Every.org still works - keep original
-      });
-      // ESC already handled
-    }
 
     setTimeout(() => document.getElementById('descriptionInput')?.focus(), 50);
   }
