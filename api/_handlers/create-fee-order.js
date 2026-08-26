@@ -51,8 +51,9 @@ export default async function handler(req, res) {
 
     // Cryptographic Check: Verify that Step 1 (Every.org 75% Donation) actually settled
     let isDonationVerified = Boolean(entry.donation_confirmed && (entry.everyorg_donation_id || entry.everyorg_charge_id));
+    let verifiedDonationCents = entry.donated_cents || 0;
 
-    if (!isDonationVerified) {
+    if (!isDonationVerified || verifiedDonationCents === 0) {
       const apiKey = process.env.EVERYORG_PRIVATE_KEY || process.env.EVERYORG_PUBLIC_KEY || 'pk_live_3770bf44947f5c510bdd88838874707e';
       try {
         const checkRes = await fetch(`https://partners.every.org/v0.2/partner/donations?partnerDonationId=${encodeURIComponent(entryId)}&apiKey=${encodeURIComponent(apiKey)}`);
@@ -62,10 +63,12 @@ export default async function handler(req, res) {
         
         if (matched && matched.id) {
           const chargeId = matched.chargeId || matched.id;
+          verifiedDonationCents = matched.amount ? Math.round(parseFloat(matched.amount) * 100) : (entry.donated_cents || 375);
           await sb.from('entries').update({
             donation_confirmed: true,
             everyorg_donation_id: String(chargeId),
-            everyorg_charge_id: String(chargeId)
+            everyorg_charge_id: String(chargeId),
+            donated_cents: verifiedDonationCents
           }).eq('id', entryId);
           isDonationVerified = true;
         }
@@ -80,6 +83,11 @@ export default async function handler(req, res) {
         error: 'Step 1 (75% Clean Water donation via Every.org) has not been completed or verified yet. Please complete your donation on Every.org first.'
       });
     }
+
+    // Server-computed 25% fee derived purely from verified Every.org 75% donation
+    const totalBidCents = Math.round(verifiedDonationCents / 0.75);
+    const feeCents = Math.max(100, totalBidCents - verifiedDonationCents);
+    const feeDollarsCalculated = feeCents / 100;
 
     const tok = await getPaypalToken();
     const orderRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {
@@ -96,7 +104,7 @@ export default async function handler(req, res) {
           description: `Listing fee (25%) for ${(entry.display_name || entry.destination || 'listing').slice(0, 100)}`,
           amount: {
             currency_code: 'USD',
-            value: fee.toFixed(2)
+            value: feeDollarsCalculated.toFixed(2)
           }
         }],
         application_context: {

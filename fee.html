@@ -218,7 +218,7 @@ function renderPayPalButtons() {
           const r = await fetch('/api/create-fee-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ entryId: id, feeDollars })
+            body: JSON.stringify({ entryId: id })
           });
           const j = await r.json();
           if (!r.ok || (!j.id && !j.orderId)) {
@@ -266,8 +266,6 @@ function renderPayPalButtons() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               entryId: id,
-              amount_cents: totalBidCents,
-              fee_cents: feeCents,
               orderId: data.orderID,
               paymentId: captureId
             })
@@ -320,26 +318,14 @@ async function load() {
     const j = await res.json().catch(() => ({}));
     entryData = (j && j.entry) ? j.entry : {};
 
-    const urlParams = new URLSearchParams(location.search);
-    const paramAmount = parseFloat(urlParams.get('amount') || urlParams.get('donation') || '0');
-
-    if (paramAmount > 0) {
-      if (paramAmount > 100) {
-        totalBidCents = Math.round(paramAmount / 0.75);
-      } else {
-        totalBidCents = Math.round((paramAmount / 0.75) * 100);
-      }
-    } else if (entryData && entryData.bid_cents) {
-      totalBidCents = entryData.bid_cents;
-    } else if (entryData && entryData.total_bid_cents > 0) {
-      totalBidCents = entryData.total_bid_cents;
-    } else {
-      totalBidCents = 1000;
+    if (!entryData || !entryData.id) {
+      throw new Error('Listing not found. Please submit a new bid on the homepage.');
     }
 
-    const donCents = Math.round(totalBidCents * 0.75);
-    feeCents = totalBidCents - donCents;
-    if (feeCents <= 0) feeCents = 250;
+    // Derive authoritative numbers strictly from the database
+    const donCents = entryData.donated_cents || Math.round((entryData.total_bid_cents || 500) * 0.75);
+    totalBidCents = Math.round(donCents / 0.75);
+    feeCents = Math.max(100, totalBidCents - donCents);
 
     document.getElementById('totalBid').textContent = '$' + (totalBidCents / 100).toFixed(0);
     document.getElementById('donatedAmt').textContent = '✓ $' + (donCents / 100).toFixed(2).replace(/\.00$/, '') + ' Paid';
