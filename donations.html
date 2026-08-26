@@ -196,6 +196,7 @@ async function loadDonations() {
       })();
       const targetUrl = isHandle ? ('https://x.com/' + e.destination.slice(1)) : e.destination;
       const donAmt = e.donated_cents || Math.round((e.total_bid_cents || 0) * 0.75);
+      const totalAmt = e.total_bid_cents || Math.round(donAmt / 0.75);
       const logoSrc = getLogoUrl(e.logo_path, domain);
       const logo = `<img src="${esc(logoSrc)}" alt="${esc(e.display_name || domain)}" onerror="this.onerror=null; this.src='https://unavatar.io/${encodeURIComponent(domain)}';">`;
 
