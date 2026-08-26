@@ -165,7 +165,7 @@ export default async function handler(req, res) {
       + `&success_url=${encodeURIComponent(targetRedirect)}`
       + `&returnUrl=${encodeURIComponent(targetRedirect)}`
       + `&exitUrl=${encodeURIComponent(targetRedirect)}`
-      + `&method=card`;
+      + `&method=card#/donate/card`;
 
     return res.status(200).json({
       entryId,
