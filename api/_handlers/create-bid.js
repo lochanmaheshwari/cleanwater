@@ -152,7 +152,9 @@ export default async function handler(req, res) {
     slug = slug.replace(/^https?:\/\/(www\.)?every\.org\//i, '');
     slug = slug.replace(/^(water-org\/f\/)+/i, '');
     slug = slug.replace(/^water-org\//i, '');
-    slug = slug.replace(/^\/+|\/+$/g, '') || 'clean-water-funded-by';
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const proto = req.headers['x-forwarded-proto'] || 'https';
+    const siteUrl = host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'https://savewater.tech');
 
     const donationDollars = (donationCents / 100).toFixed(2);
     const targetRedirect = `${siteUrl}/fee.html?id=${encodeURIComponent(entryId)}`;
