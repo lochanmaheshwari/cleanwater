@@ -28,7 +28,7 @@ const DEFAULT_ENTRIES = [
     logo_path: "pending/1787685063008-75jww9.webp",
     category: "SEO & AI Visibility",
     total_bid_cents: 500,
-    donated_cents: 250,
+    donated_cents: 375,
     click_count: 6,
     status: "live",
     first_bid_at: "2026-08-25T17:09:59.448102+00:00",
@@ -39,7 +39,7 @@ const DEFAULT_ENTRIES = [
 let supabase = null;
 let allEntries = (() => {
   try {
-    const cached = JSON.parse(localStorage.getItem('sw_cached_entries_v7') || 'null');
+    const cached = JSON.parse(localStorage.getItem('sw_cached_entries_v8') || 'null');
     if (Array.isArray(cached) && cached.length >= 2) return cached;
   } catch(e) {}
   return DEFAULT_ENTRIES;
@@ -47,7 +47,7 @@ let allEntries = (() => {
 
 let bidsCache = (() => {
   try {
-    const cached = JSON.parse(localStorage.getItem('sw_cached_bids_v7') || 'null');
+    const cached = JSON.parse(localStorage.getItem('sw_cached_bids_v8') || 'null');
     if (Array.isArray(cached)) return cached;
   } catch(e) {}
   return [];
@@ -373,8 +373,8 @@ async function loadData() {
     if (entries && entries.length > 0) {
       allEntries = entries;
       try {
-        localStorage.setItem('sw_cached_entries_v7', JSON.stringify(allEntries));
-        localStorage.setItem('sw_cached_bids_v7', JSON.stringify(bidsCache));
+        localStorage.setItem('sw_cached_entries_v8', JSON.stringify(allEntries));
+        localStorage.setItem('sw_cached_bids_v8', JSON.stringify(bidsCache));
       } catch(e) {}
     }
     window.__allEntries = allEntries;
