@@ -55,7 +55,7 @@
 <section class="hero">
   <div class="stats-pill-top" id="statsPillTop">
     <span class="live-dot">●</span>
-    <span id="liveStatsText"><strong>1</strong> live · <span id="visitorCountText"><strong>83</strong> visitors</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a></span>
+    <span id="liveStatsText"><strong>1</strong> live · <span id="visitorCountText"><strong>83</strong> visitors</span> · <span id="desktopGoalStat" class="desktop-goal-stat">💧 <strong id="raisedGoalAmt">$52.50</strong> raised of $1M goal</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a></span>
   </div>
 
   <div class="toggle" role="tablist" aria-label="board toggle" style="margin: 6px auto 8px; width: fit-content">
@@ -75,7 +75,7 @@
     </span>
   </h1>
   <p class="subline">
-    <strong>75% of every bid goes straight to those in need.</strong> New spots start at $5. Paying less than #1 still ranks you.
+    <strong>75% of every bid goes straight to those in need of clean water.</strong> New spots start at $5. Paying less than #1 still ranks you.
   </p>
 
   <form id="submitForm" class="hero-form">
@@ -84,40 +84,42 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
         <input id="destinationInput" name="destination" placeholder="Your product URL or @handle" autocomplete="off" maxlength="120" required>
       </label>
-      <div class="select-wrap">
-        <select id="categorySelect" name="category" aria-label="choose category" required>
-          <option value="" disabled selected>Category…</option>
-          <option value="AI Agents & Infrastructure">🤖 AI Agents & Infrastructure</option>
-          <option value="SEO & AI Visibility">🔍 SEO & AI Visibility</option>
-          <option value="Marketing & Advertising">📈 Marketing & Advertising</option>
-          <option value="Crypto, Web3 & Investing">🪙 Crypto, Web3 & Investing</option>
-          <option value="Developer Tools">💻 Developer Tools</option>
-          <option value="Business, Finance & Legal">💼 Business, Finance & Legal</option>
-          <option value="Security, Privacy & Compliance">🛡️ Security, Privacy & Compliance</option>
-          <option value="Health, Fitness & Wellness">🏃 Health, Fitness & Wellness</option>
-          <option value="Social Media & Creator Tools">🎬 Social Media & Creator Tools</option>
-          <option value="Leaderboards & Attention Markets">🏆 Leaderboards & Attention</option>
-          <option value="Hiring, Jobs & Careers">👔 Hiring, Jobs & Careers</option>
-          <option value="Education & Learning">📚 Education & Learning</option>
-          <option value="Agencies, Studios & Services">🎨 Agencies & Studios</option>
-          <option value="Ecommerce & Retail">🛍️ Ecommerce & Retail</option>
-          <option value="Domains & Web Assets">🌐 Domains & Web Assets</option>
-          <option value="Games & Entertainment">🎮 Games & Entertainment</option>
-          <option value="People & Profiles">👤 People & Profiles</option>
-          <option value="Productivity & Personal Tools">⚡ Productivity</option>
-          <option value="Design & Creative">✨ Design & Creative</option>
-          <option value="Writing & Content">✍️ Writing & Content</option>
-          <option value="Directories, Launch & Discovery">🚀 Directories & Launch</option>
-          <option value="AI Media Generation">🖼️ AI Media Generation</option>
-          <option value="Audio, Voice & Podcasting">🎙️ Audio & Voice</option>
-          <option value="Sales & Lead Generation">🎯 Sales & Leads</option>
-          <option value="Travel, Local & Lifestyle">✈️ Travel & Lifestyle</option>
-          <option value="Real Estate & Property">🏠 Real Estate</option>
-          <option value="Media & News">📰 Media & News</option>
-          <option value="Other">📦 Other</option>
-        </select>
+      <div class="form-action-group">
+        <div class="select-wrap">
+          <select id="categorySelect" name="category" aria-label="choose category" required>
+            <option value="" disabled selected>Category…</option>
+            <option value="AI Agents & Infrastructure">🤖 AI Agents & Infrastructure</option>
+            <option value="SEO & AI Visibility">🔍 SEO & AI Visibility</option>
+            <option value="Marketing & Advertising">📈 Marketing & Advertising</option>
+            <option value="Crypto, Web3 & Investing">🪙 Crypto, Web3 & Investing</option>
+            <option value="Developer Tools">💻 Developer Tools</option>
+            <option value="Business, Finance & Legal">💼 Business, Finance & Legal</option>
+            <option value="Security, Privacy & Compliance">🛡️ Security, Privacy & Compliance</option>
+            <option value="Health, Fitness & Wellness">🏃 Health, Fitness & Wellness</option>
+            <option value="Social Media & Creator Tools">🎬 Social Media & Creator Tools</option>
+            <option value="Leaderboards & Attention Markets">🏆 Leaderboards & Attention</option>
+            <option value="Hiring, Jobs & Careers">👔 Hiring, Jobs & Careers</option>
+            <option value="Education & Learning">📚 Education & Learning</option>
+            <option value="Agencies, Studios & Services">🎨 Agencies & Studios</option>
+            <option value="Ecommerce & Retail">🛍️ Ecommerce & Retail</option>
+            <option value="Domains & Web Assets">🌐 Domains & Web Assets</option>
+            <option value="Games & Entertainment">🎮 Games & Entertainment</option>
+            <option value="People & Profiles">👤 People & Profiles</option>
+            <option value="Productivity & Personal Tools">⚡ Productivity</option>
+            <option value="Design & Creative">✨ Design & Creative</option>
+            <option value="Writing & Content">✍️ Writing & Content</option>
+            <option value="Directories, Launch & Discovery">🚀 Directories & Launch</option>
+            <option value="AI Media Generation">🖼️ AI Media Generation</option>
+            <option value="Audio, Voice & Podcasting">🎙️ Audio & Voice</option>
+            <option value="Sales & Lead Generation">🎯 Sales & Leads</option>
+            <option value="Travel, Local & Lifestyle">✈️ Travel & Lifestyle</option>
+            <option value="Real Estate & Property">🏠 Real Estate</option>
+            <option value="Media & News">📰 Media & News</option>
+            <option value="Other">📦 Other</option>
+          </select>
+        </div>
+        <button id="outbidBtn" type="submit" class="btn-outbid">Outbid</button>
       </div>
-      <button id="outbidBtn" type="submit" class="btn-outbid">Outbid</button>
     </div>
     <div id="existingHint" style="display:none;margin:4px 0 0;font-size:12px;color:var(--accent);font-weight:600"></div>
     <div id="formError" class="error" style="display:none;margin-top:6px"></div>

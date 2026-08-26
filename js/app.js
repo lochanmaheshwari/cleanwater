@@ -505,9 +505,15 @@ function updateWater() {
   const h = (pct / 100) * 60;
   const wl = $('#waterLevel');
   if (wl) wl.style.height = h + 'vh';
+
+  const raisedEl = document.getElementById('raisedGoalAmt');
+  if (raisedEl) raisedEl.textContent = formatMoney(total);
 }
 
 async function bumpVisitor() {
+  const total = allEntries.reduce((s, e) => s + (e.donated_cents || 0), 0) || allEntries.reduce((s, e) => s + Math.round(e.total_bid_cents * 0.75), 0);
+  const donStr = formatMoney(total);
+
   try {
     const res = await fetch('/api/stats?bump=1', { method: 'POST', cache: 'no-store' });
     const data = await res.json();
@@ -516,7 +522,7 @@ async function bumpVisitor() {
       const onlineStr = data.online || 1;
       const statsEl = $('#liveStatsText');
       if (statsEl) {
-        statsEl.innerHTML = `<strong>${onlineStr}</strong> live · <span id="visitorCountText"><strong>${visitorsStr}</strong> visitors</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
+        statsEl.innerHTML = `<strong>${onlineStr}</strong> live · <span id="visitorCountText"><strong>${visitorsStr}</strong> visitors</span> · <span id="desktopGoalStat" class="desktop-goal-stat">💧 <strong id="raisedGoalAmt">${donStr}</strong> raised of $1M goal</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
       }
     }
   } catch (err) {
