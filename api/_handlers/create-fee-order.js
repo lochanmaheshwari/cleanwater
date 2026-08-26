@@ -45,11 +45,41 @@ export default async function handler(req, res) {
 
     if (!entryId) return res.status(400).json({ error: 'missing entryId' });
 
-    const fee = Math.max(1, parseFloat(feeDollars) || 2.50);
-
     const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: entry } = await sb.from('entries').select('*').eq('id', entryId).maybeSingle();
     if (!entry) return res.status(404).json({ error: 'entry not found' });
+
+    // Cryptographic Check: Verify that Step 1 (Every.org 75% Donation) actually settled
+    let isDonationVerified = Boolean(entry.donation_confirmed && (entry.everyorg_donation_id || entry.everyorg_charge_id));
+
+    if (!isDonationVerified) {
+      const apiKey = process.env.EVERYORG_PRIVATE_KEY || process.env.EVERYORG_PUBLIC_KEY || 'pk_live_3770bf44947f5c510bdd88838874707e';
+      try {
+        const checkRes = await fetch(`https://partners.every.org/v0.2/partner/donations?partnerDonationId=${encodeURIComponent(entryId)}&apiKey=${encodeURIComponent(apiKey)}`);
+        const checkData = await checkRes.json().catch(() => ({}));
+        const donations = checkData.donations || (Array.isArray(checkData) ? checkData : (checkData.donation ? [checkData.donation] : []));
+        const matched = donations.find(d => d.partnerDonationId === entryId || d.id);
+        
+        if (matched && matched.id) {
+          const chargeId = matched.chargeId || matched.id;
+          await sb.from('entries').update({
+            donation_confirmed: true,
+            everyorg_donation_id: String(chargeId),
+            everyorg_charge_id: String(chargeId)
+          }).eq('id', entryId);
+          isDonationVerified = true;
+        }
+      } catch (err) {
+        console.warn('Every.org verification error', err);
+      }
+    }
+
+    // Hard block if donation is unverified (prevents skipping Step 1)
+    if (!isDonationVerified && !entry.donation_confirmed) {
+      return res.status(403).json({
+        error: 'Step 1 (75% Clean Water donation via Every.org) has not been completed or verified yet. Please complete your donation on Every.org first.'
+      });
+    }
 
     const tok = await getPaypalToken();
     const orderRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {

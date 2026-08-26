@@ -16,16 +16,41 @@ export default async function handler(req, res) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: entry, error: findErr } = await supabase.from('entries').select('*').eq('id', entryId).maybeSingle();
     if (findErr) throw findErr;
-    if (!entry) return res.status(404).json({ error: 'entry not found' });
+    // Verify that Step 1 (75% Every.org Donation) was actually completed
+    let isDonationVerified = Boolean(entry.donation_confirmed && (entry.everyorg_donation_id || entry.everyorg_charge_id));
+    let chargeId = entry.everyorg_donation_id || entry.everyorg_charge_id;
+
+    if (!isDonationVerified) {
+      const apiKey = process.env.EVERYORG_PRIVATE_KEY || process.env.EVERYORG_PUBLIC_KEY || 'pk_live_3770bf44947f5c510bdd88838874707e';
+      try {
+        const checkRes = await fetch(`https://partners.every.org/v0.2/partner/donations?partnerDonationId=${encodeURIComponent(entryId)}&apiKey=${encodeURIComponent(apiKey)}`);
+        const checkData = await checkRes.json().catch(() => ({}));
+        const donations = checkData.donations || (Array.isArray(checkData) ? checkData : (checkData.donation ? [checkData.donation] : []));
+        const matched = donations.find(d => d.partnerDonationId === entryId || d.id);
+        if (matched && matched.id) {
+          chargeId = matched.chargeId || matched.id;
+          isDonationVerified = true;
+        }
+      } catch (err) {
+        console.warn('Every.org verification error in payment-done', err);
+      }
+    }
+
+    if (!isDonationVerified && !entry.donation_confirmed) {
+      return res.status(403).json({
+        error: 'Cannot publish listing: Step 1 (75% Clean Water donation via Every.org) has not been verified.'
+      });
+    }
 
     const currentTotal = entry.total_bid_cents || 0;
     const newTotal = currentTotal > 0 ? currentTotal + amountCents : amountCents;
     const donatedCents = Math.round(newTotal * 0.75);
 
-    // Update entry status to live
+    // Update entry status to live with verified donation ID
     const { error: updErr } = await supabase.from('entries').update({
       payment_confirmed: true,
       donation_confirmed: true,
+      everyorg_donation_id: chargeId ? String(chargeId) : (entry.everyorg_donation_id || 'verified_everyorg'),
       payment_id: String(paymentId),
       total_bid_cents: newTotal,
       donated_cents: donatedCents,
