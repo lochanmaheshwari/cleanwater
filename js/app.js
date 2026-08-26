@@ -306,17 +306,31 @@ async function loadData() {
   if (board) board.innerHTML = '';
 
   try {
-    supabase = await getSupabase();
-    const { data: entries, error: e1 } = await supabase.from('entries').select('*').eq('status', 'live').order('total_bid_cents', { ascending: false }).order('first_bid_at', { ascending: true });
-    if (e1) throw e1;
-    const { data: bids } = await supabase.from('bids').select('*').order('created_at', { ascending: false }).limit(50);
-    const { data: statsRow } = await supabase.from('site_stats').select('*').eq('id', 1).maybeSingle();
+    let entries = null;
+    try {
+      supabase = await getSupabase();
+      const res = await supabase.from('entries').select('*').eq('status', 'live').order('total_bid_cents', { ascending: false }).order('first_bid_at', { ascending: true });
+      if (!res.error && res.data) entries = res.data;
+    } catch (sbErr) {
+      console.warn('Supabase SDK error, fetching via REST API', sbErr);
+    }
+
+    if (!entries || entries.length === 0) {
+      try {
+        const restRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?status=eq.live&select=*&order=total_bid_cents.desc,first_bid_at.asc`, {
+          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+        });
+        const restData = await restRes.json();
+        if (Array.isArray(restData) && restData.length > 0) entries = restData;
+      } catch (restErr) {
+        console.warn('REST query error', restErr);
+      }
+    }
+
     allEntries = entries && entries.length > 0 ? entries : MOCK;
-    bidsCache = bids || [];
-    if (statsRow) stats = statsRow;
     window.__allEntries = allEntries;
   } catch (err) {
-    console.warn(err);
+    console.warn('loadData catch error', err);
     if (allEntries.length === 0) allEntries = MOCK;
     window.__allEntries = allEntries;
   }
