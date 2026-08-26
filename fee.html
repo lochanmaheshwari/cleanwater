@@ -171,10 +171,16 @@
       <!-- Live PayPal & Card Smart Checkout for 25% Listing Fee -->
       <div id="paypalFeeContainer" style="margin-top:20px;min-height:50px"></div>
 
+      <!-- Uropay UPI Checkout -->
+      <button id="upiBtn" type="button" class="btn-outbid" style="width:100%;margin-top:12px;padding:14px;border:0;border-radius:999px;background:#059669;color:#fff;font-weight:700;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Pay with UPI (India)
+      </button>
+
       <div id="feeError" class="error" style="display:none;margin-top:14px;text-align:left;line-height:1.5"></div>
 
       <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:16px">
-        🔒 Encrypted 256-bit checkout via PayPal. All major credit & debit cards accepted.
+        🔒 Encrypted checkout. Cards accepted via PayPal, UPI via Uropay.
       </div>
     </div>
   </div>
@@ -464,6 +470,39 @@ async function load(retryCount = 0) {
 
     // Initialize PayPal Smart Buttons
     loadPayPal();
+
+    // Initialize UPI Button
+    const upiBtn = document.getElementById('upiBtn');
+    if (upiBtn) {
+      upiBtn.addEventListener('click', async () => {
+        if (errEl) errEl.style.display = 'none';
+        const originalText = upiBtn.innerHTML;
+        upiBtn.innerHTML = 'Creating UPI Order...';
+        upiBtn.disabled = true;
+        try {
+          const r = await fetch('/api/create-uropay-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ entryId: id, feeCents: feeCents })
+          });
+          const j = await r.json();
+          if (!r.ok || !j.checkout_url) {
+            throw new Error(j.error || 'Failed to create Uropay order');
+          }
+          // Redirect to Uropay
+          window.location.href = j.checkout_url;
+        } catch (e) {
+          console.error('create-uropay-order failed', e);
+          if (errEl) {
+            errEl.style.display = 'block';
+            errEl.textContent = 'UPI Error: ' + e.message;
+          }
+          upiBtn.innerHTML = originalText;
+          upiBtn.disabled = false;
+        }
+      });
+    }
+
   } catch (e) {
     if (loading) loading.style.display = 'none';
     if (card) {
