@@ -1059,34 +1059,34 @@ footer a:hover { color: var(--ink); }
     display: none;
   }
   .cat-row-container {
-    padding: 0 16px;
-    margin: 8px auto 8px;
+    padding: 0 14px;
+    margin: 4px auto 6px;
   }
   .cat-chip {
-    padding: 4px 11px;
-    font-size: 11.5px;
-    height: 28px;
+    padding: 3px 10px;
+    font-size: 11px;
+    height: 26px;
   }
 
   .board {
-    padding: 0 16px;
-    gap: 8px;
+    padding: 0 14px;
+    gap: 6px;
   }
   .card {
-    padding: 10px 13px;
-    gap: 10px;
-    border-radius: 14px;
+    padding: 8px 12px;
+    gap: 8px;
+    border-radius: 12px;
   }
   .rank-badge {
-    padding: 2px 8px;
-    font-size: 11.5px;
-    min-width: 28px;
+    padding: 2px 7px;
+    font-size: 11px;
+    min-width: 26px;
   }
   .logo-wrap {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    font-size: 15px;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    font-size: 14px;
   }
   .card-top-row {
     gap: 6px;
