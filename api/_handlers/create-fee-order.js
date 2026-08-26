@@ -69,6 +69,15 @@ export default async function handler(req, res) {
             value: fee.toFixed(2)
           }
         }],
+        payment_source: {
+          card: {
+            attributes: {
+              verification: {
+                method: 'SCA_WHEN_REQUIRED'
+              }
+            }
+          }
+        },
         application_context: {
           brand_name: 'savewater.tech',
           shipping_preference: 'NO_SHIPPING',

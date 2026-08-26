@@ -149,10 +149,41 @@
         <div class="breakdown-row highlight"><span>25% Listing Fee Due</span><span id="feeDue">$2.50</span></div>
       </div>
 
-      <!-- Live PayPal & Card Smart Checkout for 25% Listing Fee -->
-      <div id="paypalFeeContainer" style="margin-top:18px;min-height:50px"></div>
+      <!-- Payment Method Selector Tabs -->
+      <div class="payment-tabs" style="display:flex;background:#EEF4F7;border-radius:999px;padding:3px;margin:20px 0 16px;gap:2px">
+        <button id="tabUpi" class="pay-tab active" style="flex:1;border:0;background:#fff;padding:9px 12px;border-radius:999px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.08)">⚡ UPI / GPay / Indian Pay</button>
+        <button id="tabPaypal" class="pay-tab" style="flex:1;border:0;background:transparent;padding:9px 12px;border-radius:999px;font-weight:600;font-size:13px;cursor:pointer;color:var(--muted)">🌍 PayPal & Cards (USD)</button>
+      </div>
 
-      <div id="feeError" class="error" style="display:none;margin-top:10px"></div>
+      <!-- UPI Payment Section -->
+      <div id="upiSection" style="text-align:center">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Scan with any UPI App (GPay, PhonePe, Paytm, CRED)</div>
+          <img id="upiQrImg" src="" alt="UPI QR" style="width:170px;height:170px;margin:0 auto 12px;border-radius:12px;border:1px solid var(--border);background:#fff;padding:8px">
+          <div style="font-size:19px;font-weight:800;color:var(--ink);margin-bottom:4px">Amount: <span id="upiAmountInr">₹210</span></div>
+          <div style="font-size:12.5px;color:var(--muted)">UPI ID: <strong id="upiVpaText" style="color:var(--ink);user-select:all">lochanmaheshwari23@okaxis</strong></div>
+          
+          <a id="upiIntentBtn" href="#" class="btn-outbid" style="display:block;margin:14px 0 0;padding:12px;text-align:center;font-weight:700;font-size:14px;text-decoration:none">
+            📱 Open in UPI App (GPay / PhonePe) →
+          </a>
+        </div>
+
+        <div style="text-align:left;background:var(--bg-subtle,#f8fbfc);border:1px solid var(--border);border-radius:16px;padding:16px">
+          <label for="upiRefInput" style="font-size:13px;font-weight:700;display:block;margin-bottom:6px">Paid via UPI? Enter Reference / UTR Number:</label>
+          <div style="display:flex;gap:8px">
+            <input id="upiRefInput" placeholder="12-digit UTR or Txn ID" class="pill-input" style="flex:1;padding:10px 14px;font-size:14px">
+            <button id="upiVerifyBtn" class="btn-outbid" style="padding:10px 16px;font-size:13.5px;white-space:nowrap">Verify & Publish →</button>
+          </div>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:6px">Instant activation upon submitting your UPI transaction reference.</div>
+        </div>
+      </div>
+
+      <!-- Live PayPal & Card Smart Checkout for 25% Listing Fee -->
+      <div id="paypalSection" style="display:none">
+        <div id="paypalFeeContainer" style="margin-top:14px;min-height:50px"></div>
+      </div>
+
+      <div id="feeError" class="error" style="display:none;margin-top:12px"></div>
     </div>
   </div>
 </main>
@@ -346,10 +377,96 @@ async function load() {
     loading.style.display = 'none';
     content.style.display = 'block';
 
-    // Initialize PayPal Buttons
-    await loadPayPal();
-  } catch (err) {
-    loading.innerHTML = `<div class="error">${esc(err.message)}</div>`;
+    // Setup UPI details (1 USD ≈ 85 INR)
+    const inrAmount = Math.max(85, Math.round((feeCents / 100) * 85));
+    const vpa = 'lochanmaheshwari23@okaxis';
+    const upiUrl = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=savewater.tech&am=${inrAmount}&cu=INR&tn=${encodeURIComponent('Listing Fee ' + (entryData.display_name || entryData.destination || id).slice(0, 20))}`;
+    
+    const qrEl = document.getElementById('upiQrImg');
+    if (qrEl) qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+    
+    const upiAmtEl = document.getElementById('upiAmountInr');
+    if (upiAmtEl) upiAmtEl.textContent = `₹${inrAmount} (~$${(feeCents / 100).toFixed(2)})`;
+    
+    const upiBtn = document.getElementById('upiIntentBtn');
+    if (upiBtn) upiBtn.href = upiUrl;
+
+    // Wire Payment Method Tabs
+    const tabUpi = document.getElementById('tabUpi');
+    const tabPaypal = document.getElementById('tabPaypal');
+    const upiSec = document.getElementById('upiSection');
+    const ppSec = document.getElementById('paypalSection');
+
+    tabUpi?.addEventListener('click', () => {
+      tabUpi.classList.add('active');
+      tabUpi.style.background = '#fff';
+      tabUpi.style.color = 'var(--ink)';
+      tabUpi.style.fontWeight = '700';
+
+      tabPaypal.classList.remove('active');
+      tabPaypal.style.background = 'transparent';
+      tabPaypal.style.color = 'var(--muted)';
+      tabPaypal.style.fontWeight = '600';
+
+      if (upiSec) upiSec.style.display = 'block';
+      if (ppSec) ppSec.style.display = 'none';
+    });
+
+    tabPaypal?.addEventListener('click', () => {
+      tabPaypal.classList.add('active');
+      tabPaypal.style.background = '#fff';
+      tabPaypal.style.color = 'var(--ink)';
+      tabPaypal.style.fontWeight = '700';
+
+      tabUpi.classList.remove('active');
+      tabUpi.style.background = 'transparent';
+      tabUpi.style.color = 'var(--muted)';
+      tabUpi.style.fontWeight = '600';
+
+      if (upiSec) upiSec.style.display = 'none';
+      if (ppSec) ppSec.style.display = 'block';
+      loadPayPal();
+    });
+
+    // Wire UPI Verify Button
+    const verifyBtn = document.getElementById('upiVerifyBtn');
+    verifyBtn?.addEventListener('click', async () => {
+      const refInput = document.getElementById('upiRefInput');
+      const ref = (refInput?.value || '').trim();
+      if (!ref) {
+        alert('Please enter your UPI reference or transaction ID after paying.');
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying…';
+
+      try {
+        await fetch('/api/payment-done', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            entryId: id,
+            amount_cents: totalBidCents,
+            fee_cents: feeCents,
+            paymentId: 'UPI-' + ref,
+            orderId: 'UPI-' + ref,
+            method: 'UPI'
+          })
+        });
+
+        window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
+      } catch (err) {
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify & Publish →';
+        alert('Verification error: ' + err.message);
+      }
+    });
+
+    // Preload PayPal
+    loadPayPal();
+  } catch (e) {
+    loading.innerHTML = '<div class="error">' + esc(e.message) + '</div>';
   }
 }
 
