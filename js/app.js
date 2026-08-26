@@ -173,13 +173,10 @@ async function init() {
     await handleOutbidModalPay();
   });
 
-  // Show more button
-  $('#showMoreBtn')?.addEventListener('click', () => {
-    visibleCount += 50;
-    renderBoard();
-  });
+  // Initial immediate render (0ms synchronous)
+  renderBoard();
 
-  // Load board data
+  // Load board data in background
   await loadData();
 
   // Supabase Realtime updates
