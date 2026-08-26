@@ -499,6 +499,12 @@ function renderBoard() {
   if (more) more.style.display = list.length > visibleCount ? 'block' : 'none';
 }
 
+function calculatePeopleHelped(totalDonatedCents) {
+  // $5 (500 cents) gives 1 person lasting clean water for 20+ years via WaterCredit
+  const dollars = totalDonatedCents / 100;
+  return Math.max(1, Math.round(dollars / 5));
+}
+
 function updateWater() {
   const total = allEntries.reduce((s, e) => s + (e.donated_cents || 0), 0) || allEntries.reduce((s, e) => s + Math.round(e.total_bid_cents * 0.75), 0);
   const pct = Math.min(100, (total / CONFIG.GOAL_CENTS) * 100);
@@ -507,8 +513,9 @@ function updateWater() {
   if (wl) wl.style.height = h + 'vh';
 
   const donStr = formatMoney(total);
-  const raisedEl = document.getElementById('raisedGoalAmt');
-  if (raisedEl) raisedEl.textContent = donStr;
+  const peopleHelped = calculatePeopleHelped(total);
+  const peopleEl = document.getElementById('peopleCountText');
+  if (peopleEl) peopleEl.textContent = peopleHelped.toLocaleString();
 
   const goalRaised = document.getElementById('goalRaisedAmt');
   if (goalRaised) goalRaised.textContent = donStr;
@@ -523,6 +530,7 @@ function updateWater() {
 async function bumpVisitor() {
   const total = allEntries.reduce((s, e) => s + (e.donated_cents || 0), 0) || allEntries.reduce((s, e) => s + Math.round(e.total_bid_cents * 0.75), 0);
   const donStr = formatMoney(total);
+  const peopleHelped = calculatePeopleHelped(total);
 
   try {
     const res = await fetch('/api/stats?bump=1', { method: 'POST', cache: 'no-store' });
@@ -532,7 +540,7 @@ async function bumpVisitor() {
       const onlineStr = data.online || 1;
       const statsEl = $('#liveStatsText');
       if (statsEl) {
-        statsEl.innerHTML = `<strong>${onlineStr}</strong> live · <span id="visitorCountText"><strong>${visitorsStr}</strong> visitors</span> · <span id="desktopGoalStat" class="desktop-goal-stat">💧 <strong id="raisedGoalAmt">${donStr}</strong> raised of $1M goal</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
+        statsEl.innerHTML = `<strong>${onlineStr}</strong> live · <span id="visitorCountText"><strong>${visitorsStr}</strong> visitors</span> · <span id="desktopGoalStat" class="desktop-goal-stat">💧 gave <strong id="peopleCountText">${peopleHelped}</strong> people clean water access for 20+ years till now</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
       }
     }
   } catch (err) {
