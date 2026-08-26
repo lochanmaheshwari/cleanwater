@@ -37,15 +37,15 @@ export default async function handler(req, res) {
   slug = slug.replace(/^https?:\/\/(www\.)?every\.org\//i, '');
   slug = slug.replace(/^(water-org\/f\/)+/i, '');
   slug = slug.replace(/^water-org\//i, '');
-  slug = slug.replace(/^\/+|\/+$/g, '') || 'clean-water-funded-by';
-
+  const targetRedirect = `${siteUrl}/fee.html?id=${encodeURIComponent(e.id)}`;
   const url = `https://www.every.org/water-org/f/${slug}`
     + `?amount=${encodeURIComponent(amount)}`
     + `&partnerDonationId=${encodeURIComponent(e.id)}`
-    + `&webhook_token=${encodeURIComponent(process.env.EVERYORG_WEBHOOK_TOKEN || '')}`
-    + `&method=card`
-    + `&success_url=${encodeURIComponent(`${siteUrl}/fee.html?id=${encodeURIComponent(e.id)}`)}`
-    + `#/donate/card/confirm`;
+    + `&redirectUrl=${encodeURIComponent(targetRedirect)}`
+    + `&success_url=${encodeURIComponent(targetRedirect)}`
+    + `&returnUrl=${encodeURIComponent(targetRedirect)}`
+    + `&exitUrl=${encodeURIComponent(targetRedirect)}`
+    + `&method=card`;
 
   return res.redirect(302, url);
 }
