@@ -444,11 +444,11 @@ function renderBoard() {
         <div class="card-content">
           <div class="card-top-row">
             <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="card-title" data-click-id="${esc(e.id)}">${esc(e.display_name || domain)} <span class="external-arrow">↗</span></a>
-            <div style="text-align:right;flex-shrink:0">
+            <div class="card-bid-col">
               <div class="card-bid">${formatMoney(displayBid)}</div>
-              <div style="font-size:13.5px;color:#10B981;font-weight:700;margin-top:2px;white-space:nowrap;letter-spacing:-0.01em">💧 ${donFormatted} to clean water</div>
             </div>
           </div>
+          <div class="card-donation-badge">💧 ${donFormatted} to clean water</div>
           <div class="card-blurb">${esc(e.description || '')}</div>
           <div class="card-meta">
             <span class="meta-item">${esc(timeAgo(e.last_bid_at || e.first_bid_at))}</span>
