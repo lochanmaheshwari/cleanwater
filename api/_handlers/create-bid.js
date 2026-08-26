@@ -68,14 +68,9 @@ function normalize(raw) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
   try {
-    const { destination, bidDollars, category, description, logoPath, allowThree, isThreeDollar } = req.body || {};
+    const { destination, bidDollars, category, description, logoPath } = req.body || {};
     const bidCents = Math.round(Number(bidDollars) * 100);
-    const isThreeDollarLink = allowThree === true || isThreeDollar === true || bidCents === 300;
-    const minCents = isThreeDollarLink ? 300 : 500;
-    const minLabel = isThreeDollarLink ? '$3' : '$5';
-    if (!Number.isInteger(bidCents) || bidCents < minCents) return res.status(400).json({ error: `Minimum bid is ${minLabel}` });
-    // Enforce $3 overall cap on special $3 link — only exactly $3 allowed on that link
-    if (isThreeDollarLink && bidCents !== 300) return res.status(400).json({ error: 'This special link is fixed at $3 overall — please submit $3 exactly.' });
+    if (!Number.isInteger(bidCents) || bidCents < 500) return res.status(400).json({ error: 'Minimum bid is $5' });
     if (bidCents > 99999900) return res.status(400).json({ error: 'Maximum is $999,999' });
 
     let desc = (description || '').replace(/<[^>]*>/g, '').trim().slice(0, 200);
