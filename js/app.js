@@ -92,7 +92,7 @@ async function init() {
   bidAmount = initialTopDollars ? initialTopDollars + 5 : 30;
 
   function setBid(val, syncInput = true) {
-    bidAmount = Math.min(999999, Math.max(1, val || 1));
+    bidAmount = Math.min(999999, Math.max(5, val || 5));
     if (syncInput && bidInput) {
       bidInput.value = bidAmount;
       bidInput.style.width = Math.max(2, String(bidAmount).length) + 'ch';
@@ -115,8 +115,8 @@ async function init() {
 
     bidInput.addEventListener('blur', () => {
       let val = parseInt(bidInput.value, 10);
-      if (isNaN(val) || val < 1) {
-        val = 1;
+      if (isNaN(val) || val < 5) {
+        val = 5;
       }
       setBid(val);
     });
@@ -414,7 +414,7 @@ function renderBoard() {
   board.innerHTML = '';
 
   if (list.length === 0) {
-    board.innerHTML = `<div class="empty">${currentTab === 'today' ? 'No bids placed today yet. Be the first to claim #1 Today for $1!' : 'No products in this category yet. Be the first to claim #1 for $1!'}</div>`;
+    board.innerHTML = `<div class="empty">${currentTab === 'today' ? 'No bids placed today yet. Be the first to claim #1 Today for $5!' : 'No products in this category yet. Be the first to claim #1 for $5!'}</div>`;
     $('#showMoreBtn') && ($('#showMoreBtn').style.display = 'none');
     return;
   }
@@ -550,8 +550,8 @@ function handleHeroOutbid() {
     return;
   }
 
-  if (!Number.isInteger(bidAmount) || bidAmount < 1 || bidAmount > 999999) {
-    showFormError('$1–$999,999 whole dollars only');
+  if (!Number.isInteger(bidAmount) || bidAmount < 5 || bidAmount > 999999) {
+    showFormError('$5–$999,999 whole dollars only');
     return;
   }
 
