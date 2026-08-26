@@ -1,20 +1,5 @@
-// Instant Theme Synchronization across all pages
-export function initTheme() {
-  const saved = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  applyTheme(saved);
-
-  // Setup click listeners on all toggle buttons
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('#darkToggle, .theme-toggle-btn');
-    if (btn) {
-      e.preventDefault();
-      e.stopPropagation();
-      const isDark = document.documentElement.classList.contains('dark') || document.body?.classList.contains('dark');
-      const nextTheme = isDark ? 'light' : 'dark';
-      applyTheme(nextTheme);
-    }
-  });
-}
+// Zero-Lag Universal Theme Manager
+let isInitialized = false;
 
 export function applyTheme(theme) {
   const isDark = theme === 'dark';
@@ -23,7 +8,9 @@ export function applyTheme(theme) {
   if (document.body) {
     document.body.classList.toggle('dark', isDark);
   }
-  localStorage.setItem('cww-theme', theme);
+  try {
+    localStorage.setItem('cww-theme', theme);
+  } catch(e) {}
 
   // Update button icons across DOM
   const btns = document.querySelectorAll('#darkToggle, .theme-toggle-btn');
@@ -31,6 +18,38 @@ export function applyTheme(theme) {
     btn.textContent = isDark ? '☀' : '☾';
     btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
     btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  });
+}
+
+export function toggleTheme() {
+  const isDark = document.documentElement.classList.contains('dark') || document.body?.classList.contains('dark');
+  applyTheme(isDark ? 'light' : 'dark');
+}
+
+// Global window exposure for inline onclick resilience
+if (typeof window !== 'undefined') {
+  window.__toggleTheme = toggleTheme;
+}
+
+export function initTheme() {
+  if (isInitialized) return;
+  isInitialized = true;
+
+  let saved = 'light';
+  try {
+    saved = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch(e) {}
+
+  applyTheme(saved);
+
+  // Single global click listener
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#darkToggle, .theme-toggle-btn');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleTheme();
+    }
   });
 }
 
