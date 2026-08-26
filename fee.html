@@ -307,7 +307,7 @@ function renderPayPalButtons() {
   }
 }
 
-async function load() {
+async function load(retryCount = 0) {
   const card = document.querySelector('.fee-card');
   if (!id) {
     if (loading) loading.style.display = 'none';
@@ -340,17 +340,33 @@ async function load() {
       return;
     }
 
-    // Check if Step 1 is verified
+    // Check if Step 1 is verified (with auto-polling & recheck)
     if (!entryData.donation_confirmed && !entryData.everyorg_donation_id) {
+      if (retryCount < 4) {
+        if (loading) {
+          loading.style.display = 'block';
+          loading.textContent = 'Verifying your donation with Every.org… please wait…';
+        }
+        setTimeout(() => load(retryCount + 1), 2000);
+        return;
+      }
+
       if (loading) loading.style.display = 'none';
       if (card) {
         card.innerHTML = `
           <div style="font-size:36px;margin-bottom:12px">💧</div>
           <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Step 1 Required (75% Clean Water)</h2>
-          <p style="color:var(--muted);font-size:14px;margin-bottom:20px">
-            Your 75% charity donation on Every.org must be completed first before paying the 25% listing fee.
+          <p style="color:var(--muted);font-size:14px;margin-bottom:18px">
+            Your 75% charity donation on Every.org must be verified before paying the listing fee.
           </p>
-          <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">Complete Step 1 on Homepage →</a>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="btn-outbid" style="padding:10px 18px" onclick="window.location.reload()">
+              🔄 I Already Paid on Every.org (Verify Now)
+            </button>
+            <a href="index.html" class="btn-accent" style="padding:10px 18px;text-decoration:none">
+              ← Return to Homepage
+            </a>
+          </div>
         `;
       }
       return;
