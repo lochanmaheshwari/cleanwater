@@ -1253,6 +1253,11 @@ footer {
 footer a { color: var(--muted); }
 footer a:hover { color: var(--ink); }
 
+/* Mobile App Bottom Tab Bar - Hidden by default on Desktop */
+.mobile-bottom-bar {
+  display: none !important;
+}
+
 /* Responsive adjustments — Balanced breathing room & spacious mobile layout */
 @media(max-width: 640px) {
   .desktop-nav-link {
