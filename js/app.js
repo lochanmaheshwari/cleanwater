@@ -12,9 +12,9 @@ const DEFAULT_ENTRIES = [
     description: "Your business runs on decisions. Let AI make it better.",
     logo_path: "pending/1787727426741-zvbhtd.webp",
     category: "AI Agents & Infrastructure",
-    total_bid_cents: 2500,
-    donated_cents: 1875,
-    click_count: 3,
+    total_bid_cents: 5000,
+    donated_cents: 3750,
+    click_count: 11,
     status: "live",
     first_bid_at: "2026-08-26T06:57:43.904814+00:00",
     last_bid_at: "2026-08-26T07:07:32.432+00:00"

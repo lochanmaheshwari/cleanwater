@@ -27,10 +27,11 @@ export default async function handler(req, res) {
         const checkRes = await fetch(`https://partners.every.org/v0.2/partner/donations?partnerDonationId=${encodeURIComponent(entryId)}&apiKey=${encodeURIComponent(apiKey)}`);
         const checkData = await checkRes.json().catch(() => ({}));
         const donations = checkData.donations || (Array.isArray(checkData) ? checkData : (checkData.donation ? [checkData.donation] : []));
-        const matched = donations.find(d => d.partnerDonationId === entryId || d.id);
-        if (matched && matched.id) {
-          chargeId = matched.chargeId || matched.id;
-          verifiedDonationCents = matched.amount ? Math.round(parseFloat(matched.amount) * 100) : (entry.donated_cents || 375);
+        const matches = donations.filter(d => d.partnerDonationId === entryId || d.id === entryId);
+        if (matches.length > 0) {
+          chargeId = matches[0].chargeId || matches[0].id;
+          const sum = matches.reduce((acc, d) => acc + (d.amount ? Math.round(parseFloat(d.amount) * 100) : 0), 0);
+          verifiedDonationCents = sum > 0 ? sum : (entry.donated_cents || 375);
           isDonationVerified = true;
         }
       } catch (err) {
