@@ -553,7 +553,7 @@ async function bumpVisitor() {
       const onlineStr = data.online || 1;
       const statsEl = $('#liveStatsText');
       if (statsEl) {
-        statsEl.innerHTML = `<strong>${onlineStr}</strong> live · <span id="visitorCountText"><strong>${visitorsStr}</strong> visitors</span> · <span id="desktopGoalStat" class="desktop-goal-stat">💧 gave <strong id="peopleCountText">${peopleHelped}</strong> people clean water access for 20+ years till now</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
+        statsEl.innerHTML = `<strong>${onlineStr}</strong> live · <span id="visitorCountText"><strong>${visitorsStr}</strong> visitors</span> · <span id="desktopGoalStat" class="desktop-goal-stat">💧 gave <strong id="peopleCountText">${peopleHelped}</strong> people clean water for 20+ years till now</span>`;
       }
     }
   } catch (err) {
