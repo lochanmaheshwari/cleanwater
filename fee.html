@@ -154,6 +154,11 @@
         <strong>⚡ Important:</strong> Pay this <strong>25% listing fee (<span id="feeAmountText">$1</span>)</strong> to publish your product and go <strong>LIVE</strong> on the leaderboard.
       </div>
 
+      <div id="donationAdjustmentNotice" style="display:none;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:14px;padding:12px 14px;margin:14px 0;font-size:13px;line-height:1.45;text-align:left">
+        <div style="font-weight:700;color:var(--accent);margin-bottom:4px">ℹ️ Donation Amount Adjusted</div>
+        <div id="donationAdjustmentText"></div>
+      </div>
+
       <div class="price-breakdown-box" style="margin:16px 0">
         <div class="breakdown-row"><span>Total Bid</span><span id="totalBid">$10</span></div>
         <div class="breakdown-row" style="color:#059669"><span>75% to Clean Water (Every.org)</span><span id="donatedAmt">✓ $7.50 Paid</span></div>
@@ -425,6 +430,22 @@ async function load(retryCount = 0) {
     document.getElementById('donatedAmt').textContent = '✓ $' + (donCents % 100 === 0 ? donDollars.toFixed(0) : donDollars.toFixed(2)) + ' Paid';
     document.getElementById('feeDue').textContent = '$' + feeDollars.toFixed(2);
     document.getElementById('feeAmountText').textContent = '$' + feeDollars.toFixed(2);
+
+    // If user paid a different amount than initially requested, display a clear explanation
+    const noticeBox = document.getElementById('donationAdjustmentNotice');
+    const noticeText = document.getElementById('donationAdjustmentText');
+    const expectedDonCents = entryData.bid_cents ? Math.round(entryData.bid_cents * 0.75) : 0;
+
+    if (noticeBox && expectedDonCents > 0 && donCents < expectedDonDonation(expectedDonCents, donCents)) {
+      noticeBox.style.display = 'block';
+      noticeText.innerHTML = `You donated <strong>$${donDollars.toFixed(2)}</strong> on Every.org (instead of the initial $${(expectedDonCents / 100).toFixed(2)}). Because 75% of your bid is strictly reserved for Clean Water, your total leaderboard bid is now adjusted to <strong>$${totalDollars.toFixed(2)}</strong> with a 25% listing fee of <strong>$${feeDollars.toFixed(2)}</strong>.`;
+    } else if (noticeBox) {
+      noticeBox.style.display = 'none';
+    }
+
+    function expectedDonDonation(exp, act) {
+      return exp;
+    }
 
     document.getElementById('itemTitle').textContent = entryData.display_name || entryData.destination;
     document.getElementById('itemDesc').textContent = entryData.description || entryData.category || '';
