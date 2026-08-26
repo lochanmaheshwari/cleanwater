@@ -39,15 +39,15 @@ const DEFAULT_ENTRIES = [
 let supabase = null;
 let allEntries = (() => {
   try {
-    const cached = JSON.parse(localStorage.getItem('sw_cached_entries_v3') || 'null');
-    if (Array.isArray(cached) && cached.length > 0) return cached;
+    const cached = JSON.parse(localStorage.getItem('sw_cached_entries_v5') || 'null');
+    if (Array.isArray(cached) && cached.length >= 2) return cached;
   } catch(e) {}
   return DEFAULT_ENTRIES;
 })();
 
 let bidsCache = (() => {
   try {
-    const cached = JSON.parse(localStorage.getItem('sw_cached_bids_v3') || 'null');
+    const cached = JSON.parse(localStorage.getItem('sw_cached_bids_v5') || 'null');
     if (Array.isArray(cached)) return cached;
   } catch(e) {}
   return [];
@@ -362,8 +362,8 @@ async function loadData() {
     if (entries && entries.length > 0) {
       allEntries = entries;
       try {
-        localStorage.setItem('sw_cached_entries_v3', JSON.stringify(allEntries));
-        localStorage.setItem('sw_cached_bids_v3', JSON.stringify(bidsCache));
+        localStorage.setItem('sw_cached_entries_v5', JSON.stringify(allEntries));
+        localStorage.setItem('sw_cached_bids_v5', JSON.stringify(bidsCache));
       } catch(e) {}
     }
     window.__allEntries = allEntries;
