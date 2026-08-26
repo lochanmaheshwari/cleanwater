@@ -63,21 +63,12 @@ export default async function handler(req, res) {
         purchase_units: [{
           reference_id: entryId,
           custom_id: entryId,
-          description: `Listing fee (25%) for ${entry.display_name || entry.destination}`,
+          description: `Listing fee (25%) for ${(entry.display_name || entry.destination || 'listing').slice(0, 100)}`,
           amount: {
             currency_code: 'USD',
             value: fee.toFixed(2)
           }
         }],
-        payment_source: {
-          card: {
-            attributes: {
-              verification: {
-                method: 'SCA_WHEN_REQUIRED'
-              }
-            }
-          }
-        },
         application_context: {
           brand_name: 'savewater.tech',
           shipping_preference: 'NO_SHIPPING',
