@@ -39,7 +39,7 @@ const DEFAULT_ENTRIES = [
 let supabase = null;
 let allEntries = (() => {
   try {
-    const cached = JSON.parse(localStorage.getItem('sw_cached_entries') || 'null');
+    const cached = JSON.parse(localStorage.getItem('sw_cached_entries_v3') || 'null');
     if (Array.isArray(cached) && cached.length > 0) return cached;
   } catch(e) {}
   return DEFAULT_ENTRIES;
@@ -47,7 +47,7 @@ let allEntries = (() => {
 
 let bidsCache = (() => {
   try {
-    const cached = JSON.parse(localStorage.getItem('sw_cached_bids') || 'null');
+    const cached = JSON.parse(localStorage.getItem('sw_cached_bids_v3') || 'null');
     if (Array.isArray(cached)) return cached;
   } catch(e) {}
   return [];
@@ -334,10 +334,12 @@ async function loadData() {
     try {
       const [restRes, bidsRes] = await Promise.all([
         fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?status=eq.live&select=*&order=total_bid_cents.desc,first_bid_at.asc`, {
-          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY },
+          cache: 'no-store'
         }),
         fetch(`${CONFIG.SUPABASE_URL}/rest/v1/bids?select=*&order=created_at.desc&limit=200`, {
-          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY },
+          cache: 'no-store'
         })
       ]);
       const restData = await restRes.json();
@@ -360,8 +362,8 @@ async function loadData() {
     if (entries && entries.length > 0) {
       allEntries = entries;
       try {
-        localStorage.setItem('sw_cached_entries', JSON.stringify(allEntries));
-        localStorage.setItem('sw_cached_bids', JSON.stringify(bidsCache));
+        localStorage.setItem('sw_cached_entries_v3', JSON.stringify(allEntries));
+        localStorage.setItem('sw_cached_bids_v3', JSON.stringify(bidsCache));
       } catch(e) {}
     }
     window.__allEntries = allEntries;
