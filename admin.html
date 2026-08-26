@@ -17,15 +17,15 @@
 <body>
 <header class="topbar">
   <div class="topbar-left">
-    <a class="logo" href="index.html">
+    <a class="logo" href="/">
       <span class="logo-icon">≋</span>
       savewater.tech
     </a>
   </div>
   <nav class="nav">
-    <a href="index.html">Leaderboard</a>
-    <a href="donations.html">Donations</a>
-    <a href="about.html">About</a>
+    <a href="/">Leaderboard</a>
+    <a href="/donations">Donations</a>
+    <a href="/about">About</a>
     <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
   </nav>
 </header>
@@ -107,7 +107,7 @@ async function loadEntries() {
     if (entries.length === 0) {
       listEl.innerHTML = `
         <div class="empty">
-          No entries found in database. Submit a listing on the <a href="index.html">homepage</a> first to test.
+          No entries found in database. Submit a listing on the <a href="/">homepage</a> first to test.
         </div>
       `;
       return;
@@ -153,7 +153,7 @@ async function loadEntries() {
                   ⚡ Simulate Step 2 (25% Fee & Go Live)
                 </button>
               ` : ''}
-              <a href="fee.html?id=${encodeURIComponent(e.id)}" target="_blank" class="btn-accent" style="padding:6px 12px;font-size:12px">
+              <a href="/fee?id=${encodeURIComponent(e.id)}" target="_blank" class="btn-accent" style="padding:6px 12px;font-size:12px">
                 Open fee.html →
               </a>
               <button class="btn-accent" style="padding:6px 10px;font-size:12px;background:#fee2e2;color:#b91c1c" onclick="window.deleteEntry('${esc(e.id)}')">

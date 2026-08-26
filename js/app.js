@@ -369,8 +369,8 @@ function renderBoard() {
     const domain = isHandle ? e.destination : (() => {
       try { return new URL(e.destination).hostname.replace(/^www\./, ''); } catch { return e.destination; }
     })();
-    const targetUrl = isHandle ? ('https://x.com/' + e.destination.slice(1)) : e.destination;
-    const logo = e.logo_path ? `<img src="${esc(getLogoUrl(e.logo_path))}" alt="${esc(e.display_name)}">` : esc(initials(e.display_name || domain));
+    const logoSrc = getLogoUrl(e.logo_path, domain);
+    const logo = `<img src="${esc(logoSrc)}" alt="${esc(e.display_name || domain)}" onerror="this.onerror=null; this.src='https://unavatar.io/${encodeURIComponent(domain)}';">`;
 
     const clicks = e.click_count || 0;
     const clicksText = `${clicks} ${clicks === 1 ? 'click' : 'clicks'}`;
@@ -390,7 +390,7 @@ function renderBoard() {
             <span class="meta-item meta-domain">${esc(domain)}</span>
             ${e.category ? `<span class="meta-item meta-category">${catIcon(e.category)} ${esc(e.category)}</span>` : ''}
             <span class="meta-item clicks-item" id="clickCount-${esc(e.id)}" data-clicks="${clicks}"><span class="click-dot"></span> ${clicksText}</span>
-            <a class="meta-item see-details" href="product.html?slug=${esc(e.slug || e.id)}" onclick="event.stopPropagation()">stats</a>
+            <a class="meta-item see-details" href="/product?slug=${esc(e.slug || e.id)}" onclick="event.stopPropagation()">stats</a>
           </div>
         </div>
       </div>
@@ -447,7 +447,7 @@ async function bumpVisitor() {
   if (countEl) {
     const online = 234 + Math.floor(Math.random() * 8);
     const visitors = '1,333,572';
-    countEl.innerHTML = `${online} online · ${visitors} visitors since launch · <a href="donations.html" style="color:inherit">see stats→</a>`;
+    countEl.innerHTML = `${online} online · ${visitors} visitors since launch · <a href="/donations" style="color:inherit">see stats→</a>`;
   }
 }
 

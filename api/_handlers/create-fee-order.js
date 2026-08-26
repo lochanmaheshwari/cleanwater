@@ -110,8 +110,8 @@ export default async function handler(req, res) {
           brand_name: 'savewater.tech',
           shipping_preference: 'NO_SHIPPING',
           user_action: 'PAY_NOW',
-          return_url: `${SITE}/done.html?id=${entryId}`,
-          cancel_url: `${SITE}/fee.html?id=${entryId}&cancelled=1`
+          return_url: `${SITE}/done?id=${entryId}`,
+          cancel_url: `${SITE}/fee?id=${entryId}&cancelled=1`
         }
       })
     });

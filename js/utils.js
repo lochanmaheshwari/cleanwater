@@ -83,8 +83,12 @@ export function esc(s){
   const d=document.createElement('div'); d.textContent=s; return d.innerHTML;
 }
 
-export function getLogoUrl(path){
-  if(!path) return '';
-  if(path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
-  return `https://ecvumloyecjefvryjgaf.supabase.co/storage/v1/object/public/logos/${path.replace(/^\/+/,'')}`;
+export function getLogoUrl(path, domain){
+  if(path && (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:'))) return path;
+  if(path) return `https://ecvumloyecjefvryjgaf.supabase.co/storage/v1/object/public/logos/${path.replace(/^\/+/,'')}`;
+  if(domain) {
+    const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0].split('?')[0];
+    return `https://www.google.com/s2/favicons?domain=${cleanDomain}&sz=128`;
+  }
+  return '';
 }

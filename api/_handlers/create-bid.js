@@ -155,7 +155,7 @@ export default async function handler(req, res) {
     slug = slug.replace(/^\/+|\/+$/g, '') || 'clean-water-funded-by';
 
     const donationDollars = (donationCents / 100).toFixed(2);
-    const targetRedirect = `${siteUrl}/fee.html?id=${encodeURIComponent(entryId)}`;
+    const targetRedirect = `${siteUrl}/fee?id=${encodeURIComponent(entryId)}`;
     const donationUrl = `https://www.every.org/water-org/f/${slug}`
       + `?amount=${encodeURIComponent(donationDollars)}`
       + `&partnerDonationId=${encodeURIComponent(entryId)}`
