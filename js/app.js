@@ -431,6 +431,8 @@ function renderBoard() {
     const clicks = e.click_count || 0;
     const clicksText = `${clicks} ${clicks === 1 ? 'click' : 'clicks'}`;
     const displayBid = currentTab === 'today' ? (e.today_bid_cents || e.total_bid_cents) : e.total_bid_cents;
+    const donCents = e.donated_cents || Math.round(displayBid * 0.75);
+    const donFormatted = formatMoney2(donCents);
 
     board.innerHTML += `
       <div class="card board-card-clickable" data-url="${esc(targetUrl)}" data-id="${esc(e.id)}">
@@ -439,7 +441,10 @@ function renderBoard() {
         <div class="card-content">
           <div class="card-top-row">
             <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="card-title" data-click-id="${esc(e.id)}">${esc(e.display_name || domain)} <span class="external-arrow">↗</span></a>
-            <div class="card-bid">${formatMoney(displayBid)}</div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="card-bid">${formatMoney(displayBid)}</div>
+              <div style="font-size:11px;color:#059669;font-weight:600;margin-top:1px;white-space:nowrap">💧 ${donFormatted} to clean water</div>
+            </div>
           </div>
           <div class="card-blurb">${esc(e.description || '')}</div>
           <div class="card-meta">
