@@ -414,8 +414,8 @@ async function load(retryCount = 0) {
 
     // Derive authoritative numbers strictly from the database
     const donCents = entryData.donated_cents || Math.round((entryData.total_bid_cents || 500) * 0.75);
-    totalBidCents = Math.round(donCents / 0.75);
-    feeCents = Math.max(100, totalBidCents - donCents);
+    feeCents = Math.round(donCents * (25 / 75));
+    totalBidCents = donCents + feeCents;
 
     const totalDollars = (totalBidCents / 100);
     const donDollars = (donCents / 100);
