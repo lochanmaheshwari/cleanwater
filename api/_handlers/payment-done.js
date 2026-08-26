@@ -17,8 +17,8 @@ export default async function handler(req, res) {
     const { data: entry, error: findErr } = await supabase.from('entries').select('*').eq('id', entryId).maybeSingle();
     if (findErr) throw findErr;
     // Verify that Step 1 (75% Every.org Donation) was actually completed
-    let isDonationVerified = Boolean(entry.donation_confirmed && (entry.everyorg_donation_id || entry.everyorg_charge_id));
-    let chargeId = entry.everyorg_donation_id || entry.everyorg_charge_id;
+    let isDonationVerified = Boolean(entry.donation_confirmed && entry.everyorg_donation_id);
+    let chargeId = entry.everyorg_donation_id;
     let verifiedDonationCents = entry.donated_cents || 0;
 
     if (!isDonationVerified || verifiedDonationCents === 0) {

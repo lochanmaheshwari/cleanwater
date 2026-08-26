@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     if (!entry) return res.status(404).json({ error: 'entry not found' });
 
     // Cryptographic Check: Verify that Step 1 (Every.org 75% Donation) actually settled
-    let isDonationVerified = Boolean(entry.donation_confirmed && (entry.everyorg_donation_id || entry.everyorg_charge_id));
+    let isDonationVerified = Boolean(entry.donation_confirmed && entry.everyorg_donation_id);
     let verifiedDonationCents = entry.donated_cents || 0;
 
     if (!isDonationVerified || verifiedDonationCents === 0) {
@@ -67,7 +67,6 @@ export default async function handler(req, res) {
           await sb.from('entries').update({
             donation_confirmed: true,
             everyorg_donation_id: String(chargeId),
-            everyorg_charge_id: String(chargeId),
             donated_cents: verifiedDonationCents
           }).eq('id', entryId);
           isDonationVerified = true;

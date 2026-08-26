@@ -26,7 +26,7 @@ export default async function handler(req,res){
 
     // Record donation confirmation
     const updateObj = {
-      everyorg_charge_id: charge || partnerId + ':' + Date.now(),
+      everyorg_donation_id: String(charge || partnerId + ':' + Date.now()),
       donated_at: new Date().toISOString(),
       donation_confirmed: true,
       donated_cents: (entry.donated_cents || 0) + (paid || requiredDonation)

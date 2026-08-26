@@ -24,7 +24,6 @@ export default async function handler(req, res) {
     const { error } = await sb.from('entries').update({
       donation_confirmed: true,
       everyorg_donation_id: testChargeId,
-      everyorg_charge_id: testChargeId,
       donated_cents: donCents,
       status: 'awaiting_fee',
       last_bid_at: new Date().toISOString()
