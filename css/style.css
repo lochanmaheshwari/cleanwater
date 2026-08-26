@@ -301,12 +301,35 @@ body.dark,
 .stepper button:active {
   transform: scale(0.94);
 }
-.stepper .val {
+.stepper .val,
+.stepper .val-input {
   font-size: 54px;
   font-weight: 800;
   color: var(--accent);
   letter-spacing: -0.04em;
   line-height: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: text;
+  border-bottom: 2px dashed transparent;
+  transition: border-color 0.15s;
+}
+.stepper .val-input:hover,
+.stepper .val-input:focus {
+  border-bottom-color: var(--accent);
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.stepper input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .subline {
@@ -955,8 +978,9 @@ footer a:hover { color: var(--ink); }
     gap: 8px;
     margin-bottom: 8px;
   }
-  .stepper .val {
-    font-size: 26px;
+  .stepper .val,
+  .stepper .val-input {
+    font-size: 26px !important;
   }
   .stepper button {
     width: 28px;

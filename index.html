@@ -56,9 +56,12 @@
   <h1 class="headline">
     <span id="headlineClaim">Claim #1 for</span>
     <span class="stepper">
-      <button id="decBtn" aria-label="decrease">−</button>
-      <span class="val" id="bidValue">$5</span>
-      <button id="incBtn" aria-label="increase">+</button>
+      <button id="decBtn" type="button" aria-label="decrease">−</button>
+      <span style="display:inline-flex;align-items:center;position:relative">
+        <span style="color:var(--accent);font-size:inherit;font-weight:inherit;pointer-events:none">$</span>
+        <input id="bidValueInput" class="val-input" type="number" min="5" max="999999" step="1" value="30" aria-label="bid amount" style="width:2.5ch">
+      </span>
+      <button id="incBtn" type="button" aria-label="increase">+</button>
     </span>
   </h1>
   <p class="subline">AI runs on water. <strong>75% of every bid goes straight to clean water</strong> (Water.org via Every.org). Instant global exposure.</p>

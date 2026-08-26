@@ -86,25 +86,51 @@ async function init() {
   loadPayPalSDK();
   initTheme();
 
-  // Stepper wiring
-  const rawBidVal = parseInt($('#bidValue')?.textContent?.replace(/[^0-9]/g, '') || '5', 10);
-  bidAmount = rawBidVal;
+  // Stepper wiring: allow clicking + / − AND typing any custom amount (min $5)
+  const bidInput = $('#bidValueInput');
+  const initialTopDollars = Math.round((filtered()[0]?.total_bid_cents || 0) / 100);
+  bidAmount = initialTopDollars ? initialTopDollars + 5 : 30;
 
-  $('#decBtn')?.addEventListener('click', () => adjustBid(-1));
-  $('#incBtn')?.addEventListener('click', () => adjustBid(1));
-
-  function adjustBid(delta) {
-    bidAmount = Math.min(999999, Math.max(5, bidAmount + delta));
-    updateHeadline();
-  }
-
-  function updateHeadline() {
-    const el = $('#bidValue');
-    if (el) el.textContent = '$' + bidAmount;
+  function setBid(val, syncInput = true) {
+    bidAmount = Math.min(999999, Math.max(5, val || 5));
+    if (syncInput && bidInput) {
+      bidInput.value = bidAmount;
+      bidInput.style.width = Math.max(2, String(bidAmount).length) + 'ch';
+    }
     const claim = $('#headlineClaim');
     if (claim) claim.textContent = 'Claim #1 for';
   }
-  updateHeadline();
+
+  $('#decBtn')?.addEventListener('click', () => setBid(bidAmount - 1));
+  $('#incBtn')?.addEventListener('click', () => setBid(bidAmount + 1));
+
+  if (bidInput) {
+    bidInput.addEventListener('input', () => {
+      const val = parseInt(bidInput.value, 10);
+      if (!isNaN(val)) {
+        bidAmount = Math.min(999999, Math.max(1, val));
+        bidInput.style.width = Math.max(2, String(bidInput.value).length) + 'ch';
+      }
+    });
+
+    bidInput.addEventListener('blur', () => {
+      let val = parseInt(bidInput.value, 10);
+      if (isNaN(val) || val < 5) {
+        val = 5;
+      }
+      setBid(val);
+    });
+
+    bidInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        bidInput.blur();
+        $('#destinationInput')?.focus();
+      }
+    });
+  }
+
+  setBid(bidAmount);
 
   // Form handling & Logo upload initialization
   try {
@@ -114,9 +140,8 @@ async function init() {
 
     window.__setBidFromTop = (topCents) => {
       const topDollars = Math.round((topCents || 0) / 100);
-      const prefill = topCents ? topDollars + 5 : 5;
-      bidAmount = Math.min(999999, Math.max(5, prefill));
-      updateHeadline();
+      const prefill = topCents ? topDollars + 5 : 30;
+      setBid(prefill);
     };
   } catch (e) {
     console.warn('form init error', e);
