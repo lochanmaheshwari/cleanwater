@@ -11,6 +11,9 @@ import paypalConfigHandler from './_handlers/paypal-config.js';
 import paypalDoneHandler from './_handlers/paypal-done.js';
 import toDonationHandler from './_handlers/to-donation.js';
 import statsHandler from './_handlers/stats.js';
+import createUropayOrderHandler from './_handlers/create-uropay-order.js';
+import uropayWebhookHandler from './_handlers/uropay-webhook.js';
+import uropayConfigHandler from './_handlers/uropay-config.js';
 
 export const config = {
   api: {
@@ -34,7 +37,10 @@ const routes = {
   'paypal-config': paypalConfigHandler,
   'paypal-done': paypalDoneHandler,
   'to-donation': toDonationHandler,
-  'stats': statsHandler
+  'stats': statsHandler,
+  'create-uropay-order': createUropayOrderHandler,
+  'uropay-webhook': uropayWebhookHandler,
+  'uropay-config': uropayConfigHandler
 };
 
 export default async function handler(req, res) {

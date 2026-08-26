@@ -601,12 +601,59 @@ function handleHeroOutbid() {
     modal.style.display = 'flex';
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    // UPI premium: update amount + auto-highlight for India, wire handlers once
+    try {
+      updateUpiVisibility(bidAmount);
+      // hide divider on non-IN if you want? Keep visible but highlight for IN
+      if (detectIndia()) {
+        const d = document.getElementById('upiDivider');
+        if (d) d.style.color = 'rgba(125,211,252,0.85)';
+      }
+      // reset UPI panel
+      const panel = document.getElementById('upiPanel');
+      if (panel) panel.style.display = 'none';
+      const qrBox = document.getElementById('upiQrImg');
+      if (qrBox) qrBox.innerHTML = '';
+      const status = document.getElementById('upiStatus');
+      if (status) { status.style.display='none'; status.textContent=''; }
+    } catch {}
+    // bind UPI button once
+    if (!window.__upiBound) {
+      window.__upiBound = true;
+      document.getElementById('outbidModalPayUpi')?.addEventListener('click', handleUpiPay);
+      document.getElementById('upiRefSubmit')?.addEventListener('click', handleUpiRefSubmit);
+      document.getElementById('outbidModalPay')?.addEventListener('click', () => {
+        // ensure Every.org still works - keep original
+      });
+      // ESC already handled
+    }
 
     setTimeout(() => document.getElementById('descriptionInput')?.focus(), 50);
   }
 }
 
 // Step 1: Redirect to Every.org 75% clean water donation
+// Auto-show UPI for India
+function detectIndia() {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (tz.includes('Kolkata') || tz.includes('Asia/Calcutta')) return true;
+    const lang = (navigator.language || '').toLowerCase();
+    if (lang === 'en-in' || lang.endsWith('-in')) return true;
+  } catch {}
+  return false;
+}
+function updateUpiVisibility(bid) {
+  const amt = document.getElementById('btnUpiAmt');
+  if (amt) {
+    // show INR equivalent ~83.5
+    const inr = Math.round(bid * 83.5);
+    amt.textContent = `₹${inr.toLocaleString('en-IN')} ($${bid})`;
+  }
+}
+// Patch modal open to also init UPI amount
+const _origOpen = window.__origOpen || null;
+
 async function handleOutbidModalPay() {
   const err = document.getElementById('outbidModalError');
   if (err) err.style.display = 'none';
@@ -697,3 +744,168 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
+
+// ========== UroPay UPI handlers (normal flow, savewater.tech) ==========
+let __upiPoll = null;
+
+async function handleUpiPay() {
+  const errEl = document.getElementById('outbidModalError');
+  if (errEl) errEl.style.display = 'none';
+  const pending = window.__pendingOutbid;
+  if (!pending) { showModalFormError('Session expired. Close and click Outbid again.'); return; }
+  const desc = document.getElementById('descriptionInput')?.value?.trim() || '';
+  const logoPath = window.__formApi?.getLogoPath() || null;
+  const isExisting = window.__formApi?.isExisting() || pending.isExisting;
+  if (!isExisting) {
+    if (!desc) { showModalFormError('Please add one sentence describing what your product does.'); return; }
+    if (!logoPath) { showModalFormError('Please upload an icon/logo for your product.'); return; }
+  }
+  const cleanDesc = desc.replace(/<[^>]*>/g,'').slice(0,100);
+  const btn = document.getElementById('outbidModalPayUpi');
+  const orig = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating UPI request…'; }
+  try {
+    const r = await fetch('/api/create-uropay-order', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ destination: pending.dest, bidDollars: pending.bid, category: pending.cat, description: cleanDesc, logoPath })
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'UPI order failed');
+    // show panel
+    const panel = document.getElementById('upiPanel');
+    const qrBox = document.getElementById('upiQrImg');
+    const intent = document.getElementById('upiIntentLink');
+    const status = document.getElementById('upiStatus');
+    if (panel) panel.style.display = 'block';
+    // render QR
+    const upiUrl = j.upiUrl || j.upi_url || '';
+    const paymentUrl = j.paymentUrl || j.payment_url || '';
+    const qr = j.qr || j.qr_code || '';
+    const amountInr = j.amountInr || String(Math.round(pending.bid*83.5));
+    // QR image: use UroPay qr if provided, else generate via qrserver
+    if (qrBox) {
+      if (qr) {
+        qrBox.innerHTML = `<img src="${qr}" alt="UPI QR" style="width:100%;height:100%;object-fit:contain;border-radius:10px">`;
+      } else if (upiUrl) {
+        const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUrl)}`;
+        qrBox.innerHTML = `<img src="${qrApi}" alt="UPI QR" style="width:100%;height:100%;object-fit:contain">`;
+      } else if (paymentUrl) {
+        const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(paymentUrl)}`;
+        qrBox.innerHTML = `<img src="${qrApi}" alt="UPI QR" style="width:100%;height:100%;object-fit:contain">`;
+      } else {
+        qrBox.innerHTML = `<div style="font-size:12px;color:#64748B;padding:16px;text-align:center">QR unavailable. Use Open UPI App</div>`;
+      }
+    }
+    if (intent) {
+      const href = upiUrl || paymentUrl || '#';
+      intent.href = href;
+      intent.style.display = href === '#' ? 'none' : 'inline-flex';
+      intent.onclick = (e) => { if (href.startsWith('upi://')) { /* let native handle */ } };
+    }
+    if (status) {
+      status.style.display = 'block';
+      status.innerHTML = `Pay <strong>₹${amountInr}</strong> via any UPI app. Auto-confirm via webhook in ~5s. <span style="color:#059669">Keep this open.</span>`;
+    }
+    // poll for success
+    if (j.entryId) {
+      clearInterval(__upiPoll);
+      let tries = 0;
+      __upiPoll = setInterval(async () => {
+        tries++;
+        if (tries > 90) { clearInterval(__upiPoll); return; } // 3min
+        try {
+          const s = await fetch(`/api/check-status?id=${encodeURIComponent(j.entryId)}`);
+          const sj = await s.json();
+          const e = sj.entry || sj;
+          if (e && (e.status === 'live' || e.payment_confirmed)) {
+            clearInterval(__upiPoll);
+            if (status) status.innerHTML = '✅ <strong>Payment confirmed!</strong> Publishing to leaderboard…';
+            setTimeout(() => { window.location.href = `/done.html?id=${encodeURIComponent(j.entryId)}`; }, 700);
+          }
+        } catch {}
+      }, 2000);
+    }
+  } catch (e) {
+    showModalFormError(e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = orig || 'Pay via UPI →'; }
+  }
+}
+
+async function handleUpiRefSubmit() {
+  const input = document.getElementById('upiRefInput');
+  const msg = document.getElementById('upiRefMsg');
+  const status = document.getElementById('upiStatus');
+  const utr = (input?.value || '').trim().replace(/\s+/g,'');
+  if (!utr || utr.length < 6) {
+    if (msg) { msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='Enter valid UPI Reference / UTR'; }
+    return;
+  }
+  const pending = window.__pendingOutbid;
+  // we need entryId - last created via UPI is stored globally
+  const entryId = window.__upiEntryId || window.__pendingOutbid?.__entryId;
+  // If no entryId yet, try to create one via fallback poll: we stored from last handleUpiPay
+  // For manual verify, call webhook-style verify via payment-done with upi ref
+  if (msg) { msg.style.display='block'; msg.style.color='#64748B'; msg.textContent='Verifying…'; }
+  try {
+    // Try to verify via uropay-webhook manual trigger: POST to /api/uropay-webhook with partnerOrderId
+    // But easier: if we have entryId from last order, call webhook
+    const lastId = window.__lastUpiEntryId;
+    const targetId = lastId || (pending && pending.__lastEntryId);
+    if (!targetId) {
+      if (msg) { msg.style.color='#dc2626'; msg.textContent='No order found. Pay via UPI first, then enter UTR.'; }
+      return;
+    }
+    const r = await fetch('/api/uropay-webhook', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partnerOrderId: targetId, order_id: targetId, utr: utr, status: 'success', success: true })
+    });
+    const j = await r.json().catch(()=>({}));
+    if (r.ok) {
+      if (msg) { msg.style.color='#059669'; msg.textContent='✅ Verified! Publishing…'; }
+      if (status) { status.style.display='block'; status.textContent='✅ Payment verified via UTR. Redirecting…'; }
+      setTimeout(()=> window.location.href = `/done.html?id=${encodeURIComponent(targetId)}`, 900);
+    } else {
+      throw new Error(j.error || 'Verification failed');
+    }
+  } catch (e) {
+    if (msg) { msg.style.color='#dc2626'; msg.textContent = e.message; }
+  }
+}
+
+// Store last entryId for ref submit
+const _origHandleUpiPayRef = handleUpiPay;
+const _orig = handleUpiPay;
+handleUpiPay = async function() {
+  const r = await _origHandleUpiPayRef();
+  return r;
+};
+// patch to capture entryId - monkey via fetch intercept inside handleUpiPay already stores
+// So after create-uropay-order returns, set global
+(function(){
+  const origFetch = window.fetch;
+  // no override needed, we set in handleUpiPay
+})();
+
+// Expose for ref submit
+window.handleUpiPay = handleUpiPay;
+window.handleUpiRefSubmit = handleUpiRefSubmit;
+
+// Capture entryId on UPI order
+const _fetch = window.fetch;
+window.fetch = async function(...a){
+  const res = await _fetch(...a);
+  try {
+    const url = a[0] || '';
+    if (typeof url === 'string' && url.includes('create-uropay-order')) {
+      res.clone().json().then(j=>{
+        if (j && j.entryId) {
+          window.__lastUpiEntryId = j.entryId;
+          window.__upiEntryId = j.entryId;
+          if (window.__pendingOutbid) window.__pendingOutbid.__lastEntryId = j.entryId;
+        }
+      }).catch(()=>{});
+    }
+  } catch {}
+  return res;
+};
