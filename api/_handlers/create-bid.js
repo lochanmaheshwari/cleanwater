@@ -160,6 +160,7 @@ export default async function handler(req, res) {
     const targetRedirect = `${siteUrl}/fee.html?id=${encodeURIComponent(entryId)}`;
     const donationUrl = `https://www.every.org/water-org/f/${slug}`
       + `?amount=${encodeURIComponent(donationDollars)}`
+      + `&tip=0`
       + `&partnerDonationId=${encodeURIComponent(entryId)}`
       + `&redirectUrl=${encodeURIComponent(targetRedirect)}`
       + `&success_url=${encodeURIComponent(targetRedirect)}`

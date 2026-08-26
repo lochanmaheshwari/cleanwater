@@ -505,15 +505,24 @@ function updateWater() {
 }
 
 async function bumpVisitor() {
-  const statsEl = $('#liveStatsText') || $('#onlineCount');
+  // Calculate real total donated from loaded entries (instant, no extra fetch)
+  const totalDonatedCents = allEntries.reduce((s, e) => s + (e.donated_cents || Math.round((e.total_bid_cents || 0) * 0.75)), 0);
+  const donatedEl = $('#totalDonatedText');
+  if (donatedEl && totalDonatedCents > 0) {
+    donatedEl.innerHTML = `💧 <strong>$${(totalDonatedCents / 100).toFixed(2)}</strong> donated to clean water`;
+  }
+
   try {
     const res = await fetch('/api/stats?bump=1', { method: 'POST' });
     const data = await res.json();
     if (data && data.ok) {
       const visitorsStr = (data.visitors || 1).toLocaleString();
       const onlineStr = data.online || 1;
+      const totalFromApi = data.totalDonatedCents || totalDonatedCents;
+      const donStr = `$${(totalFromApi / 100).toFixed(2)}`;
+      const statsEl = $('#liveStatsText');
       if (statsEl) {
-        statsEl.innerHTML = `<strong>${onlineStr}</strong> online · <strong>${visitorsStr}</strong> ${data.visitors === 1 ? 'visitor' : 'visitors'} since launch · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
+        statsEl.innerHTML = `<strong>${onlineStr}</strong> online · <span id="totalDonatedText">💧 <strong>${donStr}</strong> donated to clean water</span> · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
       }
     }
   } catch (err) {
