@@ -101,3 +101,10 @@ on conflict (destination) do nothing;
 insert into bids (entry_id, amount_cents, donated_cents)
 select id, 500, 375 from entries where slug='hello-water'
 on conflict do nothing;
+
+-- UroPay UPI for India (savewater.tech normal flow)
+alter table entries
+  add column if not exists uropay_order_id text,
+  add column if not exists uropay_utr text,
+  add column if not exists uropay_last_status text;
+create index if not exists entries_uropay_order_id on entries (uropay_order_id);
