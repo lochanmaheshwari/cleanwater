@@ -1531,25 +1531,28 @@ footer a:hover { color: var(--ink); }
    Donations Page Styles
    ========================================================================== */
 .donations-hero {
-  max-width: var(--max-width);
-  margin: 32px auto 0;
+  max-width: 800px;
+  margin: 36px auto 0;
   padding: 0 20px;
   text-align: center;
 }
 
 .donations-hero h1 {
-  font-size: 44px;
+  font-size: 40px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   line-height: 1.15;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+  text-align: center;
 }
 
 .donations-hero p {
-  font-size: 16px;
+  font-size: 15.5px;
   color: var(--muted);
-  max-width: 620px;
-  margin: 0 auto 24px;
+  max-width: 640px;
+  margin: 0 auto 30px;
+  line-height: 1.55;
+  text-align: center;
 }
 
 .impact-grid {
