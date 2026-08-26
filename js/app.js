@@ -3,60 +3,63 @@ import { getSupabase } from './supabase.js';
 import { normalizeDestination, formatMoney, formatMoney2, timeAgo, hoursSince, initials, esc, getLogoUrl } from './utils.js';
 import { initTheme } from './theme.js';
 
+const DEFAULT_ENTRIES = [
+  {
+    id: "1341a108-2487-4a0d-a6b7-b23d7c0af897",
+    slug: "https-tenra-ai-1yyl",
+    destination: "https://tenra.ai",
+    display_name: "tenra.ai",
+    description: "Your business runs on decisions. Let AI make it better.",
+    logo_path: "pending/1787727426741-zvbhtd.webp",
+    category: "AI Agents & Infrastructure",
+    total_bid_cents: 2500,
+    donated_cents: 1875,
+    click_count: 3,
+    status: "live",
+    first_bid_at: "2026-08-26T06:57:43.904814+00:00",
+    last_bid_at: "2026-08-26T07:07:32.432+00:00"
+  },
+  {
+    id: "28f96a8b-ee5b-4e2c-a793-5f90461f3c3c",
+    slug: "lochan-maru-vercel-app",
+    destination: "https://lochan-maru.vercel.app",
+    display_name: "lochan-maru.vercel.app",
+    description: "bn",
+    logo_path: "pending/1787685063008-75jww9.webp",
+    category: "SEO & AI Visibility",
+    total_bid_cents: 2000,
+    donated_cents: 1500,
+    click_count: 3,
+    status: "live",
+    first_bid_at: "2026-08-25T17:09:59.448102+00:00",
+    last_bid_at: "2026-08-25T19:42:33.388+00:00"
+  }
+];
+
 let supabase = null;
-let allEntries = [];
-let bidsCache = [];
+let allEntries = (() => {
+  try {
+    const cached = JSON.parse(localStorage.getItem('sw_cached_entries') || 'null');
+    if (Array.isArray(cached) && cached.length > 0) return cached;
+  } catch(e) {}
+  return DEFAULT_ENTRIES;
+})();
+
+let bidsCache = (() => {
+  try {
+    const cached = JSON.parse(localStorage.getItem('sw_cached_bids') || 'null');
+    if (Array.isArray(cached)) return cached;
+  } catch(e) {}
+  return [];
+})();
+
 let stats = { visitor_count: 1333572, launched_at: new Date().toISOString() };
 let currentTab = 'all'; // all | today
 let currentCategory = 'all';
 let visibleCount = 50;
 let bidAmount = 5;
 
-// Mock data if Supabase is empty
-const MOCK = [
-  {
-    id: '1',
-    slug: 'see-io',
-    destination: 'https://see.io',
-    display_name: 'see.io · see your idea live',
-    description: 'Just describe your idea. AI turns it into a fully built, live website in minutes. Get your own domain whenever you want one. No coding required.',
-    category: 'AI Agents & Infrastructure',
-    total_bid_cents: 1700000,
-    donated_cents: 1275000,
-    click_count: 28906,
-    first_bid_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    last_bid_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    status: 'live'
-  },
-  {
-    id: '2',
-    slug: 'tutti',
-    destination: 'https://tutti.so',
-    display_name: 'Tutti — Your all-in-one marketplace to monetize influence',
-    description: 'Join campaigns from real brands and get paid on effective exposure and engagement. No minimum followers. Performance-based payouts for creators on X/Twitter.',
-    category: 'Marketing & Advertising',
-    total_bid_cents: 1600000,
-    donated_cents: 1200000,
-    click_count: 5287,
-    first_bid_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    last_bid_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    status: 'live'
-  },
-  {
-    id: '3',
-    slug: 'joni-ai',
-    destination: 'https://joni.ai',
-    display_name: 'JONI | Your Personal AI Computer',
-    description: 'JONI is your personal AI computer. Chat once and a team of AI agents and skills gets to work, with the right model picked for every job. None of the complexity.',
-    category: 'AI Agents & Infrastructure',
-    total_bid_cents: 1402800,
-    donated_cents: 1052100,
-    click_count: 18427,
-    first_bid_at: new Date(Date.now() - 3600000 * 48).toISOString(),
-    last_bid_at: new Date(Date.now() - 3600000 * 48).toISOString(),
-    status: 'live'
-  }
-];
+const MOCK = DEFAULT_ENTRIES;
 
 function $(s) { return document.querySelector(s); }
 function $all(s) { return [...document.querySelectorAll(s)]; }
@@ -173,11 +176,12 @@ async function init() {
     await handleOutbidModalPay();
   });
 
-  // Initial immediate render (0ms synchronous)
+  // Initial immediate render (0.0ms instantaneous paint)
   renderBoard();
+  updateWater();
 
-  // Load board data in background
-  await loadData();
+  // Load fresh board data in background (non-blocking)
+  loadData();
 
   // Supabase Realtime updates
   try {
@@ -328,10 +332,16 @@ async function loadData() {
       } catch {}
     }
 
-    allEntries = entries && entries.length > 0 ? entries : MOCK;
+    if (entries && entries.length > 0) {
+      allEntries = entries;
+      try {
+        localStorage.setItem('sw_cached_entries', JSON.stringify(allEntries));
+        localStorage.setItem('sw_cached_bids', JSON.stringify(bidsCache));
+      } catch(e) {}
+    }
     window.__allEntries = allEntries;
   } catch (err) {
-    if (allEntries.length === 0) allEntries = MOCK;
+    if (!allEntries || allEntries.length === 0) allEntries = DEFAULT_ENTRIES;
     window.__allEntries = allEntries;
   }
 
