@@ -72,10 +72,10 @@
   <div class="impact-card">
     <div>
       <div class="impact-icon-wrap">🌊</div>
-      <div class="impact-card-value" id="statLiters">0 Liters</div>
+      <div class="impact-card-value" id="statPeopleVal">11 People</div>
       <div class="impact-card-title">Clean Water Impact</div>
     </div>
-    <div class="impact-card-desc" id="statPeople">Safe, long-lasting drinking water funded for communities in need.</div>
+    <div class="impact-card-desc" id="statPeopleDesc">Provided safe, lasting clean water access for 20+ years.</div>
   </div>
 
   <div class="impact-card">
@@ -179,13 +179,12 @@ async function loadDonations() {
     }
 
     // Update Stats Card Values
-    document.getElementById('statDonated').textContent = formatMoney2(totalDonatedCents);
-    document.getElementById('statTotal').textContent = formatMoney2(totalBidsCents);
+    document.getElementById('statDonated').textContent = formatMoney(totalDonatedCents);
+    document.getElementById('statTotal').textContent = formatMoney(totalBidsCents);
 
-    const liters = Math.round((totalDonatedCents / 100) * 1000).toLocaleString('en-US');
-    document.getElementById('statLiters').textContent = `~${liters} L`;
-    const people = Math.max(1, Math.round(totalDonatedCents / 500));
-    document.getElementById('statPeople').textContent = `Estimated ~${people} people provided clean water for over a year.`;
+    const people = Math.max(1, Math.round((totalDonatedCents / 100) / 5));
+    document.getElementById('statPeopleVal').textContent = `${people} People`;
+    document.getElementById('statPeopleDesc').textContent = `Provided safe, lasting clean water access for 20+ years.`;
 
     document.getElementById('donorCountBadge').textContent = `${confirmedDonors.length} Completed`;
 
