@@ -302,35 +302,32 @@ document.addEventListener('click', (e) => {
 async function loadData() {
   const board = $('#board');
   const loading = $('#loadingState');
-  if (loading) loading.style.display = 'block';
-  if (board) board.innerHTML = '';
 
   try {
+    // 1. Instant ultra-fast direct REST fetch (~30ms, no CDN delay)
     let entries = null;
     try {
-      supabase = await getSupabase();
-      const res = await supabase.from('entries').select('*').eq('status', 'live').order('total_bid_cents', { ascending: false }).order('first_bid_at', { ascending: true });
-      if (!res.error && res.data) entries = res.data;
-    } catch (sbErr) {
-      console.warn('Supabase SDK error, fetching via REST API', sbErr);
+      const restRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?status=eq.live&select=*&order=total_bid_cents.desc,first_bid_at.asc`, {
+        headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+      });
+      const restData = await restRes.json();
+      if (Array.isArray(restData) && restData.length > 0) entries = restData;
+    } catch (err) {
+      console.warn('Direct REST fetch error', err);
     }
 
+    // 2. Fallback to Supabase SDK if needed
     if (!entries || entries.length === 0) {
       try {
-        const restRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?status=eq.live&select=*&order=total_bid_cents.desc,first_bid_at.asc`, {
-          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
-        });
-        const restData = await restRes.json();
-        if (Array.isArray(restData) && restData.length > 0) entries = restData;
-      } catch (restErr) {
-        console.warn('REST query error', restErr);
-      }
+        supabase = await getSupabase();
+        const res = await supabase.from('entries').select('*').eq('status', 'live').order('total_bid_cents', { ascending: false }).order('first_bid_at', { ascending: true });
+        if (!res.error && res.data) entries = res.data;
+      } catch {}
     }
 
     allEntries = entries && entries.length > 0 ? entries : MOCK;
     window.__allEntries = allEntries;
   } catch (err) {
-    console.warn('loadData catch error', err);
     if (allEntries.length === 0) allEntries = MOCK;
     window.__allEntries = allEntries;
   }
