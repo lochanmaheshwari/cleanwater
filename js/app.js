@@ -500,11 +500,19 @@ function updateWater() {
 }
 
 async function bumpVisitor() {
-  const countEl = $('#onlineCount');
-  if (countEl) {
-    const online = 234 + Math.floor(Math.random() * 8);
-    const visitors = '1,333,572';
-    countEl.innerHTML = `${online} online · ${visitors} visitors since launch · <a href="donations.html" style="color:inherit">see stats→</a>`;
+  const statsEl = $('#liveStatsText') || $('#onlineCount');
+  try {
+    const res = await fetch('/api/stats?bump=1', { method: 'POST' });
+    const data = await res.json();
+    if (data && data.ok) {
+      const visitorsStr = (data.visitors || 1).toLocaleString();
+      const onlineStr = data.online || 1;
+      if (statsEl) {
+        statsEl.innerHTML = `<strong>${onlineStr}</strong> online · <strong>${visitorsStr}</strong> ${data.visitors === 1 ? 'visitor' : 'visitors'} since launch · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a>`;
+      }
+    }
+  } catch (err) {
+    console.warn('Stats fetch err', err);
   }
 }
 

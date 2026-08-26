@@ -10,6 +10,7 @@ import paymentDoneHandler from './_handlers/payment-done.js';
 import paypalConfigHandler from './_handlers/paypal-config.js';
 import paypalDoneHandler from './_handlers/paypal-done.js';
 import toDonationHandler from './_handlers/to-donation.js';
+import statsHandler from './_handlers/stats.js';
 
 export const config = {
   api: {
@@ -32,7 +33,8 @@ const routes = {
   'payment-done': paymentDoneHandler,
   'paypal-config': paypalConfigHandler,
   'paypal-done': paypalDoneHandler,
-  'to-donation': toDonationHandler
+  'to-donation': toDonationHandler,
+  'stats': statsHandler
 };
 
 export default async function handler(req, res) {
