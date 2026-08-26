@@ -969,43 +969,56 @@ footer a:hover { color: var(--ink); }
     filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.4));
   }
 
+  .topbar {
+    padding: 10px 16px 6px;
+    gap: 8px;
+  }
+  .topbar .logo {
+    font-size: 17px;
+  }
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
   .hero {
-    margin: 14px auto 0;
-    padding: 0 18px;
+    margin: 6px auto 0;
+    padding: 0 16px;
   }
   .stats-pill-top {
-    font-size: 12.5px;
-    padding: 5px 14px;
-    margin: 0 auto 10px;
+    font-size: 11.5px;
+    padding: 3px 12px;
+    margin: 0 auto 6px;
     border-radius: var(--radius-pill);
   }
   .toggle {
-    padding: 3px;
-    margin: 4px auto 14px !important;
+    padding: 2px;
+    margin: 2px auto 8px !important;
   }
   .toggle button {
-    padding: 6px 14px;
-    font-size: 13px;
+    padding: 4px 12px;
+    font-size: 12px;
     border-radius: var(--radius-pill);
   }
   .headline {
-    font-size: 28px;
-    gap: 8px;
-    margin-bottom: 8px;
+    font-size: 23px;
+    gap: 6px;
+    margin-bottom: 4px;
   }
   .stepper .val,
   .stepper .val-input {
-    font-size: 28px !important;
+    font-size: 23px !important;
   }
   .stepper button {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
   }
   .subline {
-    font-size: 13.5px;
-    line-height: 1.5;
-    margin: 6px auto 16px;
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 3px auto 10px;
     max-width: 100%;
   }
 
@@ -1014,93 +1027,91 @@ footer a:hover { color: var(--ink); }
   }
   .input-row {
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
   }
   .pill-input {
-    padding: 10px 16px;
-    min-height: 44px;
+    padding: 7px 14px;
+    min-height: 38px;
   }
   .pill-input input {
-    font-size: 16px !important; /* Prevents iOS Safari auto-zoom */
+    font-size: 15px !important;
   }
   .select-wrap {
     width: 100%;
   }
   .pill-select {
-    padding: 10px 16px;
-    min-height: 44px;
-    font-size: 15px !important;
+    padding: 7px 14px;
+    min-height: 38px;
+    font-size: 14px !important;
   }
   .btn-outbid {
     width: 100%;
-    padding: 11px 18px;
-    min-height: 44px;
-    font-size: 15px;
+    padding: 9px 16px;
+    min-height: 38px;
+    font-size: 14px;
     font-weight: 700;
   }
   .hint {
-    font-size: 12px;
-    margin-top: 8px;
-    color: var(--muted);
+    display: none;
   }
 
   .board-header {
     display: none;
   }
   .cat-row-container {
-    padding: 0 18px;
-    margin: 14px auto 12px;
+    padding: 0 16px;
+    margin: 8px auto 8px;
   }
   .cat-chip {
-    padding: 6px 14px;
-    font-size: 12.5px;
-    height: 32px;
+    padding: 4px 11px;
+    font-size: 11.5px;
+    height: 28px;
   }
 
   .board {
-    padding: 0 18px;
-    gap: 12px;
-  }
-  .card {
-    padding: 14px 16px;
-    gap: 12px;
-    border-radius: 16px;
-  }
-  .rank-badge {
-    padding: 3px 9px;
-    font-size: 12px;
-    min-width: 30px;
-  }
-  .logo-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 16px;
-  }
-  .card-top-row {
+    padding: 0 16px;
     gap: 8px;
   }
-  .card-title {
+  .card {
+    padding: 10px 13px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+  .rank-badge {
+    padding: 2px 8px;
+    font-size: 11.5px;
+    min-width: 28px;
+  }
+  .logo-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     font-size: 15px;
+  }
+  .card-top-row {
+    gap: 6px;
+  }
+  .card-title {
+    font-size: 14.5px;
     font-weight: 700;
   }
   .card-bid {
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 800;
   }
   .card-blurb {
-    font-size: 13px;
-    line-height: 1.45;
-    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.35;
+    margin-top: 3px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
   .card-meta {
-    font-size: 11.5px;
-    gap: 8px;
-    margin-top: 6px;
+    font-size: 11px;
+    gap: 6px;
+    margin-top: 4px;
   }
 }
 
