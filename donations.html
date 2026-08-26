@@ -137,7 +137,7 @@
 <script type="module">
 import { CONFIG } from './js/config.js';
 import { getSupabase } from './js/supabase.js';
-import { formatMoney2, timeAgo, esc, getLogoUrl, initials } from './js/utils.js';
+import { formatMoney, formatMoney2, timeAgo, esc, getLogoUrl, initials } from './js/utils.js';
 import './js/theme.js';
 
 async function loadDonations() {
@@ -237,8 +237,8 @@ async function loadDonations() {
             </div>
           </div>
           <div class="donor-right" style="text-align:right">
-            <div class="donor-amount" style="font-size:16px;font-weight:800;color:#10B981">💧 ${formatMoney2(donAmt)} to clean water</div>
-            <div class="donor-total" style="font-size:12px;color:var(--muted);margin-top:2px">75% of ${formatMoney2(totalAmt)} total bid</div>
+            <div class="donor-amount" style="font-size:16px;font-weight:800;color:#10B981">💧 ${formatMoney(donAmt)} to clean water</div>
+            <div class="donor-total" style="font-size:12px;color:var(--muted);margin-top:2px">75% of ${formatMoney(totalAmt)} total bid</div>
           </div>
         </div>
       `;
