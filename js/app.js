@@ -372,13 +372,16 @@ function renderBoard() {
     const targetUrl = isHandle ? ('https://x.com/' + e.destination.slice(1)) : e.destination;
     const logo = e.logo_path ? `<img src="${esc(getLogoUrl(e.logo_path))}" alt="${esc(e.display_name)}">` : esc(initials(e.display_name || domain));
 
+    const clicks = e.click_count || 0;
+    const clicksText = `${clicks} ${clicks === 1 ? 'click' : 'clicks'}`;
+
     board.innerHTML += `
-      <div class="card board-card-clickable" data-url="${esc(targetUrl)}">
+      <div class="card board-card-clickable" data-url="${esc(targetUrl)}" data-id="${esc(e.id)}">
         <div class="rank-badge">#${rank}</div>
-        <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="logo-wrap" aria-label="${esc(e.display_name)}">${logo}</a>
+        <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="logo-wrap" data-click-id="${esc(e.id)}" aria-label="${esc(e.display_name)}">${logo}</a>
         <div class="card-content">
           <div class="card-top-row">
-            <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="card-title">${esc(e.display_name || domain)} <span class="external-arrow">↗</span></a>
+            <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="card-title" data-click-id="${esc(e.id)}">${esc(e.display_name || domain)} <span class="external-arrow">↗</span></a>
             <div class="card-bid">${formatMoney(e.total_bid_cents)}</div>
           </div>
           <div class="card-blurb">${esc(e.description || '')}</div>
@@ -386,7 +389,7 @@ function renderBoard() {
             <span class="meta-item">${esc(timeAgo(e.last_bid_at || e.first_bid_at))}</span>
             <span class="meta-item meta-domain">${esc(domain)}</span>
             ${e.category ? `<span class="meta-item meta-category">${catIcon(e.category)} ${esc(e.category)}</span>` : ''}
-            <span class="meta-item clicks-item"><span class="click-dot"></span> ${e.click_count || 0} clicks</span>
+            <span class="meta-item clicks-item" id="clickCount-${esc(e.id)}" data-clicks="${clicks}"><span class="click-dot"></span> ${clicksText}</span>
             <a class="meta-item see-details" href="product.html?slug=${esc(e.slug || e.id)}" onclick="event.stopPropagation()">stats</a>
           </div>
         </div>
@@ -394,10 +397,34 @@ function renderBoard() {
     `;
   });
 
-  // Attach card click listener to open website directly
+  // Track real clicks and open website
+  function registerClick(id) {
+    if (!id) return;
+    const el = document.getElementById(`clickCount-${id}`);
+    if (el) {
+      const cur = (parseInt(el.dataset.clicks || '0', 10) || 0) + 1;
+      el.dataset.clicks = cur;
+      el.innerHTML = `<span class="click-dot"></span> ${cur} ${cur === 1 ? 'click' : 'clicks'}`;
+    }
+    try {
+      fetch('/api/click', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+        keepalive: true
+      }).catch(() => {});
+    } catch {}
+  }
+
+  // Attach card click listener
   board.querySelectorAll('.board-card-clickable').forEach(card => {
+    const id = card.dataset.id;
     card.addEventListener('click', (ev) => {
-      if (ev.target.closest('a')) return;
+      if (ev.target.closest('a')) {
+        if (ev.target.closest('[data-click-id]')) registerClick(id);
+        return;
+      }
+      registerClick(id);
       const url = card.dataset.url;
       if (url) window.open(url, '_blank', 'noopener,sponsored');
     });

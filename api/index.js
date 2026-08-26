@@ -3,6 +3,7 @@ import checkExistingHandler from './_handlers/check-existing.js';
 import checkStatusHandler from './_handlers/check-status.js';
 import createBidHandler from './_handlers/create-bid.js';
 import createFeeOrderHandler from './_handlers/create-fee-order.js';
+import clickHandler from './_handlers/click.js';
 import donationDoneHandler from './_handlers/donation-done.js';
 import logoUploadHandler from './_handlers/logo-upload.js';
 import paymentDoneHandler from './_handlers/payment-done.js';
@@ -22,9 +23,11 @@ const routes = {
   'admin': adminHandler,
   'check-existing': checkExistingHandler,
   'check-status': checkStatusHandler,
+  'click': clickHandler,
   'create-bid': createBidHandler,
   'create-fee-order': createFeeOrderHandler,
   'donation-done': donationDoneHandler,
+  'everyorg-webhook': donationDoneHandler,
   'logo-upload': logoUploadHandler,
   'payment-done': paymentDoneHandler,
   'paypal-config': paypalConfigHandler,

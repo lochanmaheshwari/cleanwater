@@ -377,10 +377,14 @@ async function load(retryCount = 0) {
     totalBidCents = Math.round(donCents / 0.75);
     feeCents = Math.max(100, totalBidCents - donCents);
 
-    document.getElementById('totalBid').textContent = '$' + (totalBidCents / 100).toFixed(0);
-    document.getElementById('donatedAmt').textContent = '✓ $' + (donCents / 100).toFixed(2).replace(/\.00$/, '') + ' Paid';
-    document.getElementById('feeDue').textContent = '$' + (feeCents / 100).toFixed(2).replace(/\.00$/, '');
-    document.getElementById('feeAmountText').textContent = '$' + (feeCents / 100).toFixed(2).replace(/\.00$/, '');
+    const totalDollars = (totalBidCents / 100);
+    const donDollars = (donCents / 100);
+    const feeDollars = (feeCents / 100);
+
+    document.getElementById('totalBid').textContent = '$' + (totalBidCents % 100 === 0 ? totalDollars.toFixed(0) : totalDollars.toFixed(2));
+    document.getElementById('donatedAmt').textContent = '✓ $' + (donCents % 100 === 0 ? donDollars.toFixed(0) : donDollars.toFixed(2)) + ' Paid';
+    document.getElementById('feeDue').textContent = '$' + feeDollars.toFixed(2);
+    document.getElementById('feeAmountText').textContent = '$' + feeDollars.toFixed(2);
 
     document.getElementById('itemTitle').textContent = entryData.display_name || entryData.destination;
     document.getElementById('itemDesc').textContent = entryData.description || entryData.category || '';

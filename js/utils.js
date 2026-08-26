@@ -53,10 +53,14 @@ export function normalizeDestination(raw){
 }
 
 export function formatMoney(cents){
-  return '$' + (cents/100).toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0});
+  const val = (cents / 100);
+  if (cents % 100 === 0) {
+    return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+  return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 export function formatMoney2(cents){
-  return '$' + (cents/100).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+  return '$' + (cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 export function timeAgo(iso){
   const diff = Date.now() - new Date(iso).getTime();
