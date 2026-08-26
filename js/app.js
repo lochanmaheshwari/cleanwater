@@ -435,7 +435,7 @@ function renderBoard() {
     const totalBid = (e.total_bid_cents && e.total_bid_cents > 0) ? e.total_bid_cents : (e.donated_cents ? Math.round(e.donated_cents / 0.75) : 500);
     const displayBid = currentTab === 'today' ? (e.today_bid_cents || totalBid) : totalBid;
     const donCents = e.donated_cents || Math.round(displayBid * 0.75);
-    const donFormatted = formatMoney2(donCents);
+    const donFormatted = formatMoney(donCents);
 
     board.innerHTML += `
       <div class="card board-card-clickable" data-url="${esc(targetUrl)}" data-id="${esc(e.id)}">
@@ -569,15 +569,16 @@ function handleHeroOutbid() {
     const b = document.getElementById('outbidModalBid');
     if (b) b.textContent = '$' + bidAmount.toLocaleString();
 
-    // Breakdown
-    const donation = Math.round(bidAmount * 0.75);
-    const fee = bidAmount - donation;
+    // Breakdown with exact cents formatting
+    const donationCents = Math.round(bidAmount * 75); // 75% in cents
+    const feeCents = (bidAmount * 100) - donationCents; // 25% in cents
+
     const bBid = document.getElementById('modalBreakdownBid');
-    if (bBid) bBid.textContent = '$' + bidAmount.toLocaleString();
+    if (bBid) bBid.textContent = formatMoney(bidAmount * 100);
     const bDon = document.getElementById('modalBreakdownDonation');
-    if (bDon) bDon.textContent = '$' + donation.toLocaleString();
+    if (bDon) bDon.textContent = formatMoney(donationCents);
     const bFee = document.getElementById('modalBreakdownFee');
-    if (bFee) bFee.textContent = '$' + fee.toLocaleString();
+    if (bFee) bFee.textContent = formatMoney(feeCents);
 
     const hint = document.getElementById('outbidModalHint');
     if (hint) {
@@ -587,7 +588,7 @@ function handleHeroOutbid() {
     }
 
     const btnAmt = document.getElementById('btnDonationAmt');
-    if (btnAmt) btnAmt.textContent = '$' + donation.toLocaleString();
+    if (btnAmt) btnAmt.textContent = formatMoney(donationCents);
 
     const err = document.getElementById('outbidModalError');
     if (err) err.style.display = 'none';

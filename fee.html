@@ -479,8 +479,8 @@ async function load() {
     feeCents = totalBidCents - donCents;
 
     document.getElementById('totalBid').textContent = formatMoney(totalBidCents);
-    document.getElementById('donatedAmt').textContent = `✓ ${formatMoney2(donCents)} Verified`;
-    document.getElementById('feeDue').textContent = formatMoney2(feeCents);
+    document.getElementById('donatedAmt').textContent = `✓ ${formatMoney(donCents)} Verified`;
+    document.getElementById('feeDue').textContent = formatMoney(feeCents);
 
     // Calculate INR for UPI (~83.5 INR/USD)
     const inrFee = Math.max(1, Math.round((feeCents / 100) * 83.5));
