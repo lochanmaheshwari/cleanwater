@@ -1,8 +1,23 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index?route=:path*" }
+    {
+      "source": "/3",
+      "destination": "/3.html"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index?route=:path*"
+    }
   ],
   "headers": [
-    { "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }] }
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
   ]
 }

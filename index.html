@@ -122,6 +122,9 @@
     </div>
     <div id="existingHint" style="display:none;margin:4px 0 0;font-size:12px;color:var(--accent);font-weight:600"></div>
     <div id="formError" class="error" style="display:none;margin-top:6px"></div>
+    <p style="text-align:center;margin:8px 0 0;font-size:12px;color:var(--muted)">
+      Only have $3? <a href="3.html" style="color:var(--accent);font-weight:600;text-decoration:none">Claim a spot for $3 total →</a> <span style="color:var(--muted);font-weight:400">($2.25 to clean water)</span>
+    </p>
   </form>
 </section>
 
@@ -149,46 +152,50 @@
 <div id="outbidModal" class="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-header">
-      <h2>Complete your listing</h2>
-      <button id="outbidModalClose" class="icon-btn" aria-label="close" style="border:0;font-size:20px;font-weight:700">×</button>
+      <div>
+        <h2>Complete your listing</h2>
+        <div style="font-size:12.5px;color:rgba(230,238,242,0.55);font-weight:500;margin-top:3px;letter-spacing:0.01em">Premium verified placement · 75% to clean water</div>
+      </div>
+      <button id="outbidModalClose" class="icon-btn" aria-label="close">×</button>
     </div>
     <div class="modal-summary-pill" id="outbidModalLine">
-      <span id="outbidModalDest"></span> · <span id="outbidModalCat"></span> · <span id="outbidModalBid"></span>
+      <span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;box-shadow:0 0 0 4px rgba(56,189,248,0.15);display:inline-block;flex-shrink:0"></span>
+      <span id="outbidModalDest"></span> <span style="opacity:0.35">·</span> <span id="outbidModalCat"></span> <span style="opacity:0.35">·</span> <span id="outbidModalBid"></span>
     </div>
 
-    <div id="logoField" style="margin-top:14px">
-      <label style="font-size:13.5px;font-weight:600;display:block;margin-bottom:6px">Icon <span style="color:var(--muted);font-weight:400">— square logo, max 5MB</span></label>
+    <div id="logoField" style="margin-top:6px">
+      <label style="font-size:13px;font-weight:700;display:block;margin-bottom:8px;letter-spacing:-0.01em">Icon <span style="font-weight:400">— square logo, max 5MB</span></label>
       <div id="logoDrop" class="logo-drop-box">
-        <div id="logoPreview" style="width:72px;height:72px;margin:0 auto 8px;border-radius:14px;background:var(--ink);display:grid;place-items:center;overflow:hidden;color:#FFF;font-size:22px;font-weight:700">≋</div>
-        <div style="font-size:13px;color:var(--muted)">Click or drag & drop to upload (png, jpg, webp, svg)</div>
+        <div id="logoPreview" style="width:64px;height:64px;margin:0 auto 10px;border-radius:14px;background:#0F172A;display:grid;place-items:center;overflow:hidden;color:rgba(255,255,255,0.55);font-size:20px;font-weight:700;border:1px solid rgba(0,0,0,0.06)">≋</div>
+        <div style="font-size:13px;color:#64748B;font-weight:500">Click or drag & drop to upload <span style="color:#94A3B8">(png, jpg, webp, svg)</span></div>
         <input id="logoInput" type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none">
       </div>
       <div id="logoError" class="error" style="display:none;margin-top:8px"></div>
     </div>
 
-    <div style="margin-top:16px">
-      <label for="descriptionInput" style="font-size:13.5px;font-weight:600;display:block;margin-bottom:6px">One sentence <span style="color:var(--muted);font-weight:400">— what does it do? max 100 chars</span></label>
-      <textarea id="descriptionInput" maxlength="100" rows="2" placeholder="One sentence describing what your product does." style="width:100%;border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:14px;resize:none;min-height:64px;outline:none;font-family:inherit"></textarea>
-      <div style="text-align:right;font-size:12px;color:var(--muted);margin-top:4px"><span id="descCount">0</span>/100</div>
+    <div style="margin-top:18px">
+      <label for="descriptionInput" style="font-size:13px;font-weight:700;display:block;margin-bottom:8px;letter-spacing:-0.01em">One sentence <span style="font-weight:400">— what does it do? max 100 chars</span></label>
+      <textarea id="descriptionInput" maxlength="100" rows="2" placeholder="One sentence describing what your product does." style="width:100%;border-radius:16px;padding:14px 14px;font-size:14px;resize:none;min-height:68px;outline:none;font-family:inherit;line-height:1.4"></textarea>
+      <div style="text-align:right;font-size:11.5px;margin-top:6px;letter-spacing:0.02em"><span id="descCount">0</span>/100</div>
     </div>
 
     <div class="price-breakdown-box">
       <div class="breakdown-row highlight"><span>Total bid</span><span id="modalBreakdownBid">$5</span></div>
-      <div class="breakdown-row" style="color:#059669"><span>Step 1: To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
+      <div class="breakdown-row"><span>Step 1: To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
       <div class="breakdown-row"><span>Step 2: Listing fee (25%)</span><span id="modalBreakdownFee">$1</span></div>
     </div>
 
-    <div id="outbidModalHint" style="margin-top:10px;font-size:12.5px;color:var(--muted)"></div>
+    <div id="outbidModalHint" style="margin-top:12px"></div>
     
-    <!-- Step 1 Every.org Button -->
-    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:14px;padding:14px;font-size:15.5px">
+    <!-- Step 1 Every.org Button — Premium -->
+    <button id="outbidModalPay" class="btn-outbid" style="width:100%;margin-top:16px;padding:15px;font-size:15.5px">
       Continue to Step 1: Donate <span id="btnDonationAmt">$4</span> via Every.org →
     </button>
-    <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px">
-      ⚡ 1-Click Apple Pay, Google Pay & Card (No login required)
+    <div style="font-size:11.5px;color:rgba(230,238,242,0.55);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:0.01em">
+      <span>⚡</span> 1-Click Apple Pay, Google Pay & Card <span style="opacity:0.45">·</span> No login required <span style="opacity:0.45">·</span> 🔒 Secure
     </div>
     
-    <div id="outbidModalError" class="error" style="display:none;margin-top:10px"></div>
+    <div id="outbidModalError" class="error" style="display:none;margin-top:12px"></div>
   </div>
 </div>
 
