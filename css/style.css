@@ -259,12 +259,12 @@ body.dark,
 /* Hero Section */
 .hero {
   max-width: var(--max-width);
-  margin: 20px auto 0;
+  margin: 12px auto 0;
   padding: 0 20px;
   text-align: center;
 }
 .headline {
-  font-size: 54px;
+  font-size: 44px;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -303,7 +303,7 @@ body.dark,
 }
 .stepper .val,
 .stepper .val-input {
-  font-size: 54px;
+  font-size: 44px;
   font-weight: 800;
   color: var(--accent);
   letter-spacing: -0.04em;

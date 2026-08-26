@@ -29,10 +29,25 @@ const DEFAULT_ENTRIES = [
     category: "SEO & AI Visibility",
     total_bid_cents: 2000,
     donated_cents: 1500,
-    click_count: 3,
+    click_count: 4,
     status: "live",
     first_bid_at: "2026-08-25T17:09:59.448102+00:00",
     last_bid_at: "2026-08-25T19:42:33.388+00:00"
+  },
+  {
+    id: "aafd7b3e-7da9-4c97-bbb6-f67545852dda",
+    slug: "see-io",
+    destination: "https://see.io",
+    display_name: "see.io · see your idea live",
+    description: "Describe your idea. AI turns it into a fully built, live website in minutes.",
+    logo_path: null,
+    category: "AI Agents & Infrastructure",
+    total_bid_cents: 1000,
+    donated_cents: 750,
+    click_count: 12,
+    status: "live",
+    first_bid_at: "2026-08-25T12:00:00.000Z",
+    last_bid_at: "2026-08-25T12:00:00.000Z"
   }
 ];
 
