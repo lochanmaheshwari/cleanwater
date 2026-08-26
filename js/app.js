@@ -437,9 +437,11 @@ function renderBoard() {
     const donCents = e.donated_cents || Math.round(displayBid * 0.75);
     const donFormatted = formatMoney(donCents);
 
+    const isTop1 = rank === 1;
+
     board.innerHTML += `
-      <div class="card board-card-clickable" data-url="${esc(targetUrl)}" data-id="${esc(e.id)}">
-        <div class="rank-badge">#${rank}</div>
+      <div class="card board-card-clickable ${isTop1 ? 'card-rank-1' : ''}" data-url="${esc(targetUrl)}" data-id="${esc(e.id)}">
+        <div class="rank-badge ${isTop1 ? 'rank-badge-1' : ''}">#${rank}</div>
         <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="logo-wrap" data-click-id="${esc(e.id)}" aria-label="${esc(e.display_name)}">${logo}</a>
         <div class="card-content">
           <div class="card-top-row">
