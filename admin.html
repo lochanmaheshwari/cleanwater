@@ -1,47 +1,210 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin — savewater.tech</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Admin & Test Simulator — savewater.tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  (function(){
+    const t = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (t === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
 </head>
 <body>
-<header class="topbar"><a class="logo" href="index.html"><span class="logo-mark">≋</span> savewater.tech</a></header>
-<main style="max-width:860px;margin:32px auto;padding:0 20px">
-<h1 style="font-weight:800">admin</h1>
-<div id="auth">
-  <p style="color:var(--muted)">Enter admin password to view pending donations without payment.</p>
-  <div style="display:flex;gap:8px"><input id="pw" type="password" placeholder="admin password" class="pill-input" style="flex:1"><button id="login" class="btn-accent">unlock</button></div>
-</div>
-<div id="content" style="display:none">
-  <h3>confirmed donations with no matching payment (approve after 30 min)</h3>
-  <div id="list" class="loading">loading…</div>
-</div>
-</main>
-<script type="module">
-import {getSupabase} from './js/supabase.js';
-document.getElementById('login').addEventListener('click', async()=>{
-  const pw=document.getElementById('pw').value;
-  const res=await fetch('/api/admin',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw, action:'list'})});
-  const j=await res.json().catch(()=>({}));
-  if(!res.ok){ alert(j.error||'auth failed'); return; }
-  document.getElementById('auth').style.display='none';
-  document.getElementById('content').style.display='block';
-  const list=document.getElementById('list');
-  if(!j.entries||!j.entries.length){ list.innerHTML='<div class="empty">nothing pending</div>'; return; }
-  list.innerHTML=j.entries.map(e=>`
-    <div class="card" style="padding:16px;justify-content:space-between">
-      <div><strong>${e.display_name||e.destination}</strong><br><span style="font-size:12px;color:var(--muted)">${e.destination} · $${(e.total_bid_cents/100).toFixed(2)} · donation ${e.everyorg_donation_id||'yes'}</span></div>
-      <button class="btn-accent" data-approve="${e.id}">approve</button>
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+  </div>
+  <nav class="nav">
+    <a href="index.html">Leaderboard</a>
+    <a href="donations.html">Donations</a>
+    <a href="about.html">About</a>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
+  </nav>
+</header>
+
+<main style="max-width:960px;margin:32px auto;padding:0 20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <h1 style="font-size:32px;font-weight:800;letter-spacing:-.02em;margin:0">🛠️ Admin & Test Simulator</h1>
+    <span class="verified-badge">Test Mode Enabled</span>
+  </div>
+
+  <!-- Password Unlock Box -->
+  <div id="authBox" style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:480px;margin:40px auto;text-align:center;box-shadow:var(--card-shadow)">
+    <div style="font-size:36px;margin-bottom:12px">🔒</div>
+    <h2 style="font-size:20px;font-weight:700;margin:0 0 8px">Unlock Admin Dashboard</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Enter your admin password to test payments & manage listings.</p>
+    <div style="display:flex;gap:8px">
+      <input id="pwInput" type="password" value="Qi4kWDrMcSD6en37" placeholder="Admin password" class="pill-input" style="flex:1;padding:10px 14px">
+      <button id="unlockBtn" class="btn-outbid" style="padding:10px 18px">Unlock →</button>
     </div>
-  `).join('');
-  list.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click', async()=>{
-    const id=b.dataset.approve;
-    const r=await fetch('/api/admin',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw, action:'approve', entryId:id})});
-    const jr=await r.json().catch(()=>({}));
-    if(!r.ok) alert(jr.error||'failed'); else { b.textContent='approved'; b.disabled=true; }
-  }));
+  </div>
+
+  <!-- Dashboard Panel -->
+  <div id="dashPanel" style="display:none">
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:18px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <strong style="font-size:16px">Simulate & Test Payment Lifecycle</strong>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:2px">Simulate Step 1 (Every.org) & Step 2 (PayPal) without spending real money.</div>
+      </div>
+      <button id="refreshBtn" class="btn-accent" style="padding:8px 16px;font-size:13px">🔄 Refresh Entries</button>
+    </div>
+
+    <div id="entriesList" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+</main>
+
+<script type="module">
+import { formatMoney2, timeAgo, esc } from './js/utils.js';
+import './js/theme.js';
+
+let adminPw = 'Qi4kWDrMcSD6en37';
+
+const authBox = document.getElementById('authBox');
+const dashPanel = document.getElementById('dashPanel');
+const pwInput = document.getElementById('pwInput');
+const unlockBtn = document.getElementById('unlockBtn');
+const refreshBtn = document.getElementById('refreshBtn');
+const listEl = document.getElementById('entriesList');
+
+unlockBtn.addEventListener('click', async () => {
+  adminPw = pwInput.value.trim();
+  await loadEntries();
 });
+
+refreshBtn.addEventListener('click', loadEntries);
+
+async function loadEntries() {
+  listEl.innerHTML = '<div class="loading">Loading database entries…</div>';
+  try {
+    const res = await fetch('/api/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPw, action: 'list' })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Authentication failed');
+
+    authBox.style.display = 'none';
+    dashPanel.style.display = 'block';
+
+    const entries = data.entries || [];
+    if (entries.length === 0) {
+      listEl.innerHTML = `
+        <div class="empty">
+          No entries found in database. Submit a listing on the <a href="index.html">homepage</a> first to test.
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = entries.map(e => {
+      const isLive = e.status === 'live';
+      const step1Done = e.donation_confirmed || Boolean(e.everyorg_donation_id);
+      const step2Done = e.payment_confirmed;
+      const total = e.total_bid_cents || 500;
+      const don = e.donated_cents || Math.round(total * 0.75);
+
+      return `
+        <div class="card" style="padding:16px 20px;flex-direction:column;align-items:stretch;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <div>
+              <strong style="font-size:16px">${esc(e.display_name || e.destination)}</strong>
+              <div style="font-size:12px;color:var(--muted);margin-top:2px">
+                URL: <code>${esc(e.destination)}</code> · ID: <code>${esc(e.id)}</code> · Category: ${esc(e.category || 'Other')}
+              </div>
+            </div>
+            <div style="text-align:right">
+              <span class="verified-badge" style="${isLive ? '' : (step1Done ? 'background:#e0f2fe;color:#0284c7;border-color:#bae6fd' : 'background:#fef3c7;color:#d97706;border-color:#fde68a')}">
+                ${isLive ? '🟢 LIVE ON BOARD' : (step1Done ? '🟡 Awaiting Step 2 (Fee)' : '⚪ Pending Step 1')}
+              </span>
+              <div style="font-size:12.5px;font-weight:700;margin-top:4px">${formatMoney2(total)} (Donated: ${formatMoney2(don)})</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px">
+            <div style="font-size:12px;color:var(--muted)">
+              ${e.everyorg_donation_id ? `Every.org ID: <code>${esc(e.everyorg_donation_id)}</code>` : 'Every.org: Not Paid'} · 
+              ${e.payment_id ? `PayPal: <code>${esc(e.payment_id)}</code>` : 'PayPal: Not Paid'}
+            </div>
+            <div style="display:flex;gap:6px">
+              ${!step1Done ? `
+                <button class="btn-outbid" style="padding:6px 12px;font-size:12px" onclick="window.simulateStep1('${esc(e.id)}')">
+                  ⚡ Simulate Step 1 (75% Donation)
+                </button>
+              ` : ''}
+              ${step1Done && !isLive ? `
+                <button class="btn-outbid" style="padding:6px 12px;font-size:12px;background:#059669" onclick="window.simulateStep2('${esc(e.id)}')">
+                  ⚡ Simulate Step 2 (25% Fee & Go Live)
+                </button>
+              ` : ''}
+              <a href="fee.html?id=${encodeURIComponent(e.id)}" target="_blank" class="btn-accent" style="padding:6px 12px;font-size:12px">
+                Open fee.html →
+              </a>
+              <button class="btn-accent" style="padding:6px 10px;font-size:12px;background:#fee2e2;color:#b91c1c" onclick="window.deleteEntry('${esc(e.id)}')">
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    listEl.innerHTML = `<div class="error">${esc(err.message)}</div>`;
+  }
+}
+
+window.simulateStep1 = async (entryId) => {
+  if (!confirm('Simulate Step 1 Every.org donation confirmation for this entry?')) return;
+  try {
+    const res = await fetch('/api/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPw, action: 'simulate_step1', entryId })
+    });
+    const d = await res.json();
+    if (!res.ok) alert(d.error); else { alert('Step 1 Simulated! Every.org charge recorded.'); loadEntries(); }
+  } catch (e) { alert(e.message); }
+};
+
+window.simulateStep2 = async (entryId) => {
+  if (!confirm('Simulate Step 2 PayPal payment & publish to leaderboard?')) return;
+  try {
+    const res = await fetch('/api/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPw, action: 'simulate_step2', entryId })
+    });
+    const d = await res.json();
+    if (!res.ok) alert(d.error); else { alert('Step 2 Simulated! Listing is now LIVE on leaderboard.'); loadEntries(); }
+  } catch (e) { alert(e.message); }
+};
+
+window.deleteEntry = async (entryId) => {
+  if (!confirm('Delete this entry from database?')) return;
+  try {
+    const res = await fetch('/api/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: adminPw, action: 'delete', entryId })
+    });
+    const d = await res.json();
+    if (!res.ok) alert(d.error); else { loadEntries(); }
+  } catch (e) { alert(e.message); }
+};
+
+// Auto-run if password filled
+if (pwInput.value) {
+  loadEntries();
+}
 </script>
 </body>
 </html>
