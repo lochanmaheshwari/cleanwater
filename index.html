@@ -78,6 +78,23 @@
     <strong>75% of every bid goes straight to those in need of clean water.</strong> New spots start at $5. Paying less than #1 still ranks you.
   </p>
 
+  <!-- Live $1M Fundraiser Goal Progress Card -->
+  <div class="fundraiser-goal-card" id="fundraiserGoalCard">
+    <div class="goal-header-row">
+      <div class="goal-left">
+        <span class="goal-drop-icon">💧</span>
+        <span class="goal-label"><strong>Clean Water Fund</strong> · 75% to Water.org</span>
+      </div>
+      <div class="goal-right">
+        <span class="goal-raised"><strong id="goalRaisedAmt">$52.50</strong></span>
+        <span class="goal-target">raised of $1,000,000 target</span>
+      </div>
+    </div>
+    <div class="goal-progress-track">
+      <div class="goal-progress-bar" id="goalProgressBar" style="width: 0.5%"></div>
+    </div>
+  </div>
+
   <form id="submitForm" class="hero-form">
     <div class="input-row" id="inputRow">
       <label class="pill-input" aria-label="url or handle">
@@ -86,7 +103,7 @@
       </label>
       <div class="form-action-group">
         <div class="select-wrap">
-          <select id="categorySelect" name="category" aria-label="choose category" required>
+          <select id="categorySelect" name="category" class="pill-select" aria-label="choose category" required>
             <option value="" disabled selected>Category…</option>
             <option value="AI Agents & Infrastructure">🤖 AI Agents & Infrastructure</option>
             <option value="SEO & AI Visibility">🔍 SEO & AI Visibility</option>
@@ -117,6 +134,7 @@
             <option value="Media & News">📰 Media & News</option>
             <option value="Other">📦 Other</option>
           </select>
+          <span class="select-chevron">⌄</span>
         </div>
         <button id="outbidBtn" type="submit" class="btn-outbid">Outbid</button>
       </div>

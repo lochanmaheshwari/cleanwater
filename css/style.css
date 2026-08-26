@@ -404,9 +404,11 @@ body.dark,
   min-width: 180px;
   position: relative;
 }
-.pill-select {
+.pill-select, select#categorySelect {
   width: 100%;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background: #FFFFFF;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
@@ -421,10 +423,14 @@ body.dark,
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.dark .pill-select {
+.dark .pill-select, .dark select#categorySelect {
+  background: #121C24 !important;
+  border-color: #1C2A33 !important;
+  color: #E6EEF2 !important;
+}
+.dark .pill-select option, .dark select#categorySelect option {
   background: #121C24;
-  border-color: #1C2A33;
-  color: var(--ink);
+  color: #FFFFFF;
 }
 .select-chevron {
   position: absolute;
@@ -434,6 +440,78 @@ body.dark,
   pointer-events: none;
   color: var(--muted);
   font-size: 12px;
+}
+
+/* Live $1M Fundraiser Goal Card */
+.fundraiser-goal-card {
+  max-width: 620px;
+  margin: 12px auto 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 12px 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.dark .fundraiser-goal-card {
+  background: rgba(18, 28, 36, 0.75);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+.goal-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.goal-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+.goal-drop-icon {
+  font-size: 14px;
+}
+.goal-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+}
+.goal-raised strong {
+  color: #10B981;
+  font-weight: 800;
+  font-size: 14px;
+}
+.dark .goal-raised strong {
+  color: #34D399;
+}
+.goal-target {
+  color: var(--muted);
+}
+.goal-progress-track {
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+.dark .goal-progress-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+.goal-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38BDF8 0%, #10B981 100%);
+  width: 0.5%;
+  min-width: 6px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
 }
 
 .btn-outbid {

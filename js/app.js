@@ -506,8 +506,18 @@ function updateWater() {
   const wl = $('#waterLevel');
   if (wl) wl.style.height = h + 'vh';
 
+  const donStr = formatMoney(total);
   const raisedEl = document.getElementById('raisedGoalAmt');
-  if (raisedEl) raisedEl.textContent = formatMoney(total);
+  if (raisedEl) raisedEl.textContent = donStr;
+
+  const goalRaised = document.getElementById('goalRaisedAmt');
+  if (goalRaised) goalRaised.textContent = donStr;
+
+  const bar = document.getElementById('goalProgressBar');
+  if (bar) {
+    const barPct = Math.max(0.5, Math.min(100, (total / CONFIG.GOAL_CENTS) * 100));
+    bar.style.width = barPct + '%';
+  }
 }
 
 async function bumpVisitor() {
