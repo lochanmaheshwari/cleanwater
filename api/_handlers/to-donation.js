@@ -37,7 +37,7 @@ export default async function handler(req, res) {
   slug = slug.replace(/^https?:\/\/(www\.)?every\.org\//i, '');
   slug = slug.replace(/^(water-org\/f\/)+/i, '');
   slug = slug.replace(/^water-org\//i, '');
-  const targetRedirect = `${siteUrl}/fee?id=${encodeURIComponent(e.id)}`;
+  const targetRedirect = `${siteUrl}/fee.html?id=${encodeURIComponent(e.id)}`;
   const url = `https://www.every.org/water-org/f/${slug}`
     + `?amount=${encodeURIComponent(amount)}`
     + `&partnerDonationId=${encodeURIComponent(e.id)}`

@@ -106,23 +106,23 @@
 <body>
 <header class="topbar">
   <div class="topbar-left">
-    <a class="logo" href="/">
+    <a class="logo" href="index.html">
       <span class="logo-icon">≋</span>
       savewater.tech
     </a>
   </div>
   <nav class="nav">
-    <a href="/" class="desktop-nav-link">Leaderboard</a>
-    <a href="/donations" class="desktop-nav-link">Donations</a>
-    <a href="/about" class="desktop-nav-link">About</a>
+    <a href="index.html" class="desktop-nav-link">Leaderboard</a>
+    <a href="donations.html" class="desktop-nav-link">Donations</a>
+    <a href="about.html" class="desktop-nav-link">About</a>
     <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
   </nav>
 </header>
 
 <div class="mobile-subnav">
-  <a href="/">Leaderboard</a>
-  <a href="/donations">Donations</a>
-  <a href="/about">About</a>
+  <a href="index.html">Leaderboard</a>
+  <a href="donations.html">Donations</a>
+  <a href="about.html">About</a>
 </div>
 
 <main style="max-width:600px;margin:40px auto;padding:0 20px">
@@ -285,7 +285,7 @@ function renderPayPalButtons() {
           console.warn('payment confirmation error', e);
         }
 
-        window.location.href = `/done?id=${encodeURIComponent(id)}`;
+        window.location.href = `/done.html?id=${encodeURIComponent(id)}`;
       },
       onError: (err) => {
         console.error('PayPal checkout error', err);
@@ -327,7 +327,7 @@ async function load(retryCount = 0) {
         <div style="font-size:36px;margin-bottom:12px">🔍</div>
         <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Missing Listing ID</h2>
         <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Please submit a listing on the homepage first.</p>
-        <a href="/" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
+        <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
       `;
     }
     return;
@@ -345,7 +345,7 @@ async function load(retryCount = 0) {
           <div style="font-size:36px;margin-bottom:12px">🔍</div>
           <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Listing Not Found</h2>
           <p style="color:var(--muted);font-size:14px;margin-bottom:20px">This listing ID <code>${esc(id)}</code> was not found in the database.</p>
-          <a href="/" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Submit a Listing on Homepage</a>
+          <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Submit a Listing on Homepage</a>
         `;
       }
       return;
@@ -374,7 +374,7 @@ async function load(retryCount = 0) {
             <button class="btn-outbid" style="padding:10px 18px" onclick="window.location.reload()">
               🔄 I Already Paid on Every.org (Verify Now)
             </button>
-            <a href="/" class="btn-accent" style="padding:10px 18px;text-decoration:none">
+            <a href="index.html" class="btn-accent" style="padding:10px 18px;text-decoration:none">
               ← Return to Homepage
             </a>
           </div>
@@ -418,7 +418,7 @@ async function load(retryCount = 0) {
         <div style="font-size:36px;margin-bottom:12px">⚠️</div>
         <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Error Loading Listing</h2>
         <p style="color:var(--muted);font-size:14px;margin-bottom:20px">${esc(e.message)}</p>
-        <a href="/" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
+        <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
       `;
     }
   }
