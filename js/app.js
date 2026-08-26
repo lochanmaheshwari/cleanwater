@@ -432,7 +432,8 @@ function renderBoard() {
 
     const clicks = e.click_count || 0;
     const clicksText = `${clicks} ${clicks === 1 ? 'click' : 'clicks'}`;
-    const displayBid = currentTab === 'today' ? (e.today_bid_cents || e.total_bid_cents) : e.total_bid_cents;
+    const totalBid = (e.total_bid_cents && e.total_bid_cents > 0) ? e.total_bid_cents : (e.donated_cents ? Math.round(e.donated_cents / 0.75) : 500);
+    const displayBid = currentTab === 'today' ? (e.today_bid_cents || totalBid) : totalBid;
     const donCents = e.donated_cents || Math.round(displayBid * 0.75);
     const donFormatted = formatMoney2(donCents);
 

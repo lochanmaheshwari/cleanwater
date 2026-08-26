@@ -62,27 +62,52 @@ export default async function handler(req, res) {
 
     const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    let query = sb.from('entries').update({
-      payment_confirmed: true,
-      status: 'live',
-      last_bid_at: new Date().toISOString()
-    });
-
+    // Fetch the entry first to derive true total bid from verified donation
+    let entryQuery = sb.from('entries').select('*');
     if (entryId) {
-      query = query.eq('id', entryId);
+      entryQuery = entryQuery.eq('id', entryId);
     } else if (orderId) {
-      query = query.eq('uropay_order_id', orderId);
+      entryQuery = entryQuery.eq('uropay_order_id', orderId);
     } else if (tenantOrderRef) {
-      query = query.eq('uropay_order_id', tenantOrderRef);
+      entryQuery = entryQuery.eq('uropay_order_id', tenantOrderRef);
     } else {
       return res.status(400).json({ error: 'No identifier found to match entry' });
     }
 
-    const { error: updErr } = await query;
+    const { data: entry, error: findErr } = await entryQuery.maybeSingle();
+    if (findErr || !entry) {
+      console.warn('Uropay webhook: entry not found', entryId || orderId);
+      return res.status(200).json({ ok: true, note: 'entry not found' });
+    }
+
+    const donCents = entry.donated_cents || 375;
+    const totalBidCents = Math.round(donCents / 0.75);
+
+    const { error: updErr } = await sb.from('entries').update({
+      payment_confirmed: true,
+      donation_confirmed: true,
+      total_bid_cents: totalBidCents,
+      donated_cents: donCents,
+      status: 'live',
+      last_bid_at: new Date().toISOString()
+    }).eq('id', entry.id);
 
     if (updErr) {
       console.error('Failed to update entry on Uropay webhook:', updErr);
       return res.status(500).json({ error: 'Database update failed' });
+    }
+
+    // Insert bid record
+    try {
+      await sb.from('bids').insert({
+        entry_id: entry.id,
+        amount_cents: totalBidCents,
+        donated_cents: donCents,
+        payment_id: String(orderId || ('uropay_' + Date.now())),
+        everyorg_donation_id: entry.everyorg_donation_id || null
+      });
+    } catch (bErr) {
+      console.warn('bids insert on uropay webhook', bErr);
     }
 
     console.log('✅ Uropay payment confirmed for entry:', entryId || orderId);
