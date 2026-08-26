@@ -298,17 +298,23 @@ document.addEventListener('click', (e) => {
 
 async function loadData() {
   const board = $('#board');
-  const loading = $('#loadingState');
 
   try {
-    // 1. Instant ultra-fast direct REST fetch (~30ms, no CDN delay)
+    // 1. Instant ultra-fast direct REST fetch (~30ms) for entries and bids
     let entries = null;
     try {
-      const restRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?status=eq.live&select=*&order=total_bid_cents.desc,first_bid_at.asc`, {
-        headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
-      });
+      const [restRes, bidsRes] = await Promise.all([
+        fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?status=eq.live&select=*&order=total_bid_cents.desc,first_bid_at.asc`, {
+          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+        }),
+        fetch(`${CONFIG.SUPABASE_URL}/rest/v1/bids?select=*&order=created_at.desc&limit=200`, {
+          headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+        })
+      ]);
       const restData = await restRes.json();
       if (Array.isArray(restData) && restData.length > 0) entries = restData;
+      const bidsData = await bidsRes.json().catch(() => []);
+      if (Array.isArray(bidsData)) bidsCache = bidsData;
     } catch (err) {
       console.warn('Direct REST fetch error', err);
     }
@@ -329,8 +335,6 @@ async function loadData() {
     window.__allEntries = allEntries;
   }
 
-  if (loading) loading.style.display = 'none';
-
   const topCents = (allEntries[0]?.total_bid_cents) || 0;
   if (window.__setBidFromTop) window.__setBidFromTop(topCents);
 
@@ -347,11 +351,19 @@ function filtered() {
     const cutoff = Date.now() - 24 * 3600000;
     const map = new Map();
     bidsCache.forEach(b => {
-      if (new Date(b.created_at).getTime() > cutoff) {
-        map.set(b.entry_id, (map.get(b.entry_id) || 0) + b.amount_cents);
+      const t = new Date(b.created_at).getTime();
+      if (t > cutoff) {
+        map.set(b.entry_id, (map.get(b.entry_id) || 0) + (b.amount_cents || 0));
       }
     });
-    list = list.filter(e => map.has(e.id)).sort((a, b) => (map.get(b.id) || b.total_bid_cents) - (map.get(a.id) || a.total_bid_cents));
+    // Filter and rank today's highest bidders from top to bottom
+    list = list.filter(e => {
+      const isRecent = (e.last_bid_at && new Date(e.last_bid_at).getTime() > cutoff) || map.has(e.id);
+      return isRecent;
+    }).map(e => {
+      const todayBid = map.get(e.id) || e.total_bid_cents;
+      return { ...e, today_bid_cents: todayBid };
+    }).sort((a, b) => (b.today_bid_cents || b.total_bid_cents) - (a.today_bid_cents || a.total_bid_cents));
   } else {
     list.sort((a, b) => b.total_bid_cents - a.total_bid_cents || new Date(a.first_bid_at) - new Date(b.first_bid_at));
   }
@@ -365,7 +377,7 @@ function renderBoard() {
   board.innerHTML = '';
 
   if (list.length === 0) {
-    board.innerHTML = `<div class="empty">No products in this category yet. Be the first to claim #1 for $5!</div>`;
+    board.innerHTML = `<div class="empty">${currentTab === 'today' ? 'No bids placed today yet. Be the first to claim #1 Today for $5!' : 'No products in this category yet. Be the first to claim #1 for $5!'}</div>`;
     $('#showMoreBtn') && ($('#showMoreBtn').style.display = 'none');
     return;
   }
@@ -383,6 +395,7 @@ function renderBoard() {
 
     const clicks = e.click_count || 0;
     const clicksText = `${clicks} ${clicks === 1 ? 'click' : 'clicks'}`;
+    const displayBid = currentTab === 'today' ? (e.today_bid_cents || e.total_bid_cents) : e.total_bid_cents;
 
     board.innerHTML += `
       <div class="card board-card-clickable" data-url="${esc(targetUrl)}" data-id="${esc(e.id)}">
@@ -391,7 +404,7 @@ function renderBoard() {
         <div class="card-content">
           <div class="card-top-row">
             <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="card-title" data-click-id="${esc(e.id)}">${esc(e.display_name || domain)} <span class="external-arrow">↗</span></a>
-            <div class="card-bid">${formatMoney(e.total_bid_cents)}</div>
+            <div class="card-bid">${formatMoney(displayBid)}</div>
           </div>
           <div class="card-blurb">${esc(e.description || '')}</div>
           <div class="card-meta">
