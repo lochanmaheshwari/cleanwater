@@ -57,7 +57,8 @@ input, select, textarea { font-family: inherit; }
 :root.dark,
 html.dark,
 body.dark,
-.dark {
+.dark,
+[data-theme="dark"] {
   --bg: #0B1014;
   --bg-subtle: #10171D;
   --ink: #E6EEF2;
@@ -74,6 +75,21 @@ body.dark,
   --card-bg: #121C24;
   --card-border: #1C2A33;
   --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+html.dark,
+body.dark,
+html[data-theme="dark"],
+body[data-theme="dark"],
+.dark {
+  background-color: #0B1014 !important;
+  color: #E6EEF2 !important;
+}
+
+html:not(.dark),
+body:not(.dark) {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
 }
 
 /* Water Level animation at bottom */
@@ -1452,22 +1468,14 @@ footer a:hover { color: var(--ink); }
     min-height: 38px !important;
     border-radius: var(--radius-pill);
     box-sizing: border-box !important;
-    background: #FFFFFF !important;
+    background: var(--card-bg) !important;
     border: 1px solid var(--border) !important;
     color: var(--ink) !important;
-  }
-  .dark .pill-input {
-    background: #121C24 !important;
-    border-color: #1C2A33 !important;
-    color: #E6EEF2 !important;
   }
   .pill-input input {
     font-size: 13.5px !important;
     width: 100% !important;
     color: var(--ink) !important;
-  }
-  .dark .pill-input input {
-    color: #E6EEF2 !important;
   }
   .form-action-group {
     display: flex !important;
@@ -1492,15 +1500,9 @@ footer a:hover { color: var(--ink); }
     font-size: 12.5px !important;
     border-radius: var(--radius-pill);
     box-sizing: border-box !important;
-    background: #FFFFFF !important;
+    background: var(--card-bg) !important;
     border: 1px solid var(--border) !important;
     color: var(--ink) !important;
-  }
-  .dark .form-action-group .pill-select,
-  .dark .form-action-group select#categorySelect {
-    background: #121C24 !important;
-    border-color: #1C2A33 !important;
-    color: #E6EEF2 !important;
   }
   .form-action-group .btn-outbid {
     flex: 0.85 !important;
@@ -1512,11 +1514,7 @@ footer a:hover { color: var(--ink); }
     font-weight: 800 !important;
     border-radius: var(--radius-pill);
     box-sizing: border-box !important;
-    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
-    color: #FFFFFF !important;
-  }
-  .dark .form-action-group .btn-outbid {
-    background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%) !important;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%) !important;
     color: #FFFFFF !important;
   }
   .hint {
@@ -1540,23 +1538,11 @@ footer a:hover { color: var(--ink); }
     border: 1px solid var(--border) !important;
     color: var(--muted) !important;
   }
-  .dark .cat-chip {
-    background: #121C24 !important;
-    border-color: #1C2A33 !important;
-    color: #8AA0AD !important;
-  }
   .cat-chip.active {
     background: var(--accent) !important;
     color: #FFFFFF !important;
     border-color: var(--accent) !important;
-    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
-  }
-  .dark .cat-chip.active {
-    background: #38BDF8 !important;
-    color: #0B1014 !important;
-    border-color: #38BDF8 !important;
-    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3) !important;
-    font-weight: 800 !important;
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.25) !important;
   }
 
   .board {
@@ -1572,10 +1558,6 @@ footer a:hover { color: var(--ink); }
     box-shadow: var(--card-shadow) !important;
     background: var(--card-bg) !important;
     border: 1.5px solid var(--card-border) !important;
-  }
-  .dark .card {
-    background: #121C24 !important;
-    border-color: #1C2A33 !important;
   }
   .rank-badge {
     padding: 2px 6px !important;
@@ -1596,11 +1578,6 @@ footer a:hover { color: var(--ink); }
     border: 1px solid var(--border) !important;
     color: var(--ink) !important;
   }
-  .dark .logo-wrap {
-    background: #0B1014 !important;
-    border-color: #1C2A33 !important;
-    color: #E6EEF2 !important;
-  }
   .card-top-row {
     gap: 6px !important;
   }
@@ -1610,16 +1587,10 @@ footer a:hover { color: var(--ink); }
     line-height: 1.2 !important;
     color: var(--ink) !important;
   }
-  .dark .card-title {
-    color: #E6EEF2 !important;
-  }
   .card-bid {
     font-size: 14.5px !important;
     font-weight: 800;
     color: var(--accent) !important;
-  }
-  .dark .card-bid {
-    color: #38BDF8 !important;
   }
   .card-donation-badge {
     font-size: 11.5px !important;
@@ -1637,17 +1608,11 @@ footer a:hover { color: var(--ink); }
     overflow: hidden;
     color: var(--muted) !important;
   }
-  .dark .card-blurb {
-    color: #8AA0AD !important;
-  }
   .card-meta {
     font-size: 10.5px !important;
     gap: 6px 10px !important;
     margin-top: 3px !important;
     color: var(--muted) !important;
-  }
-  .dark .card-meta {
-    color: #8AA0AD !important;
   }
   .card-meta .meta-item {
     display: inline-flex;
