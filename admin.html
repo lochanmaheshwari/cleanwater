@@ -42,7 +42,7 @@
     <h2 style="font-size:20px;font-weight:700;margin:0 0 8px">Unlock Admin Dashboard</h2>
     <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Enter your admin password to test payments & manage listings.</p>
     <div style="display:flex;gap:8px">
-      <input id="pwInput" type="password" value="Qi4kWDrMcSD6en37" placeholder="Admin password" class="pill-input" style="flex:1;padding:10px 14px">
+      <input id="pwInput" type="password" placeholder="Enter admin password" class="pill-input" style="flex:1;padding:10px 14px">
       <button id="unlockBtn" class="btn-outbid" style="padding:10px 18px">Unlock →</button>
     </div>
   </div>
@@ -65,7 +65,7 @@
 import { formatMoney2, timeAgo, esc } from './js/utils.js';
 import './js/theme.js';
 
-let adminPw = 'Qi4kWDrMcSD6en37';
+let adminPw = '';
 
 const authBox = document.getElementById('authBox');
 const dashPanel = document.getElementById('dashPanel');
@@ -76,7 +76,15 @@ const listEl = document.getElementById('entriesList');
 
 unlockBtn.addEventListener('click', async () => {
   adminPw = pwInput.value.trim();
+  if (!adminPw) {
+    alert('Please enter the admin password');
+    return;
+  }
   await loadEntries();
+});
+
+pwInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') unlockBtn.click();
 });
 
 refreshBtn.addEventListener('click', loadEntries);
@@ -200,11 +208,6 @@ window.deleteEntry = async (entryId) => {
     if (!res.ok) alert(d.error); else { loadEntries(); }
   } catch (e) { alert(e.message); }
 };
-
-// Auto-run if password filled
-if (pwInput.value) {
-  loadEntries();
-}
 </script>
 </body>
 </html>
