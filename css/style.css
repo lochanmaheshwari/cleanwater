@@ -1291,11 +1291,61 @@ footer a:hover { color: var(--ink); }
     font-size: 13px !important;
     margin-left: 2px !important;
   }
-  .mobile-bottom-bar {
-    display: none !important;
-  }
+  
   body {
-    padding-bottom: 0 !important;
+    padding-bottom: 74px !important;
+  }
+  .mobile-bottom-bar {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 60px !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid var(--border) !important;
+    z-index: 999 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04) !important;
+  }
+  .dark .mobile-bottom-bar {
+    background: rgba(11, 16, 20, 0.92) !important;
+    border-top-color: var(--border) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4) !important;
+  }
+  .mobile-tab-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    height: 100% !important;
+    color: var(--muted) !important;
+    text-decoration: none !important;
+    font-size: 10.5px !important;
+    font-weight: 600 !important;
+    gap: 3px !important;
+    transition: color 0.15s, transform 0.1s !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  .mobile-tab-item:active {
+    transform: scale(0.94) !important;
+  }
+  .mobile-tab-icon {
+    font-size: 19px !important;
+    line-height: 1 !important;
+    display: block !important;
+  }
+  .mobile-tab-item.active {
+    color: var(--accent) !important;
+  }
+  .mobile-tab-item.active .mobile-tab-icon {
+    filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.4)) !important;
   }
 
   html, body {
