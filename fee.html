@@ -308,18 +308,52 @@ function renderPayPalButtons() {
 }
 
 async function load() {
+  const card = document.querySelector('.fee-card');
   if (!id) {
-    loading.innerHTML = '<div class="error">Missing listing ID. <a href="index.html">Return to leaderboard</a></div>';
+    if (loading) loading.style.display = 'none';
+    if (card) {
+      card.innerHTML = `
+        <div style="font-size:36px;margin-bottom:12px">🔍</div>
+        <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Missing Listing ID</h2>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Please submit a listing on the homepage first.</p>
+        <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
+      `;
+    }
     return;
   }
 
   try {
     const res = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
     const j = await res.json().catch(() => ({}));
-    entryData = (j && j.entry) ? j.entry : {};
+    entryData = (j && j.entry) ? j.entry : null;
 
     if (!entryData || !entryData.id) {
-      throw new Error('Listing not found. Please submit a new bid on the homepage.');
+      if (loading) loading.style.display = 'none';
+      if (card) {
+        card.innerHTML = `
+          <div style="font-size:36px;margin-bottom:12px">🔍</div>
+          <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Listing Not Found</h2>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:20px">This listing ID <code>${esc(id)}</code> was not found in the database.</p>
+          <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Submit a Listing on Homepage</a>
+        `;
+      }
+      return;
+    }
+
+    // Check if Step 1 is verified
+    if (!entryData.donation_confirmed && !entryData.everyorg_donation_id) {
+      if (loading) loading.style.display = 'none';
+      if (card) {
+        card.innerHTML = `
+          <div style="font-size:36px;margin-bottom:12px">💧</div>
+          <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Step 1 Required (75% Clean Water)</h2>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:20px">
+            Your 75% charity donation on Every.org must be completed first before paying the 25% listing fee.
+          </p>
+          <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">Complete Step 1 on Homepage →</a>
+        `;
+      }
+      return;
     }
 
     // Derive authoritative numbers strictly from the database
@@ -347,7 +381,15 @@ async function load() {
     // Initialize PayPal Smart Buttons
     loadPayPal();
   } catch (e) {
-    loading.innerHTML = '<div class="error">' + esc(e.message) + '</div>';
+    if (loading) loading.style.display = 'none';
+    if (card) {
+      card.innerHTML = `
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <h2 style="font-size:22px;font-weight:800;margin:0 0 8px">Error Loading Listing</h2>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:20px">${esc(e.message)}</p>
+        <a href="index.html" class="btn-outbid" style="display:inline-block;padding:10px 22px;text-decoration:none">← Return to Leaderboard</a>
+      `;
+    }
   }
 }
 
