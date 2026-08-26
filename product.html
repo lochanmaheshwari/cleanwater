@@ -1,17 +1,42 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Product — savewater.tech</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  (function(){
+    const t = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (t === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
 </head>
 <body>
 <header class="topbar">
-  <a class="logo" href="index.html"><span class="logo-icon">≋</span> savewater.tech</a>
-  <nav class="nav"><a href="index.html">Leaderboard</a><a href="donations.html">Donations</a><a href="about.html">About</a></nav>
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="desktop-nav-link">Leaderboard</a>
+    <a href="donations.html" class="desktop-nav-link">Donations</a>
+    <a href="about.html" class="desktop-nav-link">About</a>
+    <a href="index.html#submitForm" class="nav-outbid-btn">+ Outbid</a>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
+  </nav>
 </header>
+
+<div class="mobile-subnav">
+  <a href="index.html">Leaderboard</a>
+  <a href="donations.html">Donations</a>
+  <a href="about.html">About</a>
+</div>
+
 <main style="max-width:720px;margin:32px auto;padding:0 20px">
   <div id="state" class="loading">loading…</div>
   <div id="card"></div>
@@ -19,6 +44,7 @@
 <script type="module">
 import {getSupabase} from './js/supabase.js';
 import {formatMoney,formatMoney2,timeAgo,esc,getLogoUrl} from './js/utils.js';
+import './js/theme.js';
 async function load(){
   const slug=new URLSearchParams(location.search).get('slug');
   const state=document.getElementById('state');

@@ -1,19 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Categories — savewater.tech</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  (function(){
+    const t = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (t === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
 </head>
 <body>
 <header class="topbar">
-  <a class="logo" href="index.html"><span class="logo-icon">≋</span> savewater.tech</a>
-  <nav class="nav"><a href="index.html">Leaderboard</a><a href="category.html" class="active">Categories</a><a href="donations.html">Donations</a></nav>
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="desktop-nav-link">Leaderboard</a>
+    <a href="donations.html" class="desktop-nav-link">Donations</a>
+    <a href="about.html" class="desktop-nav-link">About</a>
+    <a href="index.html#submitForm" class="nav-outbid-btn">+ Outbid</a>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
+  </nav>
 </header>
+
+<div class="mobile-subnav">
+  <a href="index.html">Leaderboard</a>
+  <a href="donations.html">Donations</a>
+  <a href="about.html">About</a>
+</div>
+
 <main style="max-width:1080px;margin:28px auto;padding:0 20px">
-  <h1 style="font-size:32px;font-weight:800">categories</h1>
+  <h1 style="font-size:32px;font-weight:800">Categories</h1>
   <div id="chips" class="cat-row" style="padding:0"></div>
   <div id="board" class="board" style="padding:0"></div>
   <div id="loading" class="loading">loading…</div>
@@ -22,6 +47,7 @@
 import {CONFIG} from './js/config.js';
 import {getSupabase} from './js/supabase.js';
 import {formatMoney,formatMoney2,esc,timeAgo,getLogoUrl} from './js/utils.js';
+import './js/theme.js';
 let cat = new URLSearchParams(location.search).get('slug') || 'all';
 function renderChips(){
   const el=document.getElementById('chips');

@@ -1,6 +1,7 @@
 import { CONFIG } from './config.js';
 import { getSupabase } from './supabase.js';
 import { normalizeDestination, formatMoney, formatMoney2, timeAgo, hoursSince, initials, esc, getLogoUrl } from './utils.js';
+import { initTheme } from './theme.js';
 
 let supabase = null;
 let allEntries = [];
@@ -80,21 +81,7 @@ async function loadPayPalSDK() {
 
 async function init() {
   loadPayPalSDK();
-  // Theme toggle
-  const applyTheme = (t) => {
-    document.body.classList.toggle('dark', t === 'dark');
-    const btn = $('#darkToggle');
-    if (btn) btn.textContent = t === 'dark' ? '☀' : '☾';
-    localStorage.setItem('outbid-theme', t);
-  };
-  const saved = localStorage.getItem('outbid-theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-
-  $('#darkToggle')?.addEventListener('click', () => {
-    const isDark = document.body.classList.contains('dark');
-    applyTheme(isDark ? 'light' : 'dark');
-  });
+  initTheme();
 
   // Stepper wiring
   const rawBidVal = parseInt($('#bidValue')?.textContent?.replace(/[^0-9]/g, '') || '5', 10);

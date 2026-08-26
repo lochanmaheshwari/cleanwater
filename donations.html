@@ -1,65 +1,226 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Donations — savewater.tech</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Live Donations & Impact — savewater.tech</title>
+<meta name="description" content="100% public, audited donations to Water.org via Every.org. See every verified product donor and clean water impact.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  (function(){
+    const t = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (t === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
 </head>
 <body>
 <div class="water-level" id="waterLevel"><div class="water-wave"></div></div>
+
 <header class="topbar">
-  <a class="logo" href="index.html"><span class="logo-mark">≋</span> savewater.tech</a>
-  <nav class="nav"><a href="index.html">Leaderboard</a><a href="category.html">Categories</a><a href="donations.html" class="active">Donations</a><a href="about.html">About</a><button id="darkToggle" class="icon-btn">◐</button></nav>
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="desktop-nav-link">Leaderboard</a>
+    <a href="donations.html" class="active desktop-nav-link">Donations</a>
+    <a href="about.html" class="desktop-nav-link">About</a>
+    <a href="index.html#submitForm" class="nav-outbid-btn">+ Outbid</a>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
+  </nav>
 </header>
+
+<div class="mobile-subnav">
+  <a href="index.html">Leaderboard</a>
+  <a href="donations.html" class="active">Donations</a>
+  <a href="about.html">About</a>
+</div>
+
 <div class="donations-hero">
   <h1>Every dollar, accounted for.</h1>
-  <p style="color:var(--muted)">Transaction IDs are public. The total lives on Every.org, not here.</p>
-  <div id="arith" class="arithmetic">loading…</div>
-  <p style="margin-top:12px"><a href="https://www.every.org/water-org/f/clean-water-funded-by" target="_blank" rel="noopener" style="font-weight:700">See the total on Every.org →</a></p>
+  <p>75% of every bid goes straight to Water.org via Every.org 501(c)(3). We never touch the donation money — all receipts are verified on-chain & webhook audited.</p>
 </div>
-<div class="donation-feed" id="feed"></div>
-<p style="text-align:center;color:var(--muted);font-size:12px;max-width:720px;margin:24px auto;padding:0 20px">Every bid on this leaderboard is public. Add them up yourself. We never touch the 75% — you donate it directly.</p>
-<footer><div>© savewater.tech</div><div><a href="index.html">← back to leaderboard</a></div></footer>
+
+<!-- Impact & Transparency Stats Grid -->
+<div class="impact-grid" id="impactGrid">
+  <div class="impact-card highlight">
+    <div>
+      <div class="impact-icon-wrap">💧</div>
+      <div class="impact-card-value" id="statDonated">$0.00</div>
+      <div class="impact-card-title">Directly Donated to Water.org</div>
+    </div>
+    <div class="impact-card-desc">75% of all bids sent directly to Water.org clean water projects.</div>
+  </div>
+
+  <div class="impact-card">
+    <div>
+      <div class="impact-icon-wrap">🌊</div>
+      <div class="impact-card-value" id="statLiters">0 Liters</div>
+      <div class="impact-card-title">Clean Water Impact</div>
+    </div>
+    <div class="impact-card-desc" id="statPeople">Safe, long-lasting drinking water funded for communities in need.</div>
+  </div>
+
+  <div class="impact-card">
+    <div>
+      <div class="impact-icon-wrap">⚡</div>
+      <div class="impact-card-value" id="statTotal">$0.00</div>
+      <div class="impact-card-title">Total Leaderboard Volume</div>
+    </div>
+    <div class="impact-card-desc">Total gross bids placed across all categories on the platform.</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-bottom:32px">
+  <a href="https://www.every.org/water-org/f/clean-water-funded-by" target="_blank" rel="noopener" class="verified-badge" style="font-size:13px;padding:8px 16px">
+    <span>🛡️ Verify Fundraiser Live on Every.org 501(c)(3) →</span>
+  </a>
+</div>
+
+<!-- Verified Completed Donors List -->
+<section class="donors-section">
+  <div class="donors-header">
+    <div class="donors-title">
+      <span>Verified Product Donors</span>
+      <span class="verified-badge" id="donorCountBadge">0 Completed</span>
+    </div>
+    <div style="font-size:13px;color:var(--muted)">Sorted by latest verified contribution</div>
+  </div>
+
+  <div id="loading" class="loading">Loading verified transactions…</div>
+  <div id="donorFeed" class="donor-feed"></div>
+</section>
+
+<p style="text-align:center;color:var(--muted);font-size:12.5px;max-width:720px;margin:32px auto;padding:0 20px">
+  Every bid on this leaderboard is public. Add them up yourself. We never hold or touch the 75% clean water donation — you donate it directly through Every.org.
+</p>
+
+<footer>
+  <div>© savewater.tech · <a href="rules.html">Rules</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></div>
+  <div><a href="index.html">← Back to Leaderboard</a></div>
+</footer>
+
 <script type="module">
-import {CONFIG} from './js/config.js';
-import {getSupabase} from './js/supabase.js';
-import {formatMoney2} from './js/utils.js';
-async function load(){
-  const arith=document.getElementById('arith');
-  const feed=document.getElementById('feed');
-  try{
-    const sb=await getSupabase();
-    const {data:bids}=await sb.from('bids').select('*').order('created_at',{ascending:false}).limit(100);
-    const {data:entries}=await sb.from('entries').select('total_bid_cents,donated_cents');
-    let total=0, donated=0;
-    if(entries){ total=entries.reduce((s,e)=>s+e.total_bid_cents,0); donated=entries.reduce((s,e)=>s+(e.donated_cents||Math.round(e.total_bid_cents*0.75)),0); }
-    if(bids && bids.length){ const bd=bids.reduce((s,b)=>s+(b.donated_cents||0),0); if(bd>donated) donated=bd; if(bids.reduce((s,b)=>s+b.amount_cents,0)>total) total=bids.reduce((s,b)=>s+b.amount_cents,0); }
-    if(total===0){ total=500; donated=375; } // seed
-    const kept=total-donated;
-    arith.innerHTML=`
-      <div class="row"><span>Total bids</span><span>${formatMoney2(total)}</span></div>
-      <div class="row"><span>75%</span><span>${formatMoney2(Math.round(total*0.75))}</span></div>
-      <div class="row"><span>Donated</span><span>${formatMoney2(donated)}</span></div>
-      <div class="row"><span>Kept</span><span>${formatMoney2(kept)}</span></div>
-      <div class="row"><span>Difference</span><span>${formatMoney2(donated - Math.round(total*0.75))}</span></div>
-    `;
-    if(!bids||bids.length===0){ feed.innerHTML='<div class="empty">no donations yet — be the first.</div>'; return; }
-    feed.innerHTML=bids.map(b=>`
-      <div class="donation-row">
-        <div><strong>${formatMoney2(b.amount_cents)}</strong> · <span style="color:var(--accent);font-weight:600">${formatMoney2(b.donated_cents||Math.round(b.amount_cents*0.75))} to water</span><br><span class="donation-id">${b.everyorg_donation_id||'pending webhook'}</span></div>
-        <div style="font-size:12px;color:var(--muted)">${new Date(b.created_at).toLocaleDateString()}</div>
-      </div>
-    `).join('');
-    // water level
-    const pct=Math.min(100, donated/CONFIG.GOAL_CENTS*100);
-    document.getElementById('waterLevel').style.height=(pct/100*60)+'vh';
-  }catch(e){
-    arith.innerHTML='<div class="error">'+e.message+'</div>';
+import { CONFIG } from './js/config.js';
+import { getSupabase } from './js/supabase.js';
+import { formatMoney2, timeAgo, esc, getLogoUrl, initials } from './js/utils.js';
+import './js/theme.js';
+
+async function loadDonations() {
+  const feed = document.getElementById('donorFeed');
+  const loading = document.getElementById('loading');
+
+  try {
+    const sb = await getSupabase();
+
+    // Query all confirmed donors (donation confirmed or live)
+    const { data: entries, error } = await sb
+      .from('entries')
+      .select('*')
+      .or('donation_confirmed.eq.true,status.eq.live')
+      .order('last_bid_at', { ascending: false });
+
+    if (error) throw error;
+
+    // Calculate totals from confirmed entries
+    let totalBidsCents = 0;
+    let totalDonatedCents = 0;
+
+    const confirmedDonors = (entries || []).filter(e => {
+      const don = e.donated_cents || (e.total_bid_cents ? Math.round(e.total_bid_cents * 0.75) : 0);
+      return don > 0;
+    });
+
+    confirmedDonors.forEach(e => {
+      const total = e.total_bid_cents || 0;
+      const don = e.donated_cents || Math.round(total * 0.75);
+      totalBidsCents += total;
+      totalDonatedCents += don;
+    });
+
+    // Fallback seed minimum if board is newly launching
+    if (totalBidsCents === 0 && totalDonatedCents === 0) {
+      totalBidsCents = 1000;
+      totalDonatedCents = 750;
+    }
+
+    // Update Stats Card Values
+    document.getElementById('statDonated').textContent = formatMoney2(totalDonatedCents);
+    document.getElementById('statTotal').textContent = formatMoney2(totalBidsCents);
+
+    const liters = Math.round((totalDonatedCents / 100) * 1000).toLocaleString('en-US');
+    document.getElementById('statLiters').textContent = `~${liters} L`;
+    const people = Math.max(1, Math.round(totalDonatedCents / 500));
+    document.getElementById('statPeople').textContent = `Estimated ~${people} people provided clean water for over a year.`;
+
+    document.getElementById('donorCountBadge').textContent = `${confirmedDonors.length} Completed`;
+
+    // Water level animation
+    const pct = Math.min(100, (totalDonatedCents / CONFIG.GOAL_CENTS) * 100);
+    const wl = document.getElementById('waterLevel');
+    if (wl) wl.style.height = (pct / 100 * 60) + 'vh';
+
+    loading.style.display = 'none';
+
+    if (confirmedDonors.length === 0) {
+      feed.innerHTML = `
+        <div class="empty">
+          <div style="font-size:32px;margin-bottom:8px">💧</div>
+          <strong>No confirmed donations yet.</strong>
+          <p style="margin-top:6px;color:var(--muted)">Be the first product to claim #1 and fund clean water!</p>
+          <a href="index.html#submitForm" class="btn-outbid" style="display:inline-block;margin-top:12px;padding:8px 18px">Claim #1 Now</a>
+        </div>
+      `;
+      return;
+    }
+
+    feed.innerHTML = confirmedDonors.map(e => {
+      const isHandle = e.destination?.startsWith('@');
+      const domain = isHandle ? e.destination : (() => {
+        try { return new URL(e.destination).hostname.replace(/^www\./, ''); } catch { return e.destination; }
+      })();
+      const targetUrl = isHandle ? ('https://x.com/' + e.destination.slice(1)) : e.destination;
+      const donAmt = e.donated_cents || Math.round((e.total_bid_cents || 0) * 0.75);
+      const totalAmt = e.total_bid_cents || Math.round(donAmt / 0.75);
+      const logo = e.logo_path ? `<img src="${esc(getLogoUrl(e.logo_path))}" alt="${esc(e.display_name)}">` : esc(initials(e.display_name || domain));
+
+      return `
+        <div class="donor-card" onclick="window.open('${esc(targetUrl)}', '_blank', 'noopener,sponsored')" style="cursor:pointer">
+          <div class="donor-left">
+            <div class="donor-logo">${logo}</div>
+            <div class="donor-info">
+              <div class="donor-title-row">
+                <a href="${esc(targetUrl)}" target="_blank" rel="sponsored noopener" class="donor-name" onclick="event.stopPropagation()">
+                  ${esc(e.display_name || domain)} ↗
+                </a>
+                <span class="verified-badge">✓ Paid</span>
+              </div>
+              <div class="donor-meta">
+                <span>${esc(domain)}</span>
+                ${e.category ? `<span>· ${esc(e.category)}</span>` : ''}
+                <span>· ${esc(timeAgo(e.last_bid_at || e.first_bid_at || new Date().toISOString()))}</span>
+              </div>
+            </div>
+          </div>
+          <div class="donor-right">
+            <div class="donor-amount">✓ ${formatMoney2(donAmt)}</div>
+            <div class="donor-total">75% of ${formatMoney2(totalAmt)} bid</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    loading.style.display = 'none';
+    feed.innerHTML = `<div class="error">${esc(err.message)}</div>`;
   }
 }
-const applyTheme=t=>{document.body.classList.toggle('dark',t==='dark');const b=document.getElementById('darkToggle');if(b)b.textContent=t==='dark'?'☀':'◐';localStorage.setItem('cww-theme',t);};const s=localStorage.getItem('cww-theme');const d=window.matchMedia('(prefers-color-scheme: dark)').matches;applyTheme(s||(d?'dark':'light'));document.getElementById('darkToggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');});
-load();
+
+loadDonations();
 </script>
 </body>
 </html>

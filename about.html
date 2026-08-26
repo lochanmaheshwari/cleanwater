@@ -1,17 +1,41 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>About — cleanwater.lol</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>About — savewater.tech</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  (function(){
+    const t = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (t === 'dark') document.documentElement.classList.add('dark');
+  })();
+</script>
 </head>
 <body>
 <header class="topbar">
-  <a class="logo" href="index.html"><span class="logo-mark">≋</span> savewater.tech</a>
-  <nav class="nav"><a href="index.html">Leaderboard</a><a href="category.html">Categories</a><a href="donations.html">Donations</a><a href="about.html" class="active">About</a><button id="darkToggle" class="icon-btn">◐</button></nav>
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="desktop-nav-link">Leaderboard</a>
+    <a href="donations.html" class="desktop-nav-link">Donations</a>
+    <a href="about.html" class="active desktop-nav-link">About</a>
+    <a href="index.html#submitForm" class="nav-outbid-btn">+ Outbid</a>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
+  </nav>
 </header>
+
+<div class="mobile-subnav">
+  <a href="index.html">Leaderboard</a>
+  <a href="donations.html">Donations</a>
+  <a href="about.html" class="active">About</a>
+</div>
+
 <main style="max-width:680px;margin:36px auto;padding:0 20px">
   <h1 style="font-size:42px;font-weight:800;letter-spacing:-.03em;margin:0">AI drinks. We pay it back.</h1>
   <div style="margin-top:18px;line-height:1.7;color:var(--ink)">
@@ -19,11 +43,11 @@
     <p>Data centres run on water. Cooling the infrastructure behind every model consumes it, and the industry is growing faster than anyone planned for.</p>
     <p>When you claim a spot here, you donate 75% directly to Water.org via Every.org. It goes from you to them. We never see it. The other 25% pays for the servers and keeps things like this getting built.</p>
     <p>One in four people on earth — 2.1 billion — still lack safely managed drinking water. This is a small way for an industry that runs on water to send some back.</p>
-    <p>Every bid here is public. Every donation is on Every.org. Check the maths. <a href="donations.html">See the arithmetic →</a></p>
+    <p>Every bid here is public. Every donation is on Every.org. Check the maths. <a href="donations.html">See all donations & impact →</a></p>
     <p style="color:var(--muted);font-size:13px;margin-top:24px">Donations are made by bidders directly to Water.org via Every.org; receipts come from Every.org.</p>
   </div>
 </main>
-<footer><div>© savewater.tech</div><div><a href="index.html">← back</a></div></footer>
-<script>const applyTheme=t=>{document.body.classList.toggle('dark',t==='dark');const b=document.getElementById('darkToggle');if(b)b.textContent=t==='dark'?'☀':'◐';localStorage.setItem('cww-theme',t);};const s=localStorage.getItem('cww-theme');const d=window.matchMedia('(prefers-color-scheme: dark)').matches;applyTheme(s||(d?'dark':'light'));document.getElementById('darkToggle')?.addEventListener('click',()=>{applyTheme(document.body.classList.contains('dark')?'light':'dark');});</script>
+<footer><div>© savewater.tech · <a href="rules.html">Rules</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></div><div><a href="index.html">← back to leaderboard</a></div></footer>
+<script type="module" src="js/theme.js"></script>
 </body>
 </html>
