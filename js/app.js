@@ -550,7 +550,9 @@ function handleHeroOutbid() {
     return;
   }
 
-  if (!cat) {
+  const isExisting = window.__formApi?.isExisting();
+
+  if (!cat && !isExisting) {
     showFormError('Please choose a category');
     return;
   }
@@ -559,8 +561,6 @@ function handleHeroOutbid() {
     showFormError('$1–$999,999 whole dollars only');
     return;
   }
-
-  const isExisting = window.__formApi?.isExisting();
 
   // Save pending outbid details
   window.__pendingOutbid = { dest, cat, bid: bidAmount, isExisting };
@@ -597,6 +597,12 @@ function handleHeroOutbid() {
 
     const err = document.getElementById('outbidModalError');
     if (err) err.style.display = 'none';
+
+    // Hide logo and description upload if product already exists
+    const logoField = document.getElementById('logoField');
+    const descField = document.getElementById('descriptionInput')?.parentNode;
+    if (logoField) logoField.style.display = isExisting ? 'none' : 'block';
+    if (descField) descField.style.display = isExisting ? 'none' : 'block';
 
     modal.style.display = 'flex';
     modal.classList.add('open');

@@ -82,9 +82,10 @@ export default async function handler(req, res) {
     // check existing
     const { data: existing } = await sb.from('entries').select('id, total_bid_cents').eq('destination', dest).maybeSingle();
     if (existing) {
-      if (!desc) {
-        const { data: full } = await sb.from('entries').select('description').eq('id', existing.id).single();
-        desc = full?.description || '';
+      if (!desc || !category) {
+        const { data: full } = await sb.from('entries').select('description, category').eq('id', existing.id).single();
+        desc = desc || full?.description || '';
+        if (!category && full?.category) cat = full.category;
       }
     } else {
       if (!desc) return res.status(400).json({ error: 'description required' });

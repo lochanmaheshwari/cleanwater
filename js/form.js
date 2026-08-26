@@ -201,6 +201,10 @@ export function initForm(getBidAmount, getTopBidCents) {
       hint.style.display = 'block';
       hint.textContent = `Already on the list — this adds to your total. Current: $${(entry.total_bid_cents / 100).toFixed(0)} · ${entry.description || ''}`;
     }
+    const catSel = $('#categorySelect');
+    if (catSel && entry.category) {
+      catSel.value = entry.category;
+    }
   }
 
   function hideExisting() {
