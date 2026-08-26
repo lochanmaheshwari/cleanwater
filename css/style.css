@@ -1343,17 +1343,50 @@ footer a:hover { color: var(--ink); }
     margin: 0 auto 6px !important;
     border-radius: var(--radius-pill);
     gap: 5px !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--muted) !important;
   }
+  .dark .stats-pill-top {
+    background: #121C24 !important;
+    border-color: #1C2A33 !important;
+    color: #8AA0AD !important;
+  }
+  .stats-pill-top strong {
+    color: var(--ink) !important;
+  }
+  .dark .stats-pill-top strong {
+    color: #E6EEF2 !important;
+  }
+
   .toggle {
     padding: 2px !important;
     margin: 0 auto 6px !important;
     gap: 2px !important;
+    background: var(--bg-subtle) !important;
+    border: 1px solid var(--border) !important;
+  }
+  .dark .toggle {
+    background: #121C24 !important;
+    border-color: #1C2A33 !important;
   }
   .toggle button {
     padding: 4px 12px !important;
     font-size: 12px !important;
     border-radius: var(--radius-pill);
+    color: var(--muted) !important;
   }
+  .toggle button.active {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+  }
+  .dark .toggle button.active {
+    background: #1B2936 !important;
+    color: #E6EEF2 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
+  }
+
   .headline {
     font-size: 22px !important;
     gap: 6px !important;
@@ -1361,22 +1394,36 @@ footer a:hover { color: var(--ink); }
     line-height: 1.15 !important;
     max-width: 100%;
     overflow-x: hidden;
+    color: var(--ink) !important;
   }
   .stepper .val,
   .stepper .val-input {
     font-size: 22px !important;
     max-width: 80px !important;
+    color: var(--accent) !important;
   }
   .stepper button {
     width: 24px !important;
     height: 24px !important;
     font-size: 13px !important;
+    background: var(--accent-light) !important;
+    color: var(--accent) !important;
+    border: 1px solid var(--accent-border) !important;
+  }
+  .dark .stepper button {
+    background: rgba(56, 189, 248, 0.12) !important;
+    color: #38BDF8 !important;
+    border-color: rgba(56, 189, 248, 0.25) !important;
   }
   .subline {
     font-size: 11.5px !important;
     line-height: 1.35 !important;
     margin: 0 auto 8px !important;
     max-width: 100%;
+    color: var(--muted) !important;
+  }
+  .subline strong {
+    color: var(--ink) !important;
   }
 
   /* Completely hide fundraiser goal card on mobile to save vertical space */
@@ -1405,10 +1452,22 @@ footer a:hover { color: var(--ink); }
     min-height: 38px !important;
     border-radius: var(--radius-pill);
     box-sizing: border-box !important;
+    background: #FFFFFF !important;
+    border: 1px solid var(--border) !important;
+    color: var(--ink) !important;
+  }
+  .dark .pill-input {
+    background: #121C24 !important;
+    border-color: #1C2A33 !important;
+    color: #E6EEF2 !important;
   }
   .pill-input input {
     font-size: 13.5px !important;
     width: 100% !important;
+    color: var(--ink) !important;
+  }
+  .dark .pill-input input {
+    color: #E6EEF2 !important;
   }
   .form-action-group {
     display: flex !important;
@@ -1433,6 +1492,15 @@ footer a:hover { color: var(--ink); }
     font-size: 12.5px !important;
     border-radius: var(--radius-pill);
     box-sizing: border-box !important;
+    background: #FFFFFF !important;
+    border: 1px solid var(--border) !important;
+    color: var(--ink) !important;
+  }
+  .dark .form-action-group .pill-select,
+  .dark .form-action-group select#categorySelect {
+    background: #121C24 !important;
+    border-color: #1C2A33 !important;
+    color: #E6EEF2 !important;
   }
   .form-action-group .btn-outbid {
     flex: 0.85 !important;
@@ -1444,6 +1512,12 @@ footer a:hover { color: var(--ink); }
     font-weight: 800 !important;
     border-radius: var(--radius-pill);
     box-sizing: border-box !important;
+    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+    color: #FFFFFF !important;
+  }
+  .dark .form-action-group .btn-outbid {
+    background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%) !important;
+    color: #FFFFFF !important;
   }
   .hint {
     display: none;
@@ -1462,6 +1536,27 @@ footer a:hover { color: var(--ink); }
     font-weight: 600;
     height: 28px !important;
     border-radius: var(--radius-pill);
+    background: var(--bg-subtle) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--muted) !important;
+  }
+  .dark .cat-chip {
+    background: #121C24 !important;
+    border-color: #1C2A33 !important;
+    color: #8AA0AD !important;
+  }
+  .cat-chip.active {
+    background: var(--accent) !important;
+    color: #FFFFFF !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
+  }
+  .dark .cat-chip.active {
+    background: #38BDF8 !important;
+    color: #0B1014 !important;
+    border-color: #38BDF8 !important;
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3) !important;
+    font-weight: 800 !important;
   }
 
   .board {
@@ -1474,7 +1569,13 @@ footer a:hover { color: var(--ink); }
     gap: 10px !important;
     border-radius: 14px !important;
     margin-bottom: 6px !important;
-    box-shadow: var(--card-shadow);
+    box-shadow: var(--card-shadow) !important;
+    background: var(--card-bg) !important;
+    border: 1.5px solid var(--card-border) !important;
+  }
+  .dark .card {
+    background: #121C24 !important;
+    border-color: #1C2A33 !important;
   }
   .rank-badge {
     padding: 2px 6px !important;
@@ -1483,12 +1584,22 @@ footer a:hover { color: var(--ink); }
     min-width: 22px !important;
     border-radius: var(--radius-pill);
     margin-top: 2px !important;
+    background: var(--accent) !important;
+    color: #FFFFFF !important;
   }
   .logo-wrap {
     width: 36px !important;
     height: 36px !important;
     border-radius: 10px !important;
     font-size: 14px !important;
+    background: var(--bg-subtle) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--ink) !important;
+  }
+  .dark .logo-wrap {
+    background: #0B1014 !important;
+    border-color: #1C2A33 !important;
+    color: #E6EEF2 !important;
   }
   .card-top-row {
     gap: 6px !important;
@@ -1497,14 +1608,24 @@ footer a:hover { color: var(--ink); }
     font-size: 14px !important;
     font-weight: 700;
     line-height: 1.2 !important;
+    color: var(--ink) !important;
+  }
+  .dark .card-title {
+    color: #E6EEF2 !important;
   }
   .card-bid {
     font-size: 14.5px !important;
     font-weight: 800;
+    color: var(--accent) !important;
+  }
+  .dark .card-bid {
+    color: #38BDF8 !important;
   }
   .card-donation-badge {
     font-size: 11.5px !important;
     margin-top: 1px !important;
+    color: #10B981 !important;
+    font-weight: 800 !important;
   }
   .card-blurb {
     font-size: 12px !important;
@@ -1514,15 +1635,22 @@ footer a:hover { color: var(--ink); }
     -webkit-line-clamp: 1 !important;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: var(--muted) !important;
+  }
+  .dark .card-blurb {
+    color: #8AA0AD !important;
   }
   .card-meta {
     font-size: 10.5px !important;
     gap: 6px 10px !important;
     margin-top: 3px !important;
+    color: var(--muted) !important;
+  }
+  .dark .card-meta {
+    color: #8AA0AD !important;
   }
   .card-meta .meta-item {
     display: inline-flex;
-  }ex;
     align-items: center;
   }
 
