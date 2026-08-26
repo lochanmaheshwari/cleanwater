@@ -260,7 +260,18 @@ const CAT_SHORT = {
   "Crypto, Web3 & Investing": "Crypto",
   "Developer Tools": "Developer",
   "Business, Finance & Legal": "Business",
-  "Security, Privacy & Compliance": "Security"
+  "Security, Privacy & Compliance": "Security",
+  "Health, Fitness & Wellness": "Health",
+  "Social Media & Creator Tools": "Social",
+  "Leaderboards & Attention Markets": "Leaderboards",
+  "Productivity & Personal Tools": "Productivity",
+  "Design & Creative": "Design",
+  "Writing & Content": "Writing",
+  "Directories, Launch & Discovery": "Directories",
+  "Ecommerce & Retail": "Ecommerce",
+  "Games & Entertainment": "Games",
+  "Hiring, Jobs & Careers": "Careers",
+  "Education & Learning": "Education"
 };
 
 function catIcon(c) {
@@ -274,7 +285,7 @@ function renderCatChips() {
   const dd = $('#catDropdown');
   if (!row) return;
 
-  const topCats = ['all', ...CONFIG.CATEGORIES.slice(0, 7)];
+  const topCats = ['all', ...CONFIG.CATEGORIES.slice(0, 14)];
   row.innerHTML = topCats.map(c => {
     const label = c === 'all' ? 'All' : (CAT_SHORT[c] || c);
     const active = currentCategory === c ? 'active' : '';

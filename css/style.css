@@ -614,14 +614,14 @@ body.dark,
 
 /* Category Chips Row */
 .cat-row-container {
-  max-width: var(--max-width);
-  margin: 32px auto 0;
-  padding: 0 20px;
+  max-width: 1020px;
+  margin: 28px auto 0;
+  padding: 0 24px;
   position: relative;
 }
 .cat-row {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
   overflow-x: auto;
   scrollbar-width: none;
