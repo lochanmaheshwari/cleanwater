@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%230284c7' d='M16 3C16 3 6 15.5 6 21.5a10 10 0 0 0 20 0C26 15.5 16 3 16 3z'/%3E%3Cpath fill='%2338bdf8' d='M16 7.5C16 7.5 9 16.5 9 21.5a7 7 0 0 0 14 0C23 16.5 16 7.5 16 7.5z' opacity='.7'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+  (function(){
+    try {
+      var t = localStorage.getItem('cww-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (t === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch(e) {}
+  })();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Where Am I Donating? — All About Water.org & Every.org | savewater.tech</title>
+<meta name="description" content="Learn where 75% of every bid goes: Water.org via Every.org. Discover what Water.org does, who founded it, and how 66+ million lives have been changed with clean water.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">≋</span>
+      savewater.tech
+    </a>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="desktop-nav-link">Leaderboard</a>
+    <a href="donations.html" class="desktop-nav-link">Donations</a>
+    <a href="water.html" class="active desktop-nav-link">Where Am I Donating?</a>
+    <a href="about.html" class="desktop-nav-link">About</a>
+    <a href="index.html#submitForm" class="nav-outbid-btn">+ Outbid</a>
+    <button id="darkToggle" class="icon-btn" aria-label="toggle dark mode">☾</button>
+  </nav>
+</header>
+
+<div class="mobile-subnav">
+  <a href="index.html">Leaderboard</a>
+  <a href="donations.html">Donations</a>
+  <a href="water.html" class="active">Where Am I Donating?</a>
+  <a href="about.html">About</a>
+</div>
+
+<main style="max-width:820px;margin:32px auto 60px;padding:0 20px">
+  <!-- Hero Section -->
+  <div style="text-align:center;margin-bottom:36px">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px">
+      💧 75% Direct Clean Water Impact
+    </div>
+    <h1 style="font-size: clamp(28px, 4vw, 42px);font-weight:800;letter-spacing:-0.03em;margin:0 0 14px">Where Am I Donating?</h1>
+    <p style="color:var(--muted);font-size:clamp(15px, 2vw, 17px);line-height:1.6;max-width:640px;margin:0 auto">
+      When you bid to rank on <strong>savewater.tech</strong>, <strong>75% of your money goes straight to Water.org</strong> through <strong>Every.org</strong> (a 501(c)(3) nonprofit). Here is everything you need to know about the charity you are empowering.
+    </p>
+  </div>
+
+  <!-- Key Impact Numbers Banner -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:36px">
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:22px;text-align:center;box-shadow:var(--card-shadow)">
+      <div style="font-size:32px;font-weight:800;color:var(--accent);letter-spacing:-0.03em;margin-bottom:4px">66+ Million</div>
+      <div style="font-size:13.5px;color:var(--muted);font-weight:500">People Reached with Safe Water & Sanitation</div>
+    </div>
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:22px;text-align:center;box-shadow:var(--card-shadow)">
+      <div style="font-size:32px;font-weight:800;color:#059669;letter-spacing:-0.03em;margin-bottom:4px">$6+ Billion</div>
+      <div style="font-size:13.5px;color:var(--muted);font-weight:500">Capital Mobilized for Local Water Solutions</div>
+    </div>
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:22px;text-align:center;box-shadow:var(--card-shadow)">
+      <div style="font-size:32px;font-weight:800;color:var(--ink);letter-spacing:-0.03em;margin-bottom:4px">17 Countries</div>
+      <div style="font-size:13.5px;color:var(--muted);font-weight:500">Across Africa, Asia, and Latin America</div>
+    </div>
+  </div>
+
+  <!-- Section 1: What is Water.org? -->
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:var(--card-shadow)">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.15);display:grid;place-items:center;font-size:22px">🌊</div>
+      <div>
+        <h2 style="font-size:20px;font-weight:800;margin:0">What is Water.org?</h2>
+        <div style="font-size:13px;color:var(--muted)">Global Clean Water Nonprofit founded in 2009</div>
+      </div>
+    </div>
+    <p style="font-size:15px;line-height:1.65;color:var(--ink);margin:0 0 14px">
+      <strong>Water.org</strong> is a global nonprofit organization dedicated to bringing safe water and sanitation to families living in poverty. Co-founded by social entrepreneur <strong>Gary White</strong> and actor/advocate <strong>Matt Damon</strong>, Water.org has transformed the international water sector by creating market-driven financial solutions that empower people with access to safe water for generations.
+    </p>
+    <p style="font-size:15px;line-height:1.65;color:var(--ink);margin:0">
+      Instead of just digging isolated wells that often break down, Water.org breaks the systemic cycle of water poverty by working directly with local financial institutions, governments, and utilities to make household taps, rainwater harvesting, and safe toilets affordable for everyone.
+    </p>
+  </div>
+
+  <!-- Section 2: What does Water.org do? (The WaterCredit Model) -->
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:var(--card-shadow)">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="width:44px;height:44px;border-radius:12px;background:rgba(34,197,94,0.15);display:grid;place-items:center;font-size:22px">💡</div>
+      <div>
+        <h2 style="font-size:20px;font-weight:800;margin:0">How Does Water.org Work? (WaterCredit)</h2>
+        <div style="font-size:13px;color:var(--muted)">Smart, sustainable, and multiplying impact</div>
+      </div>
+    </div>
+    <p style="font-size:15px;line-height:1.65;color:var(--ink);margin:0 0 16px">
+      Millions of families in poverty already pay high costs in time and money to purchase water from vendor trucks or walk miles every day to collect dirty water. Water.org pioneered <strong>WaterCredit</strong>:
+    </p>
+    <div style="display:grid;gap:12px">
+      <div style="display:flex;gap:12px;background:var(--bg-subtle);padding:14px 16px;border-radius:14px;border:1px solid var(--border-light)">
+        <div style="font-weight:800;color:var(--accent);font-size:16px">1.</div>
+        <div style="font-size:14px;line-height:1.5"><strong>Small, Affordable Micro-loans:</strong> Families take small loans ($50 - $250) to connect directly to the municipal water line, install household piping, or build safe toilets.</div>
+      </div>
+      <div style="display:flex;gap:12px;background:var(--bg-subtle);padding:14px 16px;border-radius:14px;border:1px solid var(--border-light)">
+        <div style="font-weight:800;color:var(--accent);font-size:16px">2.</div>
+        <div style="font-size:14px;line-height:1.5"><strong>99% Repayment Rate:</strong> Borrowers repay their loans with a 99% track record. Over <strong>90% of borrowers are women</strong>, who gain hours of time back to work, start businesses, and send children to school.</div>
+      </div>
+      <div style="display:flex;gap:12px;background:var(--bg-subtle);padding:14px 16px;border-radius:14px;border:1px solid var(--border-light)">
+        <div style="font-weight:800;color:var(--accent);font-size:16px">3.</div>
+        <div style="font-size:14px;line-height:1.5"><strong>Evergreen Recycling of Capital:</strong> As loans are repaid, the capital is re-loaned to another family in need, multiplying the impact of every single dollar donated.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: How Every.org Handles Your Donation -->
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:24px;box-shadow:var(--card-shadow)">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="width:44px;height:44px;border-radius:12px;background:rgba(168,85,247,0.15);display:grid;place-items:center;font-size:22px">🛡️</div>
+      <div>
+        <h2 style="font-size:20px;font-weight:800;margin:0">How Every.org Processes Your Donation</h2>
+        <div style="font-size:13px;color:var(--muted)">100% Tax-deductible, 0% platform fee for charity</div>
+      </div>
+    </div>
+    <p style="font-size:15px;line-height:1.65;color:var(--ink);margin:0 0 14px">
+      <strong>Every.org</strong> is an official 501(c)(3) nonprofit charity platform that provides secure, transparent donation infrastructure for nonprofits. 
+    </p>
+    <ul style="margin:0 0 16px;padding-left:20px;font-size:14.5px;line-height:1.6;color:var(--ink)">
+      <li><strong>Direct to Water.org:</strong> When you complete Step 1 on savewater.tech, your donation is made directly on Every.org. We never touch or hold the 75% charity donation.</li>
+      <li><strong>Official Tax Receipts:</strong> Every.org issues an immediate, official 501(c)(3) tax-deductible receipt to your email.</li>
+      <li><strong>Instant 1-Click Payments:</strong> Supports Apple Pay, Google Pay, and all major Credit/Debit cards with zero login required.</li>
+    </ul>
+    <div>
+      <a href="https://www.every.org/water-org/f/clean-water-funded-by" target="_blank" rel="noopener" class="btn-outbid" style="display:inline-block;text-decoration:none;padding:10px 18px;font-size:14px">
+        View Official Water.org Fundraiser on Every.org ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- Section 4: Why Pair AI & Clean Water? -->
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:32px;box-shadow:var(--card-shadow)">
+    <h2 style="font-size:20px;font-weight:800;margin:0 0 12px">Why Are We Connecting AI to Clean Water?</h2>
+    <p style="font-size:15px;line-height:1.65;color:var(--ink);margin:0 0 14px">
+      Large AI data centers consume tens of millions of gallons of clean freshwater each year for server cooling. A single conversation with an advanced AI model evaporates approximately 500ml (one water bottle) of water.
+    </p>
+    <p style="font-size:15px;line-height:1.65;color:var(--ink);margin:0">
+      <strong>savewater.tech</strong> turns that dynamic on its head: tech companies, AI startups, and creators pay to advertise and rank on our leaderboard, and <strong>75% of every dollar immediately funds real-world clean water solutions for families in need</strong>.
+    </p>
+  </div>
+
+  <!-- Call to Action Banner -->
+  <div style="background:linear-gradient(135deg, rgba(2,132,199,0.15) 0%, rgba(56,189,248,0.08) 100%);border:1px solid rgba(56,189,248,0.3);border-radius:20px;padding:32px;text-align:center">
+    <h2 style="font-size:24px;font-weight:800;margin:0 0 8px">Ready to Fund Clean Water & Claim #1?</h2>
+    <p style="color:var(--muted);font-size:15px;margin:0 0 20px;max-width:500px;margin-left:auto;margin-right:auto">
+      Outbid the leaderboard, get global exposure for your product, and empower families with clean water today.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="index.html#submitForm" class="btn-outbid" style="display:inline-block;padding:12px 24px;text-decoration:none;font-size:15px">
+        + Outbid Leaderboard
+      </a>
+      <a href="donations.html" style="display:inline-block;padding:12px 20px;border-radius:999px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);text-decoration:none;font-weight:600;font-size:15px">
+        View Live Donations
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>© savewater.tech · <a href="rules.html">Rules</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></div>
+  <div><a href="https://www.every.org/water-org/f/clean-water-funded-by" target="_blank" rel="noopener">75% goes directly to Clean Water via Every.org →</a></div>
+</footer>
+
+<script type="module" src="js/theme.js"></script>
+</body>
+</html>
