@@ -383,6 +383,7 @@ function renderBoard() {
     const domain = isHandle ? e.destination : (() => {
       try { return new URL(e.destination).hostname.replace(/^www\./, ''); } catch { return e.destination; }
     })();
+    const targetUrl = isHandle ? ('https://x.com/' + e.destination.slice(1)) : e.destination;
     const logoSrc = getLogoUrl(e.logo_path, domain);
     const logo = `<img src="${esc(logoSrc)}" alt="${esc(e.display_name || domain)}" onerror="this.onerror=null; this.src='https://unavatar.io/${encodeURIComponent(domain)}';">`;
 
@@ -625,6 +626,8 @@ function showModalFormError(msg) {
   } else {
     showFormError(msg);
   }
+}
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
