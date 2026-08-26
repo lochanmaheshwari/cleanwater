@@ -53,6 +53,16 @@
 
 
 <section class="hero">
+  <div class="stats-pill-top" id="statsPillTop">
+    <span class="live-dot">●</span>
+    <span id="liveStatsText"><strong>252</strong> online · <strong>1,361,777</strong> visitors since launch · <a href="donations.html" style="color:inherit;text-decoration:underline">see stats→</a></span>
+  </div>
+
+  <div class="toggle" role="tablist" aria-label="board toggle" style="margin: 6px auto 8px; width: fit-content">
+    <button class="active" data-tab="all"><span style="margin-right:3px">🏆</span> All-time</button>
+    <button data-tab="today">Today</button>
+  </div>
+
   <h1 class="headline">
     <span id="headlineClaim">Claim #1 for</span>
     <span class="stepper">
@@ -66,7 +76,7 @@
   </h1>
   <p class="subline">
     AI runs on water. <strong>75% of every bid goes straight to those in need.</strong><br>
-    <span style="font-size:13.5px;color:var(--muted);display:inline-block;margin-top:6px">New spots start at $5. Paying less than the #1 price still puts you on the board at whatever place that bid can take.</span>
+    <span style="font-size:12.5px;color:var(--muted);display:inline-block;margin-top:4px">New spots start at $5. Paying less than the #1 price still puts you on the board at whatever place that bid can take.</span>
   </p>
 
   <form id="submitForm" class="hero-form">
@@ -111,21 +121,12 @@
       </div>
       <button id="outbidBtn" type="submit" class="btn-outbid">Outbid</button>
     </div>
-    <div id="existingHint" style="display:none;margin:6px 0 0;font-size:12.5px;color:var(--accent);font-weight:600"></div>
-    <div id="formError" class="error" style="display:none;margin-top:8px"></div>
+    <div id="existingHint" style="display:none;margin:4px 0 0;font-size:12px;color:var(--accent);font-weight:600"></div>
+    <div id="formError" class="error" style="display:none;margin-top:6px"></div>
   </form>
-  <div class="hint" id="formHint">Already on the list? Enter the same URL or @handle and up your bid.</div>
 </section>
 
 <section class="board-section">
-  <div class="board-header">
-    <div class="toggle" role="tablist" aria-label="board toggle">
-      <button class="active" data-tab="all"><span style="margin-right:3px">🏆</span> All-time</button>
-      <button data-tab="today">Today</button>
-    </div>
-    <div class="board-stats-note" id="boardStatsNote">Ranked by total donation to clean water</div>
-  </div>
-
   <div class="cat-row-container" id="catRowWrap">
     <div id="catRow" class="cat-row"></div>
     <div id="catDropdown"></div>
