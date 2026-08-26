@@ -70,7 +70,7 @@ export default async function handler(req, res) {
   try {
     const { destination, bidDollars, category, description, logoPath } = req.body || {};
     const bidCents = Math.round(Number(bidDollars) * 100);
-    if (!Number.isInteger(bidCents) || bidCents < 500) return res.status(400).json({ error: 'Minimum bid is $5' });
+    if (!Number.isInteger(bidCents) || bidCents < 100) return res.status(400).json({ error: 'Minimum bid is $1' });
     if (bidCents > 99999900) return res.status(400).json({ error: 'Maximum is $999,999' });
 
     let desc = (description || '').replace(/<[^>]*>/g, '').trim().slice(0, 200);

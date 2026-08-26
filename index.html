@@ -69,13 +69,13 @@
       <button id="decBtn" type="button" aria-label="decrease">−</button>
       <span style="display:inline-flex;align-items:center;position:relative">
         <span style="color:var(--accent);font-size:inherit;font-weight:inherit;pointer-events:none">$</span>
-        <input id="bidValueInput" class="val-input" type="number" min="5" max="999999" step="1" value="30" aria-label="bid amount" style="width:2.5ch">
+        <input id="bidValueInput" class="val-input" type="number" min="1" max="999999" step="1" value="30" aria-label="bid amount" style="width:2.5ch">
       </span>
       <button id="incBtn" type="button" aria-label="increase">+</button>
     </span>
   </h1>
   <p class="subline">
-    <strong>75% of every bid goes straight to those in need.</strong> New spots start at $5. Paying less than #1 still ranks you.
+    <strong>75% of every bid goes straight to those in need.</strong> New spots start at $1. Paying less than #1 still ranks you.
   </p>
 
   <form id="submitForm" class="hero-form">
@@ -177,7 +177,7 @@
     </div>
 
     <div class="price-breakdown-box">
-      <div class="breakdown-row highlight"><span>Total bid</span><span id="modalBreakdownBid">$5</span></div>
+      <div class="breakdown-row highlight"><span>Total bid</span><span id="modalBreakdownBid">$1</span></div>
       <div class="breakdown-row"><span>Step 1: To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
       <div class="breakdown-row"><span>Step 2: Listing fee (25%)</span><span id="modalBreakdownFee">$1</span></div>
     </div>
@@ -198,7 +198,7 @@
     </div>
     <button id="outbidModalPayUpi" type="button" style="width:100%;margin-top:12px;padding:13px 16px;border-radius:999px;border:1px solid rgba(125,211,252,0.28);background:rgba(255,255,255,0.96);color:#0F172A;font-weight:800;font-size:14.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.12);transition:transform 0.15s,box-shadow 0.15s">
       <span style="width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#00BAF2 0%,#5A2CA0 100%);display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800">₹</span>
-      Pay <span id="btnUpiAmt">$5</span> via UPI (GPay / PhonePe / Paytm) →
+      Pay <span id="btnUpiAmt">$1</span> via UPI (GPay / PhonePe / Paytm) →
     </button>
     <div style="font-size:11px;color:rgba(230,238,242,0.45);text-align:center;margin-top:7px">🇮🇳 For India — UPI QR + intent, same leaderboard. Powered by UroPay.</div>
 
