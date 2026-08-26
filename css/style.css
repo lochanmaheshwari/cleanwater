@@ -184,23 +184,26 @@ body:not(.dark) {
 .nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 .nav a {
   font-size: 14px;
   font-weight: 500;
   color: var(--muted);
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: var(--radius-pill);
-  transition: color 0.15s;
+  transition: color 0.15s, background 0.15s;
+  text-decoration: none;
 }
 .nav a:hover {
   color: var(--ink);
+  background: var(--bg-subtle);
   text-decoration: none;
 }
 .nav a.active {
   color: var(--accent);
-  font-weight: 600;
+  background: var(--accent-light);
+  font-weight: 700;
 }
 .nav-outbid-btn {
   background: var(--accent) !important;
@@ -224,10 +227,25 @@ body:not(.dark) {
   height: 34px;
   border-radius: 50%;
   border: 1px solid var(--border);
-  background: #FFFFFF;
+  background: var(--bg-subtle);
+  color: var(--ink);
   display: grid;
   place-items: center;
+  font-size: 14px;
   cursor: pointer;
+  transition: transform 0.15s, background 0.15s, border-color 0.15s;
+}
+.icon-btn:hover {
+  transform: scale(1.05);
+  background: var(--accent-light);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.dark .icon-btn {
+  background: #172433;
+  border-color: #1C2A33;
+  color: #E6EEF2;
+}
   color: var(--muted);
   font-size: 14px;
   margin-left: 4px;
@@ -1278,7 +1296,6 @@ footer a:hover { color: var(--ink); }
   body {
     padding-bottom: 0 !important;
   }
-}
 
   html, body {
     overflow-x: hidden !important;
