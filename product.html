@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
-<link rel="icon" href="img/logo-icon-64.png" type="image/png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C16 3 6 15.5 6 21.5a10 10 0 0 0 20 0C26 15.5 16 3 16 3z' fill='%2338bdf8'/%3E%3Cpath d='M16 8C16 8 10 17 10 21.5a6 6 0 0 0 12 0C22 17 16 8 16 8z' fill='white' opacity='0.3'/%3E%3C/svg%3E">
 <script>
   (function(){
     try {
@@ -83,7 +83,7 @@ async function load(){
         <p style="color:var(--muted)">${esc(e.description||'')}</p>
         <p><a href="${e.destination.startsWith('@')?'https://x.com/'+e.destination.slice(1):esc(e.destination)}" target="_blank" rel="sponsored noopener">${esc(e.destination)}</a> · ${esc(e.category||'')}</p>
         <div class="bid" style="font-size:28px">${formatMoney(e.total_bid_cents)}</div>
-        <div class="donated">${formatMoney2(e.donated_cents||Math.round(e.total_bid_cents*0.75))} to water</div>
+        <div class="donated" style="font-size:17px;font-weight:800;color:#10B981;margin-top:4px">💧 ${formatMoney2(e.donated_cents||Math.round(e.total_bid_cents*0.75))} to clean water</div>
         <p style="font-size:13px;color:var(--muted)">${e.click_count||0} clicks · ${esc(timeAgo(e.last_bid_at))}</p>
         <button class="btn-accent" onclick="location.href='/?claim=${encodeURIComponent(e.destination)}'">boost this listing</button>
       </div>

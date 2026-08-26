@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
-<link rel="icon" href="img/logo-icon-64.png" type="image/png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C16 3 6 15.5 6 21.5a10 10 0 0 0 20 0C26 15.5 16 3 16 3z' fill='%2338bdf8'/%3E%3Cpath d='M16 8C16 8 10 17 10 21.5a6 6 0 0 0 12 0C22 17 16 8 16 8z' fill='white' opacity='0.3'/%3E%3C/svg%3E">
 <script>
   (function(){
     try {
@@ -19,7 +19,7 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>savewater.tech — AI drinks. We pay it back.</title>
+<title>savewater.tech — The Clean Water Leaderboard</title>
 <meta name="description" content="A pay-to-rank leaderboard for AI products. 75% of every bid goes straight to clean water.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
 </script>
 </head>
 <body>
-<div id="waterLevel" class="water-level"><div class="water-wave"></div></div>
+<div class="water-level" id="waterLevel"><div class="water-wave"></div></div>
 
 <header class="topbar">
   <div class="topbar-left">
@@ -63,9 +63,9 @@
     <button data-tab="today">Today</button>
   </div>
 
-  <h1 class="headline">
+  <h1 class="headline" id="headlineMain">
     <span id="headlineClaim">Claim #1 for</span>
-    <span class="stepper">
+    <span class="stepper" style="margin-left:4px">
       <button id="decBtn" type="button" aria-label="decrease">−</button>
       <span style="display:inline-flex;align-items:center;position:relative">
         <span style="color:var(--accent);font-size:inherit;font-weight:inherit;pointer-events:none">$</span>
@@ -85,38 +85,37 @@
         <input id="destinationInput" name="destination" placeholder="Your product URL or @handle" autocomplete="off" maxlength="120" required>
       </label>
       <div class="select-wrap">
-        <select id="categorySelect" class="pill-select" aria-label="category" required>
-          <option value="">Choose a category</option>
-          <option value="AI Agents & Infrastructure">AI Agents & Infrastructure</option>
-          <option value="SEO & AI Visibility">SEO & AI Visibility</option>
-          <option value="Marketing & Advertising">Marketing & Advertising</option>
-          <option value="Crypto, Web3 & Investing">Crypto, Web3 & Investing</option>
-          <option value="Developer Tools">Developer Tools</option>
-          <option value="Business, Finance & Legal">Business, Finance & Legal</option>
-          <option value="Security, Privacy & Compliance">Security, Privacy & Compliance</option>
-          <option value="Health, Fitness & Wellness">Health, Fitness & Wellness</option>
-          <option value="Social Media & Creator Tools">Social Media & Creator Tools</option>
-          <option value="Leaderboards & Attention Markets">Leaderboards & Attention Markets</option>
-          <option value="Hiring, Jobs & Careers">Hiring, Jobs & Careers</option>
-          <option value="Education & Learning">Education & Learning</option>
-          <option value="Agencies, Studios & Services">Agencies, Studios & Services</option>
-          <option value="Ecommerce & Retail">Ecommerce & Retail</option>
-          <option value="Domains & Web Assets">Domains & Web Assets</option>
-          <option value="Games & Entertainment">Games & Entertainment</option>
-          <option value="People & Profiles">People & Profiles</option>
-          <option value="Productivity & Personal Tools">Productivity & Personal Tools</option>
-          <option value="Design & Creative">Design & Creative</option>
-          <option value="Writing & Content">Writing & Content</option>
-          <option value="Directories, Launch & Discovery">Directories, Launch & Discovery</option>
-          <option value="AI Media Generation">AI Media Generation</option>
-          <option value="Audio, Voice & Podcasting">Audio, Voice & Podcasting</option>
-          <option value="Sales & Lead Generation">Sales & Lead Generation</option>
-          <option value="Travel, Local & Lifestyle">Travel, Local & Lifestyle</option>
-          <option value="Real Estate & Property">Real Estate & Property</option>
-          <option value="Media & News">Media & News</option>
-          <option value="Other">Other</option>
+        <select id="categorySelect" name="category" aria-label="choose category" required>
+          <option value="" disabled selected>Category…</option>
+          <option value="AI Agents & Infrastructure">🤖 AI Agents & Infrastructure</option>
+          <option value="SEO & AI Visibility">🔍 SEO & AI Visibility</option>
+          <option value="Marketing & Advertising">📈 Marketing & Advertising</option>
+          <option value="Crypto, Web3 & Investing">🪙 Crypto, Web3 & Investing</option>
+          <option value="Developer Tools">💻 Developer Tools</option>
+          <option value="Business, Finance & Legal">💼 Business, Finance & Legal</option>
+          <option value="Security, Privacy & Compliance">🛡️ Security, Privacy & Compliance</option>
+          <option value="Health, Fitness & Wellness">🏃 Health, Fitness & Wellness</option>
+          <option value="Social Media & Creator Tools">🎬 Social Media & Creator Tools</option>
+          <option value="Leaderboards & Attention Markets">🏆 Leaderboards & Attention</option>
+          <option value="Hiring, Jobs & Careers">👔 Hiring, Jobs & Careers</option>
+          <option value="Education & Learning">📚 Education & Learning</option>
+          <option value="Agencies, Studios & Services">🎨 Agencies & Studios</option>
+          <option value="Ecommerce & Retail">🛍️ Ecommerce & Retail</option>
+          <option value="Domains & Web Assets">🌐 Domains & Web Assets</option>
+          <option value="Games & Entertainment">🎮 Games & Entertainment</option>
+          <option value="People & Profiles">👤 People & Profiles</option>
+          <option value="Productivity & Personal Tools">⚡ Productivity</option>
+          <option value="Design & Creative">✨ Design & Creative</option>
+          <option value="Writing & Content">✍️ Writing & Content</option>
+          <option value="Directories, Launch & Discovery">🚀 Directories & Launch</option>
+          <option value="AI Media Generation">🖼️ AI Media Generation</option>
+          <option value="Audio, Voice & Podcasting">🎙️ Audio & Voice</option>
+          <option value="Sales & Lead Generation">🎯 Sales & Leads</option>
+          <option value="Travel, Local & Lifestyle">✈️ Travel & Lifestyle</option>
+          <option value="Real Estate & Property">🏠 Real Estate</option>
+          <option value="Media & News">📰 Media & News</option>
+          <option value="Other">📦 Other</option>
         </select>
-        <span class="select-chevron">⌄</span>
       </div>
       <button id="outbidBtn" type="submit" class="btn-outbid">Outbid</button>
     </div>
@@ -163,7 +162,7 @@
     <div id="logoField" style="margin-top:6px">
       <label style="font-size:13px;font-weight:700;display:block;margin-bottom:8px;letter-spacing:-0.01em">Icon <span style="font-weight:400">— square logo, max 5MB</span></label>
       <div id="logoDrop" class="logo-drop-box">
-        <div id="logoPreview" style="width:64px;height:64px;margin:0 auto 10px;border-radius:14px;background:#0F172A;display:grid;place-items:center;overflow:hidden;color:rgba(255,255,255,0.55);font-size:20px;font-weight:700;border:1px solid rgba(0,0,0,0.06)"><img src="img/logo-icon.png" style="width:100%;height:100%;object-fit:contain"></div>
+        <div id="logoPreview" style="width:64px;height:64px;margin:0 auto 10px;border-radius:16px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);display:grid;place-items:center;overflow:hidden"><svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M16 3C16 3 6 15.5 6 21.5a10 10 0 0 0 20 0C26 15.5 16 3 16 3z" fill="#38BDF8"/><path d="M16 8C16 8 10 17 10 21.5a6 6 0 0 0 12 0C22 17 16 8 16 8z" fill="white" opacity="0.3"/></svg></div>
         <div style="font-size:13px;color:#64748B;font-weight:500">Click or drag & drop to upload <span style="color:#94A3B8">(png, jpg, webp, svg)</span></div>
         <input id="logoInput" type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none">
       </div>
@@ -177,8 +176,8 @@
     </div>
 
     <div class="price-breakdown-box">
-      <div class="breakdown-row highlight"><span>Total bid</span><span id="modalBreakdownBid">$1</span></div>
-      <div class="breakdown-row"><span>Step 1: To clean water (75%)</span><span id="modalBreakdownDonation">$4</span></div>
+      <div class="breakdown-row highlight"><span>Total bid</span><span id="modalBreakdownBid">$5</span></div>
+      <div class="breakdown-row" style="color:#10B981;font-weight:700;font-size:14.5px"><span>Step 1: To clean water (75%)</span><span id="modalBreakdownDonation" style="font-size:15px;font-weight:800">💧 $4</span></div>
       <div class="breakdown-row"><span>Step 2: Listing fee (25%)</span><span id="modalBreakdownFee">$1</span></div>
     </div>
 
