@@ -333,6 +333,25 @@ async function load(retryCount = 0) {
     return;
   }
 
+  // Auto-sync if redirected back from Every.org
+  const urlParams = new URLSearchParams(window.location.search);
+  const amountParam = urlParams.get('amount') || urlParams.get('donationAmount') || urlParams.get('netAmount');
+  const chargeIdParam = urlParams.get('chargeId') || urlParams.get('donationId');
+
+  if (amountParam || urlParams.get('success') || chargeIdParam || (document.referrer && document.referrer.includes('every.org'))) {
+    try {
+      await fetch('/api/donation-done', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          partnerDonationId: id,
+          amount: amountParam,
+          chargeId: chargeIdParam
+        })
+      });
+    } catch(e) {}
+  }
+
   try {
     const res = await fetch(`/api/check-status?id=${encodeURIComponent(id)}`);
     const j = await res.json().catch(() => ({}));
@@ -351,14 +370,14 @@ async function load(retryCount = 0) {
       return;
     }
 
-    // Check if Step 1 is verified (with auto-polling & recheck)
+    // Check if Step 1 is verified
     if (!entryData.donation_confirmed && !entryData.everyorg_donation_id) {
-      if (retryCount < 4) {
+      if (retryCount < 3) {
         if (loading) {
           loading.style.display = 'block';
           loading.textContent = 'Verifying your donation with Every.org… please wait…';
         }
-        setTimeout(() => load(retryCount + 1), 2000);
+        setTimeout(() => load(retryCount + 1), 1500);
         return;
       }
 
@@ -371,7 +390,7 @@ async function load(retryCount = 0) {
             Your 75% charity donation on Every.org must be verified before paying the listing fee.
           </p>
           <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-            <button class="btn-outbid" style="padding:10px 18px" onclick="window.location.reload()">
+            <button class="btn-outbid" style="padding:10px 18px" id="verifyNowBtn">
               🔄 I Already Paid on Every.org (Verify Now)
             </button>
             <a href="index.html" class="btn-accent" style="padding:10px 18px;text-decoration:none">
@@ -379,6 +398,16 @@ async function load(retryCount = 0) {
             </a>
           </div>
         `;
+        document.getElementById('verifyNowBtn')?.addEventListener('click', async () => {
+          try {
+            await fetch('/api/donation-done', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ partnerDonationId: id })
+            });
+          } catch(e) {}
+          window.location.reload();
+        });
       }
       return;
     }
