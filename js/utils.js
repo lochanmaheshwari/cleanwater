@@ -62,6 +62,10 @@ export function formatMoney(cents){
 export function formatMoney2(cents){
   return '$' + (cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+if (typeof window !== 'undefined') {
+  window.formatMoney = formatMoney;
+  window.formatMoney2 = formatMoney2;
+}
 export function timeAgo(iso){
   const diff = Date.now() - new Date(iso).getTime();
   const s = Math.floor(diff/1000);
